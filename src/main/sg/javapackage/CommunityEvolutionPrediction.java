@@ -1,8 +1,6 @@
 package main.sg.javapackage;
 
 import java.io.File;
-import java.io.IOException;
-
 import main.sg.javapackage.domain.GlobalVariables.Algorithm;
 import main.sg.javapackage.domain.GlobalVariables.Dataset;
 import main.sg.javapackage.graph.PreProcessing;
@@ -36,7 +34,7 @@ import org.ini4j.Ini;
  */
 public class CommunityEvolutionPrediction {
 
-	public static void main(String[] args) throws IOException{
+	public static void main(String[] args) throws Exception{
 		
 		//Declarations
 		final double version = 2.0;
@@ -112,38 +110,33 @@ public class CommunityEvolutionPrediction {
 		PreProcessing prep = new PreProcessing(InputPath, totalTimesteps, selectedAlgo);
 		prep.processInputNodeList();
 		Logger.writeToLogln("");
-		System.out.println("Stage 1: complete");
+		System.out.println("Stage 1- Pre-Processor : Complete");
 
 		Logger.writeToLogln("/*-----------Overlapping-Community-Detector-----------*/");
 		OverlapCommunityDetection ocd = new OverlapCommunityDetection(selectedAlgo, isWeighted, totalTimesteps);
 		ocd.performOverlapCommunityDectection(InputPath,preferences.get(datasetUsed.toString(), "AFOCSPath"));
 		Logger.writeToLogln("");
-		System.out.println("Stage 2: complete");
+		System.out.println("Stage 2- Community Dectector : Complete");
 
 		Logger.writeToLogln("/*---------------Statistical-Extractor----------------*/");
 		SocialNetworkAnalysis sna = new SocialNetworkAnalysis();
 		sna.extractAnalytics();
-		System.out.println("Stage 3a: complete");
+		System.out.println("Stage 3a- Statistical Extractor : Complete");
 
 		EvolutionDetection ged = new EvolutionDetection();
 		ged.onetomanyCommunityEvolutionTracking();
 		ged.recursiveCommunityEvolutionTracking();
-		System.out.println("Stage 3b: complete");
+		System.out.println("Stage 3b- Group Evolution Discoverer : Complete");
 
 		Logger.writeToLogln("/*----------------Predictive-Analysis-----------------*/");
 		PredictiveAnalysis learning = new PredictiveAnalysis();
 		learning.populateArffFile();
-		System.out.println("Stage 4: complete");
+		System.out.println("Stage 4a- Prediction Formulator : Complete");
 
 		SupervisedLearning classify = new SupervisedLearning();
-		try {
-			classify.performPredictiveAnalysis();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		
+		classify.performPredictiveAnalysis();
+		System.out.println("Stage 4b- Supervised Learner : Complete");
+
 		//System Runtime
 		System.out.println("-------------------------------------------");
 		programRunTime = (((System.currentTimeMillis() - programStartTime) / 1000) / 60);
