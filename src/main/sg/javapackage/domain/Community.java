@@ -13,18 +13,22 @@ public class Community {
 	private String comLabel;
 	private Long id;
 	private List<Node> listOfNodes = new ArrayList<Node>();
+	private int num_Nodes = 0;
+	private int num_Edges = 0;
 	private int num_Leaders = 0;
 	private double attr_SizeRatio = Double.NaN;
+	private double attr_LeadersRatio = Double.NaN;
 	private double attr_Density = Double.NaN;
 	private double attr_Cohesion = Double.NaN;
 	private double attr_ClusteringCoefficient = Double.NaN;
 	private double attr_DegreeCentrality = Double.NaN;
 	private double attr_ClosenessCentrality = Double.NaN;
-	private double attr_LeadersRatio = Double.NaN;
+	private double attr_EigenVectorCentrality = Double.NaN;
 	private double attr_Assortativity = Double.NaN;
-	//private double attr_Entropy;
-	private Evolution evolve;
 
+	//private double attr_Entropy;
+	private Evolution previousState;
+	private Evolution nextState;
 	private Community previousCommunityInTime = null;
 	
 	public Community(){
@@ -125,6 +129,20 @@ public class Community {
 		return this.num_Leaders;
 	}
 	
+	public void setNumNodes(int value){
+		this.num_Nodes = value;
+	}
+	public int getNumNodes(){
+		return this.num_Nodes;
+	}
+	
+	public void setNumEdges(int value){
+		this.num_Edges = value;
+	}
+	public int getNumEdges(){
+		return this.num_Edges;
+	}
+	
 	public void setPreviousCommunity(Community comm){
 		this.previousCommunityInTime = comm;
 	}
@@ -146,11 +164,25 @@ public class Community {
 		attr_Assortativity = value;
 	}
 	
+	public double getAttrEigenVectorCentrality(){
+		return this.attr_EigenVectorCentrality;
+	}
+	public void setAttrEigenVectorCentrality(double value){
+		attr_EigenVectorCentrality = value;
+	}
+	
 	public void setEvolution(Evolution e){
-		this.evolve = e;
+		this.nextState = e;
 	}
 	public Evolution getEvolution(){
-		return this.evolve;
+		return this.nextState;
+	}
+	
+	public void setPreviousEvolution(Evolution e){
+		this.previousState = e;
+	}
+	public Evolution getPreviousEvolution(){
+		return this.previousState;
 	}
 
 }
