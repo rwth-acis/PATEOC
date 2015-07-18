@@ -9,8 +9,6 @@ import main.sg.javapackage.graph.PreProcessing;
 import main.sg.javapackage.logging.Logger;
 import main.sg.javapackage.ocd.OverlapCommunityDetection;
 
-
-
 public class EvolutionDetection {
 	
     public void onetomanyCommunityEvolutionTracking() {
@@ -212,7 +210,7 @@ public class EvolutionDetection {
 		for (int listIterator1 = 0; listIterator1<tempCommValuesC1.size();listIterator1++){
 
 			for(int listIterator2 = 0; listIterator2<tempCommValuesC2.size();listIterator2++){
-				if((long) tempCommValuesC2.get(listIterator2).getId() == (long) tempCommValuesC1.get(listIterator1).getId() ){
+				if((long) tempCommValuesC1.get(listIterator1).getId() == (long) tempCommValuesC2.get(listIterator2).getId() ){
 					counter++;
 					//TODO:Probably consider only the leader's value
 					sum_n += tempCommValuesC1.get(listIterator1).getEigenCentrality();
@@ -222,7 +220,7 @@ public class EvolutionDetection {
 		}
 		groupquality = sum_n / sum_d;
 		groupquantity = counter/(double)tempCommValuesC1.size();
-		//System.out.println(groupquantity+ " " + groupquality + " " + (groupquantity * groupquality));
+		//Logger.writeToLogln(groupquantity+ " " + groupquality + " " + (groupquantity * groupquality));
 
 		return (groupquantity * groupquality);
 	}

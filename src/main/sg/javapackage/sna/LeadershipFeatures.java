@@ -9,6 +9,7 @@ import main.sg.javapackage.utils.StatisticManager;
 
 public class LeadershipFeatures {
 	
+	private double leadershipThreshold;
 	public LeadershipFeatures() {
 		// TODO Auto-generated constructor stub
 	}
@@ -24,11 +25,13 @@ public class LeadershipFeatures {
 		double sd = StatisticManager.getStdDev(eigenvector);
 		
 		int leadersCount=0;
+		leadershipThreshold = mean+sd;
 		for(int i = 0; i< graphNodes.size(); i++){
 			Node node = graphNodes.get(i);
 			node.setAssortativityValue(assortativityvector.get(i));
 			node.setEigenCentrality(eigenvector.get(i));
-        	if(eigenvector.get(i) > (mean+sd)){
+			//TODO:leader threshold
+        	if(eigenvector.get(i) > leadershipThreshold){
         		node.setAsLeader();
         		leadersCount++;
         	}

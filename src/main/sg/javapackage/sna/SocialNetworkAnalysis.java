@@ -5,9 +5,9 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import main.sg.javapackage.domain.Community;
 import main.sg.javapackage.domain.CustomGraph;
 import main.sg.javapackage.domain.CustomSubgraph;
-import main.sg.javapackage.domain.GlobalVariables;
 import main.sg.javapackage.domain.Node;
 import main.sg.javapackage.graph.PreProcessing;
 import main.sg.javapackage.logging.Logger;
@@ -34,7 +34,7 @@ public class SocialNetworkAnalysis {
 		System.out.println("Running statistical extraction ...");
 		Logger.writeToLogln("Details extracted include ...");
 		Logger.writeToLogln("NodeSize, EdgeSize, N_Leaders, SizeRatio, LeaderRatio, Density, Cohesion, ClusterCoefficient, Assortativity, "
-				+ "DegreeCentrality, ClosenessCentrality ");
+				+ "DegreeCentrality, ClosenessCentrality, EigenVectorCentrality ");
 		int timestep,community;
 		
 		for(timestep = 1;timestep <= PreProcessing.totalGraphCount() ; timestep++) {
@@ -50,48 +50,53 @@ public class SocialNetworkAnalysis {
 				Set<Node> tempNodeSet = new LinkedHashSet<Node>(reassertNodes(graphNodes));
 				
 				subgraph = new CustomSubgraph(graph, tempNodeSet, null);
-				subgraphChecksum(timestep, community);
 				//main.sg.javapackage.ext.graphml.CustomGraphMLExporter.GraphMLExportSubgraph(subgraph, 100*timestep + community);
 				
 				LeadershipFeatures features1 = new LeadershipFeatures();
 				features1.assignLeaders(subgraph,timestep, community);
 				
+				Community C_i_P = OverlapCommunityDetection.Communities.get(timestep)[community];
+
 				CommunityFeatures features2 = new CommunityFeatures(graph, subgraph);
 				
-				OverlapCommunityDetection.Communities.get(timestep)[community].setAttrSizeRatio(features2.calculateSizeRatio());
-				OverlapCommunityDetection.Communities.get(timestep)[community].setAttrLeaderRatio(/*domain_calculation*/);
-				OverlapCommunityDetection.Communities.get(timestep)[community].setAttrDensity(features2.calculateDensity());
-				double cohesionValue = features2.calculateCohesion();
-				if(Double.isFinite(cohesionValue)){
-					OverlapCommunityDetection.Communities.get(timestep)[community].setAttrCohesion(cohesionValue);
-				}
-				else{
-					OverlapCommunityDetection.Communities.get(timestep)[community].setAttrCohesion(GlobalVariables.COHESION_INFINITY);
-				}
-				OverlapCommunityDetection.Communities.get(timestep)[community].setAttrClusteringCoefficient(features2.calculateClusteringCoefficient());
-				OverlapCommunityDetection.Communities.get(timestep)[community].setAttrAssortativity(features2.calculateAssoratitivity(graphNodes));
-				OverlapCommunityDetection.Communities.get(timestep)[community].setAttrDegreeCentrality(features2.calculateDegreeCentrality());
-				OverlapCommunityDetection.Communities.get(timestep)[community].setAttrClosenessCentrality(features2.calculateClosenessCentrality());
+				C_i_P.setNumNodes(subgraph.vertexSet().size());
+				C_i_P.setNumEdges(subgraph.edgeSet().size());
+				C_i_P.setAttrSizeRatio(features2.calculateSizeRatio());
+				C_i_P.setAttrLeaderRatio(/*domain_calculation*/);
+				C_i_P.setAttrDensity(features2.calculateDensity());
+				//double cohesionValue = features2.calculateCohesion();
+				//if(Double.isFinite(cohesionValue)){
+					//C_i_P.setAttrCohesion(cohesionValue);
+				//}
+				//else{
+					//C_i_P.setAttrCohesion(GlobalVariables.COHESION_INFINITY);
+				//}
+				C_i_P.setAttrCohesion(features2.calculateCohesion());
+				C_i_P.setAttrClusteringCoefficient(features2.calculateClusteringCoefficient());
+				C_i_P.setAttrAssortativity(features2.calculateAssoratitivity(graphNodes));
+				C_i_P.setAttrDegreeCentrality(features2.calculateDegreeCentrality());
+				C_i_P.setAttrClosenessCentrality(features2.calculateClosenessCentrality());
+				C_i_P.setAttrEigenVectorCentrality(features2.calculateEigenVectorCentrality(graphNodes));
 				
 				
 				Logger.writeToLogln(community+
-						"- "+subgraph.vertexSet().size()+
-						","+ subgraph.edgeSet().size()+
-						","+ OverlapCommunityDetection.Communities.get(timestep)[community].getNumLeaders()+
-						","+ OverlapCommunityDetection.Communities.get(timestep)[community].getAttrSizeRatio()+
-						","+ OverlapCommunityDetection.Communities.get(timestep)[community].getAttrLeaderRatio()+
-						","+ OverlapCommunityDetection.Communities.get(timestep)[community].getAttrDensity()+
-						","+ OverlapCommunityDetection.Communities.get(timestep)[community].getAttrCohesion()+
-						","+ OverlapCommunityDetection.Communities.get(timestep)[community].getAttrClusteringCoefficient()+
-						","+ OverlapCommunityDetection.Communities.get(timestep)[community].getAttrAssortativity()+
-						","+ OverlapCommunityDetection.Communities.get(timestep)[community].getAttrDegreeCentrality()+
-						","+ OverlapCommunityDetection.Communities.get(timestep)[community].getAttrClosenessCentrality());
-				
-				
+						"- "+C_i_P.getNumNodes()+
+						","+ C_i_P.getNumEdges()+ 
+						","+ C_i_P.getNumLeaders()+
+						","+ C_i_P.getAttrSizeRatio()+
+						","+ C_i_P.getAttrLeaderRatio()+
+						","+ C_i_P.getAttrDensity()+
+						","+ C_i_P.getAttrCohesion()+
+						","+ C_i_P.getAttrClusteringCoefficient()+
+						","+ C_i_P.getAttrAssortativity()+
+						","+ C_i_P.getAttrDegreeCentrality()+
+						","+ C_i_P.getAttrClosenessCentrality()+
+						","+ C_i_P.getAttrEigenVectorCentrality());				
 			}
 			System.out.println("Graph " + timestep + ": processed");
 		}
 	}
+	
 	
 	/**
 	 * returns the corresponding main nodes from the master list 
@@ -108,21 +113,6 @@ public class SocialNetworkAnalysis {
 		}
 		
 		return newNodeSet;
-	}
-	
-	/**
-	 * temporary subgraph checksum;
-	 * checks number of nodes in the induced subgraph to 
-	 * number of nodes in Community MAP
-	 * @param timestep
-	 * @param community
-	 */
-	private void subgraphChecksum(int timestep, int community){
-		
-		if(subgraph.vertexSet().size() != OverlapCommunityDetection.Communities.get(timestep)[community].nodelistSize()){
-			System.out.println("CHECKSUM FAILED FOR SUBGRAPH");
-		}
-		
 	}
 
 }
