@@ -52,45 +52,51 @@ public class SupervisedLearning {
 	public void performPredictiveAnalysis() throws Exception {
 		
 		printDetails();
-		
-		for(int results=1; results<=3; results++){
-			Instances trainingData = null;
+		Instances eventTrainingData;
 
-			if(results == 1){
-				trainingData = performAttributeSelection1();
-			}
-			else{
-				trainingData = base_TrainingData;
-			}
+		for(int event = 1; event <= 4; event++){
+			eventTrainingData = null;
+			eventTrainingData = evolutionFilter(event);
 			
-			trainingData.setClassIndex(trainingData.numAttributes() - 1);
-			Logger.writeToLogln("Nominal Class - Prior-Processing");
-			Logger.writeToLogln(trainingData.attributeStats(trainingData.numAttributes() - 1).toString());
-			
-			trainingData = applySMOTE(trainingData);
-			trainingData = applySpreadSubsample(trainingData);
-			
-			// Run for each model
-			for (int j = 0; j < models.length; j++) {
-				
-				Instances model_data = null;
-				if(results == 3){
-					model_data = performAttributeSelection3(trainingData, models[j]);
-				}else{
-					model_data = trainingData;
+			for(int results=1; results<=3; results++){
+				Instances trainingData = null;
+				if(results == 1){
+					trainingData = performAttributeSelection1(eventTrainingData);
 				}
-			  
-				Evaluation evaluation = new Evaluation(model_data);
-				evaluation.crossValidateModel(models[j], model_data, 10, new Random(1));
-				Logger.writeToLogln(":- using " + models[j].getClass().getSimpleName());
-				System.out.print(":- using " + models[j].getClass().getSimpleName());
-				System.out.printf(" = %.2f",evaluation.pctCorrect());
-				System.out.println(" with "+model_data.numAttributes()+ " attributes");
-				Logger.writeToLogln(evaluation.toSummaryString("Results\n========", false));
-				Logger.writeToLogln(evaluation.toClassDetailsString());
+				else{
+					trainingData = eventTrainingData;
+				}
+				
+				trainingData.setClassIndex(trainingData.numAttributes() - 1);
+				Logger.writeToLogln("Nominal Class - Prior-Processing");
+				Logger.writeToLogln(trainingData.attributeStats(trainingData.numAttributes() - 1).toString());
+				
+				trainingData = applySMOTE(trainingData);
+				trainingData = applySpreadSubsample(trainingData);
+
+				// Run for each model
+				for (int j = 0; j < models.length; j++) {
+					
+					Instances model_data = null;
+					if(results == 3){
+						model_data = performAttributeSelection3(trainingData, models[j]);
+					}else{
+						model_data = trainingData;
+					}
+				  
+					Evaluation evaluation = new Evaluation(model_data);
+					evaluation.crossValidateModel(models[j], model_data, 10, new Random(1));
+					Logger.writeToLogln(":- using " + models[j].getClass().getSimpleName());
+					System.out.print(":- using " + models[j].getClass().getSimpleName());
+					System.out.printf(" = %.2f",evaluation.pctCorrect());
+					System.out.println(" with "+model_data.numAttributes()+ " attributes");
+					Logger.writeToLogln(evaluation.toSummaryString("Results\n========", false));
+					Logger.writeToLogln(evaluation.toClassDetailsString());
+				}
+				System.out.println("");
 			}
-			System.out.println("");
 		}
+
 	}
 	
 	/**
@@ -158,14 +164,14 @@ public class SupervisedLearning {
 	 * @return Instances
 	 * @throws Exception
 	 */
-	private Instances performAttributeSelection1() throws Exception{
+	private Instances performAttributeSelection1(Instances data) throws Exception{
 		
-		//Only community features
+		//Only community attributes featuring from 1-9, and last nominal attribute
 		Remove remove =  new Remove();
-		remove.setAttributeIndices("1-5,last");
+		remove.setAttributeIndices("1-9,last");
 		remove.setInvertSelection(true);
-		remove.setInputFormat(base_TrainingData);
-		Instances updated_traningset = Filter.useFilter(base_TrainingData, remove);
+		remove.setInputFormat(data);
+		Instances updated_traningset = Filter.useFilter(data, remove);
 		return updated_traningset;
 
 	}
@@ -208,6 +214,42 @@ public class SupervisedLearning {
 		}
 		Logger.writeToLogln("");
 		System.out.println("Classification results :");
+	}
+	
+	private Instances evolutionFilter(int i) throws Exception{
+		
+		int n_attributes = base_TrainingData.numAttributes();
+		String options=null;
+		Remove remove =  new Remove();
+		
+		if(i == 1){
+			System.out.println("For SURVIVE :-");
+			options = ""+(n_attributes-2)+","+(n_attributes-1)+","+(n_attributes);
+			remove.setAttributeIndices(options);
+			//remove.setAttributeIndices("30,31,32");
+		}
+		else if(i == 2){
+			System.out.println("For MERGE :-");
+			options = ""+(n_attributes-3)+","+(n_attributes-1)+","+(n_attributes);
+			remove.setAttributeIndices(options);
+			//remove.setAttributeIndices("29,31,32");
+		}
+		else if(i == 3){
+			System.out.println("For SPLIT :-");
+			options = ""+(n_attributes-3)+","+(n_attributes-2)+","+(n_attributes);
+			remove.setAttributeIndices(options);
+			//remove.setAttributeIndices("29,30,32");
+		}
+		else if(i == 4){
+			System.out.println("For DISSOLVE :-");
+			options = ""+(n_attributes-3)+","+(n_attributes-2)+","+(n_attributes-1);
+			remove.setAttributeIndices(options);
+			//remove.setAttributeIndices("29,30,31");
+		}
+
+		remove.setInputFormat(base_TrainingData);
+		Instances updated_traningset = Filter.useFilter(base_TrainingData, remove);
+		return updated_traningset;
 	}
 	
 }
