@@ -63,11 +63,12 @@ public class OfflineCommunityParsing {
 			
 			//Declare array of Community
 			for(int i=1; i<=communityCount; i++ ){
-				tempComm[i] = new Community((long)i);
+				tempComm[i] = new Community();
+				tempComm[i].setId((long)i);
 			}
 			
-			//Set the 0th Node as header node with long id as number of communities
-			tempComm[0] = new Community((long) communityCount);
+			tempComm[0] = new Community();
+			tempComm[0].setId((long) communityCount); 
 			tempComm[0].setHeaderLabel();
 
 			

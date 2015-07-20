@@ -59,14 +59,14 @@ public class EvolutionDetection {
 				else if(alphaScore >= GlobalVariables.GED_INCLUSION_ALPHA && betaScore < GlobalVariables.GED_INCLUSION_BETA	){
 					if(OverlapCommunityDetection.sizeOfCommunity(timeT1, commt1) < OverlapCommunityDetection.sizeOfCommunity(timeT2, bestMatchCommunity)){
 						Logger.writeToLogln(commt1+ " merges as " + bestMatchCommunity);
-						OverlapCommunityDetection.Communities.get(timeT1)[commt1].setEvolution(Evolution.survive);
+						OverlapCommunityDetection.Communities.get(timeT1)[commt1].setEvolution(Evolution.merge);
 						
 						OverlapCommunityDetection.Communities.get(timeT2)[bestMatchCommunity].setPreviousCommunity(OverlapCommunityDetection.Communities.get(timeT1)[commt1]);
 
 					}
 					else{
 						Logger.writeToLogln(commt1+ " splits as " + bestMatchCommunity);
-						OverlapCommunityDetection.Communities.get(timeT1)[commt1].setEvolution(Evolution.dissolve);
+						OverlapCommunityDetection.Communities.get(timeT1)[commt1].setEvolution(Evolution.split);
 						
 						OverlapCommunityDetection.Communities.get(timeT2)[bestMatchCommunity].setPreviousCommunity(OverlapCommunityDetection.Communities.get(timeT1)[commt1]);
 
@@ -77,14 +77,14 @@ public class EvolutionDetection {
 				else if(alphaScore < GlobalVariables.GED_INCLUSION_ALPHA && betaScore >= GlobalVariables.GED_INCLUSION_BETA ){
 					if(OverlapCommunityDetection.sizeOfCommunity(timeT1, commt1) >= OverlapCommunityDetection.sizeOfCommunity(timeT2, bestMatchCommunity)){
 						Logger.writeToLogln(commt1+ " splits as " + bestMatchCommunity);
-						OverlapCommunityDetection.Communities.get(timeT1)[commt1].setEvolution(Evolution.dissolve);
+						OverlapCommunityDetection.Communities.get(timeT1)[commt1].setEvolution(Evolution.split);
 						
 						OverlapCommunityDetection.Communities.get(timeT2)[bestMatchCommunity].setPreviousCommunity(OverlapCommunityDetection.Communities.get(timeT1)[commt1]);
 
 					}
 					else{
 						Logger.writeToLogln(commt1+ " merges as " + bestMatchCommunity);
-						OverlapCommunityDetection.Communities.get(timeT1)[commt1].setEvolution(Evolution.survive);
+						OverlapCommunityDetection.Communities.get(timeT1)[commt1].setEvolution(Evolution.merge);
 						
 						OverlapCommunityDetection.Communities.get(timeT2)[bestMatchCommunity].setPreviousCommunity(OverlapCommunityDetection.Communities.get(timeT1)[commt1]);
 
@@ -92,7 +92,7 @@ public class EvolutionDetection {
 
 				}
 				else if(alphaScore < GlobalVariables.GED_INCLUSION_ALPHA && betaScore < GlobalVariables.GED_INCLUSION_BETA ){
-					Logger.writeToLogln(commt1+ " splits as " + bestMatchCommunity);
+					Logger.writeToLogln(commt1+ " dissolve as " + bestMatchCommunity);
 					OverlapCommunityDetection.Communities.get(timeT1)[commt1].setEvolution(Evolution.dissolve);
 					
 					OverlapCommunityDetection.Communities.get(timeT2)[bestMatchCommunity].setPreviousCommunity(OverlapCommunityDetection.Communities.get(timeT1)[commt1]);

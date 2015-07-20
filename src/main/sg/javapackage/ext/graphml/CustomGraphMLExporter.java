@@ -77,7 +77,6 @@ public class CustomGraphMLExporter {
 		} 
 	}
 	
-	@SuppressWarnings("unused")
 	public static void GraphMLExportSubgraph(CustomSubgraph Subgraph, int subgraphID) {
 
 		Logger.writeToLogln("Exported Graph "+subgraphID+" to GraphML file.");
@@ -110,8 +109,8 @@ public class CustomGraphMLExporter {
 	         } 
 		}; 
 		
-		//GraphMLExporter<Node, DefaultWeightedEdge> VE = new GraphMLExporter<Node, DefaultWeightedEdge>(vertexIDProvider,vertexLabelProvider,edgeIDProvider,edgeLabelProvider); 
-		GraphMLExporter<Node, DefaultWeightedEdge> VE = new GraphMLExporter<Node, DefaultWeightedEdge>(); 
+		GraphMLExporter<Node, DefaultWeightedEdge> VE = new GraphMLExporter<Node, DefaultWeightedEdge>(vertexIDProvider,vertexLabelProvider,edgeIDProvider,edgeLabelProvider); 
+		//GraphMLExporter<Node, DefaultWeightedEdge> VE = new GraphMLExporter<Node, DefaultWeightedEdge>(); 
 		
 		try {
 			FileWriter PS  = new FileWriter("bin\\TimeGraph_"+subgraphID+".graphml");

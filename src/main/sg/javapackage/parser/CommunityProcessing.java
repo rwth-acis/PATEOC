@@ -40,10 +40,12 @@ public class CommunityProcessing {
 		Community[] tempComm = new Community[numOfCommunities+1];
 		
 		for(int i=1; i<=numOfCommunities; i++ ){
-			tempComm[i] = new Community((long)i);
+			tempComm[i] = new Community();
+			tempComm[i].setId((long)i);
 		}
 		//Set the 0th Node as header node with long id as number of communities
-		tempComm[0] = new Community((long) numOfCommunities);
+		tempComm[0] = new Community();
+		tempComm[0].setId((long) numOfCommunities); 
 		tempComm[0].setHeaderLabel();
 		
 		Scanner scanner = new Scanner(coverMatrix);
@@ -55,7 +57,6 @@ public class CommunityProcessing {
 		    if (values != null && values.length > 0) {
 				String nodeValue = values[0].toString();
 				//New node for each community to hold its own unique values
-				//Node node = new Node(PreProcessing.CompleteNodeList.get(nodeValue));
 				Node node = new Node(PreProcessing.masterlistGetNode(nodeValue));
 
 				if (values.length > 1) {

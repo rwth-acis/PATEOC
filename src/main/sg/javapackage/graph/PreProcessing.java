@@ -11,7 +11,6 @@ import java.util.Map;
 import main.sg.javapackage.domain.CustomGraph;
 import main.sg.javapackage.domain.GlobalVariables.Algorithm;
 import main.sg.javapackage.domain.Node;
-import main.sg.javapackage.ext.graphml.CustomGraphMLExporter;
 import main.sg.javapackage.logging.Logger;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -145,7 +144,7 @@ public class PreProcessing {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		CustomGraphMLExporter.GraphMLExport(inputGraph,timestep);
+		//main.sg.javapackage.ext.graphml.CustomGraphMLExporter.GraphMLExport(inputGraph,timestep);
 		return inputGraph;
 	}
 	

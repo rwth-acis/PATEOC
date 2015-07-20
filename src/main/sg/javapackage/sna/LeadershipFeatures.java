@@ -21,23 +21,38 @@ public class LeadershipFeatures {
 		NodeFeatures nodefeatures = new NodeFeatures();
 		List<Double> assortativityvector = nodefeatures.disassortativityLeadershipCalculation(subgraph);
 		List<Double> eigenvector = nodefeatures.eigenvectorcentralityLeadershipCalculation(subgraph);
-		double mean = StatisticManager.getMean(eigenvector);
-		double sd = StatisticManager.getStdDev(eigenvector);
-		
+		//double mean = StatisticManager.getMean(eigenvector);
+		//double sd = StatisticManager.getStdDev(eigenvector);
 		int leadersCount=0;
-		leadershipThreshold = mean+sd;
-		for(int i = 0; i< graphNodes.size(); i++){
-			Node node = graphNodes.get(i);
-			node.setAssortativityValue(assortativityvector.get(i));
-			node.setEigenCentrality(eigenvector.get(i));
-			//TODO:leader threshold
-        	if(eigenvector.get(i) > leadershipThreshold){
-        		node.setAsLeader();
-        		leadersCount++;
-        	}
+		//TODO: strong left skewness and a peak near the maximum for mean+sd
+		//leadershipThreshold = mean+sd;
+		leadershipThreshold = 0.9;
+		
+		boolean flag = false;
+		int j=0;
+		for (Node node : subgraph.vertexSet()) {
+			
+            //TODO:CHECK THIS CHECK THIS ->copy value to the right node
+            for (int i = 0; i < graphNodes.size() && !flag ; i++) {
+            	if(node.getId() == graphNodes.get(i).getId()){
+            		
+        			graphNodes.get(i).setAssortativityValue(assortativityvector.get(j));
+        			graphNodes.get(i).setEigenCentrality(eigenvector.get(j));
+        			//TODO:leader threshold
+                	if(eigenvector.get(j) > leadershipThreshold){
+                		graphNodes.get(i).setAsLeader();
+                		leadersCount++;
+                	}
+            		j++;
+                    flag=true;
+                }
+            }
+            flag=false;
 		}
+		
 		OverlapCommunityDetection.Communities.get(timestep)[community].setNumLeaders(leadersCount);
-		//System.out.println("Nodes in community= "+graphNodes.size() + " & Leaders= "+ leadersCount);
+		//if(leadersCount == 0)
+			//System.out.println("Nodes in community= "+graphNodes.size() + " & Leaders= "+ leadersCount);
 	}
 
 }

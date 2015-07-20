@@ -37,7 +37,7 @@ public class CommunityEvolutionPrediction {
 	public static void main(String[] args) throws Exception{
 		
 		//Declarations
-		final double version = 2.0;
+		final double version = 2.1;
 		boolean isWeighted = false;
 		final int totalTimesteps;
 		final long programStartTime = System.currentTimeMillis();
