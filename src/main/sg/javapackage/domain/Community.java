@@ -12,32 +12,35 @@ public class Community {
 	public static final String DEFAULT_COMMUNITY_HEADER = "Community_Header";
 	private String comLabel;
 	private Long id;
-	private List<Node> listOfNodes = new ArrayList<Node>();
+	private List<Node> listOfNodes;
 	private int num_Nodes = 0;
 	private int num_Edges = 0;
 	private int num_Leaders = 0;
-	private double attr_SizeRatio = Double.NaN;
-	private double attr_LeadersRatio = Double.NaN;
-	private double attr_Density = Double.NaN;
-	private double attr_Cohesion = Double.NaN;
-	private double attr_ClusteringCoefficient = Double.NaN;
-	private double attr_DegreeCentrality = Double.NaN;
-	private double attr_ClosenessCentrality = Double.NaN;
-	private double attr_EigenVectorCentrality = Double.NaN;
-	private double attr_Assortativity = Double.NaN;
-
-	//private double attr_Entropy;
-	private Evolution previousState;
-	private Evolution nextState;
+	private double attr_SizeRatio = 0.0;
+	private double attr_LeadersRatio = 0.0;
+	private double attr_Density = 0.0;
+	private double attr_Cohesion = 0.0;
+	private double attr_ClusteringCoefficient = 0.0;
+	private double attr_DegreeCentrality = 0.0;
+	private double attr_ClosenessCentrality = 0.0;
+	private double attr_EigenVectorCentrality = 0.0;
+	private double attr_Assortativity = 0.0;
+	private double attr_LDegreeCentrality = 0.0;
+	private double attr_LClosenessCentrality = 0.0;
+	private double attr_LEigenVectorCentrality = 0.0;
+	private double attr_LAssortativity = 0.0;
+	private Evolution previousState =null;
+	private Evolution nextState =null;
 	private Community previousCommunityInTime = null;
 	
 	public Community(){
 		this.comLabel = DEFAULT_COMMUNITY_LABEL;
+		listOfNodes = new ArrayList<Node>();
 	}
-	public Community(Long id){
-		this.id = id;
-		this.comLabel = DEFAULT_COMMUNITY_LABEL;
-	}
+	
+	///////////////// GETTER/SETTERS /////////////////////
+	//////////////////////////////////////////////////////
+	
 	public void setHeaderLabel(){
 		//If label = header, id represents number of communities in that timestep
 		this.comLabel=DEFAULT_COMMUNITY_HEADER;
@@ -169,6 +172,34 @@ public class Community {
 	}
 	public void setAttrEigenVectorCentrality(double value){
 		attr_EigenVectorCentrality = value;
+	}
+	
+	public double getAttrLeaderEigenVectorCentrality(){
+		return this.attr_LEigenVectorCentrality;
+	}
+	public void setAttrLeaderEigenVectorCentrality(double value){
+		attr_LEigenVectorCentrality = value;
+	}
+	
+	public double getAttrLeaderDegreeCentrality(){
+		return this.attr_LDegreeCentrality;
+	}
+	public void setAttrLeaderDegreeCentrality(double value){
+		attr_LDegreeCentrality = value;
+	}
+	
+	public double getAttrLeaderClosenessCentrality(){
+		return this.attr_LClosenessCentrality;
+	}
+	public void setAttrLeaderClosenessCentrality(double value){
+		attr_LClosenessCentrality = value;
+	}
+	
+	public double getAttrLeaderAssortativity(){
+		return this.attr_LAssortativity;
+	}
+	public void setAttrLeaderAssoratativity(double value){
+		attr_LAssortativity = value;
 	}
 	
 	public void setEvolution(Evolution e){
