@@ -27,7 +27,8 @@ public class StatisticManager {
         for(double data : dataVector){
             sum += data;
         }
-        return sum/(double) dataVector.size();
+        sum = sum/(double) dataVector.size();
+        return sum;
     }
 
     /**
@@ -41,7 +42,8 @@ public class StatisticManager {
         double var_sum = 0;
         for(double data :dataVector)
             var_sum += Math.pow(data-mean, 2);
-        return var_sum/(double) dataVector.size();
+        var_sum = var_sum/(double) dataVector.size();
+        return var_sum;
     }
     
     /**
@@ -53,7 +55,8 @@ public class StatisticManager {
 
     public static double getStdDev(List<Double> dataVector)
     {
-        return Math.sqrt(getVariance(dataVector));
+    	double variance = getVariance(dataVector);	
+        return Math.sqrt(variance);
     }
 
 }
