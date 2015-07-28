@@ -5,7 +5,6 @@ import java.util.List;
 import main.sg.javapackage.domain.CustomSubgraph;
 import main.sg.javapackage.domain.Node;
 import main.sg.javapackage.ocd.OverlapCommunityDetection;
-import main.sg.javapackage.utils.StatisticManager;
 
 public class LeadershipFeatures {
 	
