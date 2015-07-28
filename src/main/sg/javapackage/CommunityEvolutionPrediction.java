@@ -25,11 +25,10 @@ import org.ini4j.Ini;
  * 
  * @param integer [1,6]; corresponding to dataset used
  *            1: facebook dataset
- *            2: socialtracesdataset
- *            3: enron dataset
- *            4: dblp dataset
- *            5: bioperl dataset
- *            6: user input dataset
+ *            2: enron dataset
+ *            3: dblp dataset
+ *            4: bioperl dataset
+ *            5: user input dataset
  *
  */
 public class CommunityEvolutionPrediction {
@@ -45,6 +44,7 @@ public class CommunityEvolutionPrediction {
 		Dataset datasetUsed = Dataset.other;
 		Algorithm selectedAlgo = Algorithm.slpa;
 		String InputPath=null;
+		String OCDPath=null;
 		
 		System.out.println("||A FRAMEWORK FOR PREDICTIVE ANALYSIS OF TIME EVOLVING AND OVERLAPPING COMMUNITIES||");
 		System.out.println("Author: Stephen Gunashekar");
@@ -69,12 +69,10 @@ public class CommunityEvolutionPrediction {
 		if(Integer.parseInt(args[1]) == 1)
 			datasetUsed = Dataset.facebook;
 		else if(Integer.parseInt(args[1]) == 2)
-			datasetUsed = Dataset.social;
-		else if(Integer.parseInt(args[1]) == 3)
 			datasetUsed = Dataset.enron;
-		else if(Integer.parseInt(args[1]) == 4)
+		else if(Integer.parseInt(args[1]) == 3)
 			datasetUsed = Dataset.dblp;
-		else if(Integer.parseInt(args[1]) == 5)
+		else if(Integer.parseInt(args[1]) == 4)
 			datasetUsed = Dataset.bioperl;
 		else
 			datasetUsed = Dataset.other;
@@ -92,16 +90,25 @@ public class CommunityEvolutionPrediction {
 		
 		if(selectedAlgo == Algorithm.focs){
 			InputPath = preferences.get(datasetUsed.toString(), "A_InputPath");
+			if(Integer.parseInt(preferences.get("ocd","OverlapThreshold")) == 70){
+				OCDPath = preferences.get(datasetUsed.toString(), "AFOCSPath_70");
+			}
+			else if(Integer.parseInt(preferences.get("ocd","OverlapThreshold")) == 75){
+				OCDPath = preferences.get(datasetUsed.toString(), "AFOCSPath_75");
+			}
+			else
+				System.out.println("Invalid OverlapThreshold Value");
 		}
 		else{
 			InputPath = preferences.get(datasetUsed.toString(), "S_InputPath");
-
-		}		
+		}
+		
 		System.out.println("Selected Parameters are:- ");
 		System.out.println("-------------------------");
 		System.out.println("Dataset		  :: "+datasetUsed.toString().toUpperCase());
 		System.out.println("Timesteps	  :: "+totalTimesteps);
 		System.out.println("Algorithm 	  :: "+selectedAlgo.toString().toUpperCase());
+		System.out.println("B-Threshold	  :: "+Integer.parseInt(preferences.get("ocd","OverlapThreshold")));
 		System.out.println("Weighted	  :: "+isWeighted);
 		
 		/*-----------------------------------------------------------------------------------------------------------------*/
@@ -114,7 +121,7 @@ public class CommunityEvolutionPrediction {
 
 		Logger.writeToLogln("/*-----------Overlapping-Community-Detector-----------*/");
 		OverlapCommunityDetection ocd = new OverlapCommunityDetection(selectedAlgo, isWeighted, totalTimesteps);
-		ocd.performOverlapCommunityDectection(InputPath,preferences.get(datasetUsed.toString(), "AFOCSPath"));
+		ocd.performOverlapCommunityDectection(InputPath,OCDPath);
 		Logger.writeToLogln("");
 		System.out.println("Stage 2- Community Dectector : Complete");
 

@@ -29,8 +29,8 @@ public class Community {
 	private double attr_LClosenessCentrality = 0.0;
 	private double attr_LEigenVectorCentrality = 0.0;
 	private double attr_LAssortativity = 0.0;
-	private Evolution previousState =null;
-	private Evolution nextState =null;
+	private Evolution previousEvent =null;
+	private Evolution nextEvent =null;
 	private Community previousCommunityInTime = null;
 	
 	public Community(){
@@ -203,17 +203,17 @@ public class Community {
 	}
 	
 	public void setEvolution(Evolution e){
-		this.nextState = e;
+		this.nextEvent = e;
 	}
 	public Evolution getEvolution(){
-		return this.nextState;
+		return this.nextEvent;
 	}
 	
 	public void setPreviousEvolution(Evolution e){
-		this.previousState = e;
+		this.previousEvent = e;
 	}
 	public Evolution getPreviousEvolution(){
-		return this.previousState;
+		return this.previousEvent;
 	}
 
 }
