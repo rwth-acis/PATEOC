@@ -2,6 +2,7 @@ package main.sg.javapackage.sna;
 
 import java.util.List;
 
+import main.sg.javapackage.domain.Community;
 import main.sg.javapackage.domain.GlobalVariables;
 import main.sg.javapackage.domain.Node;
 import main.sg.javapackage.domain.GlobalVariables.Evolution;
@@ -10,6 +11,11 @@ import main.sg.javapackage.logging.Logger;
 import main.sg.javapackage.ocd.OverlapCommunityDetection;
 
 public class EvolutionDetection {
+	
+	private int longestEvolution=0;
+	public EvolutionDetection() {
+		// TODO Auto-generated constructor stub
+	}
 	
     public void onetomanyCommunityEvolutionTracking() {
     	
@@ -139,21 +145,48 @@ public class EvolutionDetection {
 		Logger.writeToLogln("Recursive Group Evolution Discovery...");
 		//Starting from timestep 1, track the evolution the communities
 		int startTimestep = 1;
-
-		//for(startTimestep = 1; startTimestep < PreProcessing.totalGraphCount(); startTimestep++){
+		int totalTimesteps = PreProcessing.totalGraphCount();
+		for(startTimestep = 1; startTimestep < PreProcessing.totalGraphCount(); startTimestep++){
+			Logger.writeToLogln("Timestep "+startTimestep);
 			for(int community = 1;community<=OverlapCommunityDetection.numOfCommunities(startTimestep);community++){
-				Logger.writeToLog(""+community);
-				
+				this.longestEvolution = 0;	
+
 				//Timestep 2 as initial
-				communityRecursion(community, startTimestep+1,PreProcessing.totalGraphCount());
-				Logger.writeToLogln("");
+				communityRecursion(community, startTimestep+1,totalTimesteps);
+				if(this.longestEvolution>1){
+					Logger.writeToLog(community+" survives for "+this.longestEvolution + " timesteps");
+					Logger.writeToLogln("");
+					Community temp = OverlapCommunityDetection.Communities.get(startTimestep)[community];
+					//Logger.writeToLogln(community+" "+temp.getAttrSizeRatio()+" "+temp.getAttrDensity()+" "+temp.getAttrClusteringCoefficient());
+					
+					Logger.writeToLogln(community+
+							" "+temp.getNumNodes()+
+							" "+ temp.getNumEdges()+ 
+							" "+ temp.getNumLeaders()+
+							" "+ temp.getAttrSizeRatio()+
+							" "+ temp.getAttrLeaderRatio()+
+							" "+ temp.getAttrDensity()+
+							" "+ temp.getAttrCohesion()+
+							" "+ temp.getAttrClusteringCoefficient()+
+							" "+ temp.getAttrDegreeCentrality()+
+							" "+ temp.getAttrClosenessCentrality()+
+							" "+ temp.getAttrEigenVectorCentrality()+
+							" "+ temp.getAttrAssortativity()+
+							" "+ temp.getAttrLeaderDegreeCentrality()+
+							" "+ temp.getAttrLeaderClosenessCentrality()+
+							" "+ temp.getAttrLeaderEigenVectorCentrality()+
+							" "+ temp.getAttrLeaderAssortativity());	
+					
+					printRecursion(community, startTimestep+1, totalTimesteps);
+					Logger.writeToLogln("");
+				}
 			}
 			Logger.writeToLogln("");
-		//}
+		}
 
 	}
 	
-	private void communityRecursion(int community,int timestep,int inputFileCount){
+	private void communityRecursion(int community,int timestep,int totalTimesteps){
 		
 		double tempScoreIc1c2,alphaScore, betaScore;
 		int bestMatchCommunity;
@@ -161,7 +194,7 @@ public class EvolutionDetection {
 		alphaScore = 0.0;
 		betaScore = 0.0;
 		bestMatchCommunity = community;
-		if(timestep>inputFileCount){
+		if(timestep>totalTimesteps){
 			return;
 		}
 		else {
@@ -178,16 +211,64 @@ public class EvolutionDetection {
 				}
 			}
 			if(alphaScore >= GlobalVariables.GED_INCLUSION_ALPHA && betaScore >= GlobalVariables.GED_INCLUSION_BETA){
-				Logger.writeToLog("->"+bestMatchCommunity);
-				communityRecursion(bestMatchCommunity, timestep+1,inputFileCount);
-			}
-			else{
-				Logger.writeToLog("-> NOMATCH");
-			}
-
-			
+				this.longestEvolution++;
+				communityRecursion(bestMatchCommunity, timestep+1,totalTimesteps);
+			}			
 		}
 	}
+	
+	
+	private void printRecursion(int community,int timestep,int totalTimesteps){
+		
+		double tempScoreIc1c2,alphaScore, betaScore;
+		int bestMatchCommunity;
+		tempScoreIc1c2 = 0.0;
+		alphaScore = 0.0;
+		betaScore = 0.0;
+		bestMatchCommunity = community;
+		if(timestep>totalTimesteps){
+			return;
+		}
+		else {
+
+			for(int tcomm = 1; tcomm<= OverlapCommunityDetection.numOfCommunities(timestep) ; tcomm++) {
+				tempScoreIc1c2 = calculateInclusion(OverlapCommunityDetection.Communities.get(timestep-1)[community].getNodeList(),
+						OverlapCommunityDetection.Communities.get(timestep)[tcomm].getNodeList());
+				
+				if(alphaScore <= tempScoreIc1c2 ){
+					alphaScore = tempScoreIc1c2;
+					bestMatchCommunity = tcomm;
+					betaScore = calculateInclusion(OverlapCommunityDetection.Communities.get(timestep)[tcomm].getNodeList(),
+							OverlapCommunityDetection.Communities.get(timestep-1)[community].getNodeList());
+				}
+			}
+			if(alphaScore >= GlobalVariables.GED_INCLUSION_ALPHA && betaScore >= GlobalVariables.GED_INCLUSION_BETA){
+//				Logger.writeToLog("->"+bestMatchCommunity);
+				Community temp = OverlapCommunityDetection.Communities.get(timestep)[bestMatchCommunity];
+				
+				//Logger.writeToLogln(bestMatchCommunity+" "+temp.getAttrSizeRatio()+" "+temp.getAttrDensity()+" "+temp.getAttrClusteringCoefficient());
+				Logger.writeToLogln(community+
+						" "+temp.getNumNodes()+
+						" "+ temp.getNumEdges()+ 
+						" "+ temp.getNumLeaders()+
+						" "+ temp.getAttrSizeRatio()+
+						" "+ temp.getAttrLeaderRatio()+
+						" "+ temp.getAttrDensity()+
+						" "+ temp.getAttrCohesion()+
+						" "+ temp.getAttrClusteringCoefficient()+
+						" "+ temp.getAttrDegreeCentrality()+
+						" "+ temp.getAttrClosenessCentrality()+
+						" "+ temp.getAttrEigenVectorCentrality()+
+						" "+ temp.getAttrAssortativity()+
+						" "+ temp.getAttrLeaderDegreeCentrality()+
+						" "+ temp.getAttrLeaderClosenessCentrality()+
+						" "+ temp.getAttrLeaderEigenVectorCentrality()+
+						" "+ temp.getAttrLeaderAssortativity());	
+				printRecursion(bestMatchCommunity, timestep+1,totalTimesteps);
+			}
+		}
+	}
+	
 	
 	/**
 	 * Calculate the inclusion value of 
