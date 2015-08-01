@@ -1,28 +1,19 @@
 package main.sg.javapackage.weka;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.Random;
 
 import main.sg.javapackage.logging.Logger;
-import weka.attributeSelection.GreedyStepwise;
-import weka.attributeSelection.WrapperSubsetEval;
 import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
 import weka.classifiers.bayes.NaiveBayes;
 import weka.classifiers.functions.Logistic;
-import weka.classifiers.functions.MultilayerPerceptron;
 import weka.classifiers.functions.SMO;
 import weka.classifiers.rules.DecisionTable;
 import weka.classifiers.trees.J48;
 import weka.core.Instances;
-import weka.filters.Filter;
-import weka.filters.supervised.attribute.AttributeSelection;
-import weka.filters.supervised.instance.SMOTE;
-import weka.filters.supervised.instance.SpreadSubsample;
-import weka.filters.unsupervised.attribute.Remove;
+import main.sg.javapackage.utils.FileOperator;
+import main.sg.javapackage.weka.filters.*;
 
 public class SupervisedLearning {
 	
@@ -33,13 +24,12 @@ public class SupervisedLearning {
 			new NaiveBayes(),
 			new J48(), // a decision tree
 			new DecisionTable(),//decision table majority classifier
-			new MultilayerPerceptron(), //multiple layer neural network
 			new SMO() //svm
 	};
 	
 	public SupervisedLearning() throws IOException {
 		// TODO Auto-generated constructor stub
-		base_TrainingData = new Instances(readDataFile("bin\\Modellingfile.arff"));
+		base_TrainingData = new Instances(FileOperator.readDataFile("bin\\Modellingfile.arff"));
 	}
 	
 	/**
@@ -52,38 +42,50 @@ public class SupervisedLearning {
 	public void performPredictiveAnalysis() throws Exception {
 		
 		printDetails();
-		Instances eventTrainingData;
-
+		Instances eventBasedTrainingData;
+		
 		for(int event = 1; event <= 4; event++){
-			eventTrainingData = null;
-			eventTrainingData = evolutionFilter(event);
+			/*	Events:
+			 * 		1-survive
+			 * 		2-merge
+			 * 		3-split
+			 * 		4-dissove
+			 */
+			
+			eventBasedTrainingData = null;
+			eventBasedTrainingData = EventBasedInstanceFilter.evolutionFilter(base_TrainingData, event);
 			
 			for(int results=1; results<=3; results++){
+				/*
+				 * 	Results:
+				 * 		1-With community features
+				 * 		2-With community features + leadership features + temporal features
+				 * 		3-Most suitable features picked using Machine Learning Attribute Selection
+				 */
 				Instances trainingData = null;
 				if(results == 1){
-					trainingData = performAttributeSelection1(eventTrainingData);
+					trainingData = AttributeSelectionFilter.performAttributeSelection1(eventBasedTrainingData);
 				}
 				else{
-					trainingData = eventTrainingData;
+					trainingData = AttributeSelectionFilter.performAttributeSelection2(eventBasedTrainingData);
 				}
 				
 				trainingData.setClassIndex(trainingData.numAttributes() - 1);
 				Logger.writeToLogln("Nominal Class - Prior-Processing");
 				Logger.writeToLogln(trainingData.attributeStats(trainingData.numAttributes() - 1).toString());
 				
-				trainingData = applySMOTE(trainingData);
-				trainingData = applySpreadSubsample(trainingData);
+				trainingData = SyntheticOversamplingFilter.applySMOTE(trainingData);
+				trainingData = SpreadSubsampleFilter.applySpreadSubsample(trainingData);
 
 				// Run for each model
 				for (int j = 0; j < models.length; j++) {
 					
 					Instances model_data = null;
 					if(results == 3){
-						model_data = performAttributeSelection3(trainingData, models[j]);
+						model_data = AttributeSelectionFilter.performAttributeSelection3(trainingData, models[j]);
 					}else{
 						model_data = trainingData;
 					}
-				  
 					Evaluation evaluation = new Evaluation(model_data);
 					evaluation.crossValidateModel(models[j], model_data, 10, new Random(1));
 					Logger.writeToLogln(":- using " + models[j].getClass().getSimpleName());
@@ -100,108 +102,7 @@ public class SupervisedLearning {
 	}
 	
 	/**
-	 * reads the arff file into Instances to 
-	 * perform supervised learning
-	 * 
-	 * @param filename
-	 * @return reader
-	 */
-	private static BufferedReader readDataFile(String filename) {
-		BufferedReader inputReader = null;
- 
-		try {
-			inputReader = new BufferedReader(new FileReader(filename));
-		} catch (FileNotFoundException ex) {
-			System.err.println("File not found: " + filename);
-		}
- 
-		return inputReader;
-	}
-	
-	
-	/**
-	 * applies SMOTE filter to the  
-	 * the training data
-	 * @param data
-	 * @return
-	 * @throws Exception
-	 */
-	private Instances applySMOTE(Instances data) throws Exception{
-		
-		SMOTE smote = new SMOTE();
-		smote.setClassValue("0");
-		smote.setInputFormat(data);
-		Instances updated_traningset = Filter.useFilter(data, smote);
-		Logger.writeToLogln("Nominal Class - After SMOTE");
-		Logger.writeToLogln(updated_traningset.attributeStats(updated_traningset.numAttributes() - 1).toString());
-		return updated_traningset;
-	}
-	
-	
-	/**
-	 * applies SpreadSubsample filter to the  
-	 * the training data
-	 * @param data
-	 * @return
-	 * @throws Exception
-	 */
-	private Instances applySpreadSubsample(Instances data) throws Exception{
-		
-		SpreadSubsample spreadsubsampler = new SpreadSubsample();
-		spreadsubsampler.setDistributionSpread(1.0);
-		spreadsubsampler.setInputFormat(data);
-		Instances updated_traningset = Filter.useFilter(data, spreadsubsampler);
-		Logger.writeToLogln("Nominal Class - After SpreadSubSample");
-		Logger.writeToLogln(updated_traningset.attributeStats(updated_traningset.numAttributes() - 1).toString());
-		return updated_traningset;
-	}
-	
-	
-	/**
-	 * returns only the community features from 
-	 * the main training data
-	 * 
-	 * @return Instances
-	 * @throws Exception
-	 */
-	private Instances performAttributeSelection1(Instances data) throws Exception{
-		
-		//Only community attributes featuring from 1-9, and last nominal attribute
-		Remove remove =  new Remove();
-		remove.setAttributeIndices("1-9,last");
-		remove.setInvertSelection(true);
-		remove.setInputFormat(data);
-		Instances updated_traningset = Filter.useFilter(data, remove);
-		return updated_traningset;
-
-	}
-	/**
-	 * performs attribute selection using
-	 * WrapperFunction / SubsetEvalutions
-	 * Bestfirst / GreedyStepwise search
-	 * 
-	 * @param data
-	 * @param model
-	 * @return Instances
-	 * @throws Exception
-	 */
-	private Instances performAttributeSelection3(Instances data, Classifier model) throws Exception{
-		
-		AttributeSelection attributeselector = new AttributeSelection();
-		WrapperSubsetEval wrapper = new WrapperSubsetEval();
-		wrapper.setClassifier(model);
-		GreedyStepwise searcher = new GreedyStepwise();
-		searcher.setSearchBackwards(true);
-		attributeselector.setEvaluator(wrapper);
-		attributeselector.setSearch(searcher);
-		attributeselector.setInputFormat(data);
-		// generate new data
-		Instances updated_traningset = Filter.useFilter(data, attributeselector);
-		return updated_traningset;
-	}
-	
-	/**
-	 * Basic print of algorithm details
+	 * Console and logger printing of algorithmic details
 	 */
 	private void printDetails(){
 		
@@ -214,42 +115,6 @@ public class SupervisedLearning {
 		}
 		Logger.writeToLogln("");
 		System.out.println("Classification results :");
-	}
-	
-	private Instances evolutionFilter(int i) throws Exception{
-		
-		int n_attributes = base_TrainingData.numAttributes();
-		String options=null;
-		Remove remove =  new Remove();
-		
-		if(i == 1){
-			System.out.println("For SURVIVE :-");
-			options = ""+(n_attributes-2)+","+(n_attributes-1)+","+(n_attributes);
-			remove.setAttributeIndices(options);
-			//remove.setAttributeIndices("30,31,32");
-		}
-		else if(i == 2){
-			System.out.println("For MERGE :-");
-			options = ""+(n_attributes-3)+","+(n_attributes-1)+","+(n_attributes);
-			remove.setAttributeIndices(options);
-			//remove.setAttributeIndices("29,31,32");
-		}
-		else if(i == 3){
-			System.out.println("For SPLIT :-");
-			options = ""+(n_attributes-3)+","+(n_attributes-2)+","+(n_attributes);
-			remove.setAttributeIndices(options);
-			//remove.setAttributeIndices("29,30,32");
-		}
-		else if(i == 4){
-			System.out.println("For DISSOLVE :-");
-			options = ""+(n_attributes-3)+","+(n_attributes-2)+","+(n_attributes-1);
-			remove.setAttributeIndices(options);
-			//remove.setAttributeIndices("29,30,31");
-		}
-
-		remove.setInputFormat(base_TrainingData);
-		Instances updated_traningset = Filter.useFilter(base_TrainingData, remove);
-		return updated_traningset;
 	}
 	
 }
