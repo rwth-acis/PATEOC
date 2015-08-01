@@ -14,6 +14,8 @@ import main.sg.javapackage.ext.graphml.CustomGraphMLExporter;
 import main.sg.javapackage.graph.PreProcessing;
 import main.sg.javapackage.logging.Logger;
 import main.sg.javapackage.ocd.OverlapCommunityDetection;
+import main.sg.javapackage.sna.features.CommunityFeatures;
+import main.sg.javapackage.sna.features.LeadershipFeatures;
 
 
 public class SocialNetworkAnalysis {
