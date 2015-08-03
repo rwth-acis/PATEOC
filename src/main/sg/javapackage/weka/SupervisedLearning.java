@@ -103,7 +103,7 @@ public class SupervisedLearning {
 					Logger.writeToLogln(":- using " + models[j].getClass().getSimpleName());
 					Logger.writeToFile(resultFile,":- using " + models[j].getClass().getSimpleName(),true);
 					Logger.writeToFile(resultFile," "+evaluation.pctCorrect(),true);
-					Logger.writeToFile(resultFile," with "+model_data.numAttributes()+ " attributes\n",true);
+					Logger.writeToFile(resultFile," with "+(model_data.numAttributes()-1)+ " features\n",true); //only features
 					Logger.writeToLogln(evaluation.toSummaryString("Results\n========", false));
 					Logger.writeToLogln(evaluation.toClassDetailsString());
 				}
