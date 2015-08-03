@@ -89,9 +89,15 @@ public class Logger {
 		}
 	}
 	
-	public static void writeToFile(String filename, String message){
+	/**
+	 * Write a message to file 
+	 * @param filename - file name to write to
+	 * @param message - String message to write
+	 * @param append - true/false - append the message or not
+	 */
+	public static void writeToFile(String filename, String message,boolean append){
 		try {
-			FileUtils.writeStringToFile(new File(filename), message);
+			FileUtils.writeStringToFile(new File(filename), message, append);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
