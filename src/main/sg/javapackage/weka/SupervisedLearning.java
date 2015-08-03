@@ -3,14 +3,19 @@ package main.sg.javapackage.weka;
 import java.io.IOException;
 import java.util.Random;
 
+import main.sg.javapackage.domain.GlobalVariables;
 import main.sg.javapackage.logging.Logger;
+import main.sg.javapackage.metrics.StatisticalMetrics;
 import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
+import weka.classifiers.bayes.BayesNet;
 import weka.classifiers.bayes.NaiveBayes;
 import weka.classifiers.functions.Logistic;
 import weka.classifiers.functions.SMO;
+import weka.classifiers.meta.Bagging;
 import weka.classifiers.rules.DecisionTable;
 import weka.classifiers.trees.J48;
+import weka.classifiers.trees.SimpleCart;
 import weka.core.Instances;
 import main.sg.javapackage.utils.FileOperator;
 import main.sg.javapackage.weka.filters.*;
@@ -18,18 +23,23 @@ import main.sg.javapackage.weka.filters.*;
 public class SupervisedLearning {
 	
 	private Instances base_TrainingData;
+	private static String resultFile = GlobalVariables.resultFile;
+	private static String modelingFile = GlobalVariables.modellingFile;
 	private Classifier[] models = { 
 			// Use a set of classifiers
 			new Logistic(),//logistic regression
+			new BayesNet(),
 			new NaiveBayes(),
 			new J48(), // a decision tree
 			new DecisionTable(),//decision table majority classifier
+			new SimpleCart(), //classification and regression trees
+			new Bagging(),
 			new SMO() //svm
 	};
-	
+
 	public SupervisedLearning() throws IOException {
-		// TODO Auto-generated constructor stub
-		base_TrainingData = new Instances(FileOperator.readDataFile("bin\\Modellingfile.arff"));
+		base_TrainingData = new Instances(FileOperator.readDataFile(modelingFile));
+		Logger.writeToFile(resultFile,"\n\nClassification Results \n",true);
 	}
 	
 	/**
@@ -62,6 +72,7 @@ public class SupervisedLearning {
 				 * 		2-With community features + leadership features + temporal features
 				 * 		3-Most suitable features picked using Machine Learning Attribute Selection
 				 */
+				Logger.writeToFile(resultFile, "Result category "+results+".\n", true);
 				Instances trainingData = null;
 				if(results == 1){
 					trainingData = AttributeSelectionFilter.performAttributeSelection1(eventBasedTrainingData);
@@ -83,21 +94,25 @@ public class SupervisedLearning {
 					Instances model_data = null;
 					if(results == 3){
 						model_data = AttributeSelectionFilter.performAttributeSelection3(trainingData, models[j]);
+						StatisticalMetrics.updateSupervisedMetrics(model_data);
 					}else{
 						model_data = trainingData;
 					}
 					Evaluation evaluation = new Evaluation(model_data);
 					evaluation.crossValidateModel(models[j], model_data, 10, new Random(1));
 					Logger.writeToLogln(":- using " + models[j].getClass().getSimpleName());
-					System.out.print(":- using " + models[j].getClass().getSimpleName());
-					System.out.printf(" = %.2f",evaluation.pctCorrect());
-					System.out.println(" with "+model_data.numAttributes()+ " attributes");
+					Logger.writeToFile(resultFile,":- using " + models[j].getClass().getSimpleName(),true);
+					Logger.writeToFile(resultFile," "+evaluation.pctCorrect(),true);
+					Logger.writeToFile(resultFile," with "+model_data.numAttributes()+ " attributes\n",true);
 					Logger.writeToLogln(evaluation.toSummaryString("Results\n========", false));
 					Logger.writeToLogln(evaluation.toClassDetailsString());
 				}
-				System.out.println("");
+				Logger.writeToFile(resultFile,"\n",true);
 			}
+			StatisticalMetrics.printSupervisedMetrics();
+			StatisticalMetrics.clearSupervisedMetrics();
 		}
+		//StatisticalMetrics.printSupervisedMetrics();
 
 	}
 	
@@ -114,7 +129,6 @@ public class SupervisedLearning {
 			Logger.writeToLogln("	"+models[j].getClass().getSimpleName());
 		}
 		Logger.writeToLogln("");
-		System.out.println("Classification results :");
 	}
 	
 }

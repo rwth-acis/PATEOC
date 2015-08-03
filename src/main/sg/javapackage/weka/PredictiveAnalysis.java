@@ -1,6 +1,7 @@
 package main.sg.javapackage.weka;
 
 import main.sg.javapackage.domain.Community;
+import main.sg.javapackage.domain.GlobalVariables;
 import main.sg.javapackage.graph.PreProcessing;
 import main.sg.javapackage.logging.Logger;
 import main.sg.javapackage.ocd.OverlapCommunityDetection;
@@ -11,15 +12,16 @@ import weka.core.Instances;
 
 public class PredictiveAnalysis {
 	
-	private String arffFile;
-	private boolean isAnyNaN;
+	private String arffFile = GlobalVariables.modellingFile;
 	
 	public PredictiveAnalysis(){
-		this.arffFile = System.getProperty("user.dir").concat("\\bin\\Modellingfile.arff");
-		this.isAnyNaN = false;
 		
 	}
-	
+	/**
+	 * Aggregates all the computed attributes into
+	 * a weka compatiable "arff" format obtaining 
+	 * values from Communities Map
+	 */
 	public void populateArffFile(){
 				
 		long totalInstances = 0;
@@ -67,7 +69,6 @@ public class PredictiveAnalysis {
 		atts.addElement(new Attribute("Merge", attVals));
 		atts.addElement(new Attribute("Split", attVals));
 		atts.addElement(new Attribute("Dissolve", attVals));
-//		atts.addElement(new Attribute("Evolution", attVals));
 
 
 		
@@ -176,30 +177,19 @@ public class PredictiveAnalysis {
 					break;
 				}
 				
-//				if(Double.isNaN(base_vals[0]) || Double.isNaN(base_vals[1]) || Double.isNaN(base_vals[2]) || Double.isNaN(base_vals[3])) {
-//					this.isAnyNaN = true;
-//					System.out.println("NaN values detected in the feature set. Arff File not Created.");
-//					System.exit(3);
-//				}
-//				else
-					data.add(new Instance(1.0, base_vals));
+				data.add(new Instance(1.0, base_vals));
 			}
 		}
 		
 		// 4. output data
-		Logger.writeToFile(arffFile, data.toString());
+		Logger.writeToFile(arffFile, data.toString(),false); //OutputDump
 		Logger.writeToLogln("Modelling file successfully generated.");
-		Logger.writeToLogln("any NaN values? :: " + this.isAnyNaN);
 		
 		Logger.writeToLogln("Total number of instances from "+PreProcessing.totalGraphCount()+" graphs are: "+totalInstances );
 		Logger.writeToLogln("SURVIVE: " +n_survive);
 		Logger.writeToLogln("MERGE: " +n_merge);
 		Logger.writeToLogln("SPLIT: " +n_split);
 		Logger.writeToLogln("DISSOLVE: " +n_dissolve);
-		
-	}
-	
-	public void classificationTask(){
 		
 	}
 		
