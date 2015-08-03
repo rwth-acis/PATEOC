@@ -1,11 +1,14 @@
 package main.sg.javapackage.weka.filters;
 
+import main.sg.javapackage.domain.GlobalVariables;
+import main.sg.javapackage.logging.Logger;
 import weka.core.Instances;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Remove;
 
 public class EventBasedInstanceFilter {
 	
+	private static String resultFile = GlobalVariables.resultFile;
 	public EventBasedInstanceFilter() {
 		// TODO Auto-generated constructor stub
 	}
@@ -30,25 +33,25 @@ public class EventBasedInstanceFilter {
 		Remove remove =  new Remove();
 		
 		if(i == 1){
-			System.out.println("For SURVIVE :-");
+			Logger.writeToFile(resultFile,"\nFor SURVIVE :-\n",true);
 			options = ""+(n_attributes-2)+","+(n_attributes-1)+","+(n_attributes);
 			remove.setAttributeIndices(options);
 			//remove.setAttributeIndices("30,31,32");
 		}
-		else if(i == 2){
-			System.out.println("For MERGE :-");
+		else if(i == 2){	
+			Logger.writeToFile(resultFile,"\nFor MERGE :-\n",true);
 			options = ""+(n_attributes-3)+","+(n_attributes-1)+","+(n_attributes);
 			remove.setAttributeIndices(options);
 			//remove.setAttributeIndices("29,31,32");
 		}
 		else if(i == 3){
-			System.out.println("For SPLIT :-");
+			Logger.writeToFile(resultFile,"\nFor SPLIT :-\n",true);
 			options = ""+(n_attributes-3)+","+(n_attributes-2)+","+(n_attributes);
 			remove.setAttributeIndices(options);
 			//remove.setAttributeIndices("29,30,32");
 		}
 		else if(i == 4){
-			System.out.println("For DISSOLVE :-");
+			Logger.writeToFile(resultFile,"\nFor DISSOLVE :-\n",true);
 			options = ""+(n_attributes-3)+","+(n_attributes-2)+","+(n_attributes-1);
 			remove.setAttributeIndices(options);
 			//remove.setAttributeIndices("29,30,31");
