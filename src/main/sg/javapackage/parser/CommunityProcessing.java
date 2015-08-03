@@ -34,7 +34,7 @@ public class CommunityProcessing {
 		    
 	public void parseCommunityMatrix(String coverMatrix, int timestep){
 		
-		Logger.writeToFile("bin\\Cover_"+timestep+".txt", coverMatrix);
+		Logger.writeToFile("bin\\Cover_"+timestep+".txt", coverMatrix,false);
 
 		int numOfCommunities = countNoOfCommunities(coverMatrix);
 		Community[] tempComm = new Community[numOfCommunities+1];

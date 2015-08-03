@@ -13,8 +13,11 @@ import main.sg.javapackage.ocd.OverlapCommunityDetection;
 public class EvolutionDetection {
 	
 	private int longestEvolution=0;
+	private static String resultFile = GlobalVariables.resultFile;
+
 	public EvolutionDetection() {
 		// TODO Auto-generated constructor stub
+		Logger.writeToFile(resultFile,"OUTPUT FILE FOR RESULTS\n\n",false);
 	}
 	
     public void onetomanyCommunityEvolutionTracking() {
@@ -25,6 +28,7 @@ public class EvolutionDetection {
 		inclusionT1T2 = 0.0;
 		alphaScore = 0.0;
 		betaScore = 0.0;
+		
 		Logger.writeToLogln("");
 		Logger.writeToLogln("Group Evolution Discovery...");
 		
@@ -142,24 +146,28 @@ public class EvolutionDetection {
 	//TODO:Check the correctness
 	public void recursiveCommunityEvolutionTracking(){
 		
-		Logger.writeToLogln("Recursive Group Evolution Discovery...");
 		//Starting from timestep 1, track the evolution the communities
 		int startTimestep = 1;
 		int totalTimesteps = PreProcessing.totalGraphCount();
+		
+		Logger.writeToFile(resultFile,"Recursive Group Evolution Discovery...\n",true);
+		Logger.writeToFile(resultFile,"NodeSize, EdgeSize, N_Leaders, SizeRatio, LeaderRatio, Density, Cohesion, ClusterCoefficient, "
+				+ "DegreeCentrality, ClosenessCentrality, EigenVectorCentrality, Assortativity, "
+				+ "LDegreeCentrality, LClosenessCentrality, LEigenVectorCentrality, LAssortativity \n",true);
+		
 		for(startTimestep = 1; startTimestep < PreProcessing.totalGraphCount(); startTimestep++){
-			Logger.writeToLogln("Timestep "+startTimestep);
+			Logger.writeToFile(resultFile,"\nTimestep "+startTimestep,true);
+			Logger.writeToFile(resultFile,"\n-------------",true);
 			for(int community = 1;community<=OverlapCommunityDetection.numOfCommunities(startTimestep);community++){
 				this.longestEvolution = 0;	
 
 				//Timestep 2 as initial
 				communityRecursion(community, startTimestep+1,totalTimesteps);
 				if(this.longestEvolution>1){
-					Logger.writeToLog(community+" survives for "+this.longestEvolution + " timesteps");
-					Logger.writeToLogln("");
+					Logger.writeToFile(resultFile,"\nCommunity "+community+" survives for "+(this.longestEvolution+1) + " timesteps\n",true);
 					Community temp = OverlapCommunityDetection.Communities.get(startTimestep)[community];
-					//Logger.writeToLogln(community+" "+temp.getAttrSizeRatio()+" "+temp.getAttrDensity()+" "+temp.getAttrClusteringCoefficient());
 					
-					Logger.writeToLogln(community+
+					Logger.writeToFile(resultFile,community+
 							" "+temp.getNumNodes()+
 							" "+ temp.getNumEdges()+ 
 							" "+ temp.getNumLeaders()+
@@ -175,13 +183,12 @@ public class EvolutionDetection {
 							" "+ temp.getAttrLeaderDegreeCentrality()+
 							" "+ temp.getAttrLeaderClosenessCentrality()+
 							" "+ temp.getAttrLeaderEigenVectorCentrality()+
-							" "+ temp.getAttrLeaderAssortativity());	
+							" "+ temp.getAttrLeaderAssortativity()+"\n",true);	
 					
 					printRecursion(community, startTimestep+1, totalTimesteps);
-					Logger.writeToLogln("");
 				}
 			}
-			Logger.writeToLogln("");
+			Logger.writeToFile(resultFile,"\n",true);
 		}
 
 	}
@@ -243,11 +250,9 @@ public class EvolutionDetection {
 				}
 			}
 			if(alphaScore >= GlobalVariables.GED_INCLUSION_ALPHA && betaScore >= GlobalVariables.GED_INCLUSION_BETA){
-//				Logger.writeToLog("->"+bestMatchCommunity);
 				Community temp = OverlapCommunityDetection.Communities.get(timestep)[bestMatchCommunity];
 				
-				//Logger.writeToLogln(bestMatchCommunity+" "+temp.getAttrSizeRatio()+" "+temp.getAttrDensity()+" "+temp.getAttrClusteringCoefficient());
-				Logger.writeToLogln(community+
+				Logger.writeToFile(resultFile,community+
 						" "+temp.getNumNodes()+
 						" "+ temp.getNumEdges()+ 
 						" "+ temp.getNumLeaders()+
@@ -263,7 +268,7 @@ public class EvolutionDetection {
 						" "+ temp.getAttrLeaderDegreeCentrality()+
 						" "+ temp.getAttrLeaderClosenessCentrality()+
 						" "+ temp.getAttrLeaderEigenVectorCentrality()+
-						" "+ temp.getAttrLeaderAssortativity());	
+						" "+ temp.getAttrLeaderAssortativity()+"\n",true);	
 				printRecursion(bestMatchCommunity, timestep+1,totalTimesteps);
 			}
 		}
@@ -301,7 +306,6 @@ public class EvolutionDetection {
 		}
 		groupquality = sum_n / sum_d;
 		groupquantity = counter/(double)tempCommValuesC1.size();
-		//Logger.writeToLogln(groupquantity+ " " + groupquality + " " + (groupquantity * groupquality));
 
 		return (groupquantity * groupquality);
 	}
