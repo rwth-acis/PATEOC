@@ -9,9 +9,9 @@ import main.sg.javapackage.logging.Logger;
 import main.sg.javapackage.ocd.OverlapCommunityDetection;
 
 
-public class CommunityProcessing {
+public class OCDWebServiceCoverWrapper {
 	
-	public CommunityProcessing() {
+	public OCDWebServiceCoverWrapper() {
 		// TODO Auto-generated constructor stub
 	}
 	private int countNoOfCommunities(String cover){

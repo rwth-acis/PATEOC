@@ -26,7 +26,7 @@ public class EventBasedInstanceFilter {
 	 * @return updated instances
 	 * @throws Exception
 	 */
-	public static Instances evolutionFilter(Instances data, int i) throws Exception{
+	public static Instances eventFilter(Instances data, int i) throws Exception{
 		
 		int n_attributes = data.numAttributes();
 		String options=null;
@@ -36,25 +36,21 @@ public class EventBasedInstanceFilter {
 			Logger.writeToFile(resultFile,"\nFor SURVIVE :-\n",true);
 			options = ""+(n_attributes-2)+","+(n_attributes-1)+","+(n_attributes);
 			remove.setAttributeIndices(options);
-			//remove.setAttributeIndices("30,31,32");
 		}
 		else if(i == 2){	
 			Logger.writeToFile(resultFile,"\nFor MERGE :-\n",true);
 			options = ""+(n_attributes-3)+","+(n_attributes-1)+","+(n_attributes);
 			remove.setAttributeIndices(options);
-			//remove.setAttributeIndices("29,31,32");
 		}
 		else if(i == 3){
 			Logger.writeToFile(resultFile,"\nFor SPLIT :-\n",true);
 			options = ""+(n_attributes-3)+","+(n_attributes-2)+","+(n_attributes);
 			remove.setAttributeIndices(options);
-			//remove.setAttributeIndices("29,30,32");
 		}
 		else if(i == 4){
 			Logger.writeToFile(resultFile,"\nFor DISSOLVE :-\n",true);
 			options = ""+(n_attributes-3)+","+(n_attributes-2)+","+(n_attributes-1);
 			remove.setAttributeIndices(options);
-			//remove.setAttributeIndices("29,30,31");
 		}
 
 		remove.setInputFormat(data);

@@ -10,8 +10,8 @@ import main.sg.javapackage.domain.Community;
 import main.sg.javapackage.domain.GlobalVariables.Algorithm;
 import main.sg.javapackage.domain.Node;
 import main.sg.javapackage.logging.Logger;
-import main.sg.javapackage.parser.CommunityProcessing;
-import main.sg.javapackage.parser.OfflineCommunityParsing;
+import main.sg.javapackage.parser.OCDWebServiceCoverWrapper;
+import main.sg.javapackage.parser.FOCSCoverWrapper;
 import main.sg.javapackage.parser.DOMParser;
 import main.sg.javapackage.utils.LocalFileManager;
 
@@ -90,23 +90,23 @@ public class OverlapCommunityDetection {
     	
     	int timestep=1;
     	if(algo == Algorithm.focs){
-    		//Parse directly the offline generated communities from DOCA
-    		OfflineCommunityParsing doca = new OfflineCommunityParsing(DOCACoverPath);
+    		//Parse directly the offline generated communities from FOCS
+    		FOCSCoverWrapper doca = new FOCSCoverWrapper(DOCACoverPath);
     		doca.parseDOCACommunities();
     	}
-    	else{
+    	
+    	else if (algo == Algorithm.slpa || algo == Algorithm.dmid ){
     		
+    		//Perform OCD from web service
         	while(timestep <= totalGraphs){
-        		
     		    System.out.println("Processing Graph: "+timestep);
-        		Logger.writeToLogln("Processing Graph: "+timestep);
-        		
+        		Logger.writeToLogln("Processing Graph: "+timestep);        		
     		    String graphContentAsString = LocalFileManager.getGraphAsString(formulateInputPath(inputGraphPath, timestep)).toString();
         		String covers = getCovers("InGraph_"+timestep,algo,graphContentAsString);
 
-        		CommunityProcessing parser = new CommunityProcessing();
+        		//Parse the generated communities from SLAP/DMID
+        		OCDWebServiceCoverWrapper parser = new OCDWebServiceCoverWrapper();
         		parser.parseCommunityMatrix(covers, timestep);
-        		
         		timestep++;
         	}
     	}

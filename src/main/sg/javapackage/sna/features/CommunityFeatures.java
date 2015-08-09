@@ -4,9 +4,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import main.sg.javapackage.domain.CustomGraph;
 import main.sg.javapackage.domain.CustomSubgraph;
 import main.sg.javapackage.domain.Node;
+
+import org.apache.commons.math3.stat.correlation.SpearmansCorrelation;
+import org.apache.commons.math3.stat.ranking.NaNStrategy;
+import org.apache.commons.math3.stat.ranking.NaturalRanking;
+import org.apache.commons.math3.stat.ranking.RankingAlgorithm;
+import org.apache.commons.math3.stat.ranking.TiesStrategy;
 import org.jgrapht.Graphs;
 import org.jgrapht.alg.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -250,31 +257,36 @@ public class CommunityFeatures {
 		eigenVectorCentrality = eigenVectorCentrality/(double) leadercount ;
 		return eigenVectorCentrality;
 	}
-	
-	public double calculateAssoratitivity(List<Node> graphNodes){
-	//Disassortativity from DMID, non-asserted	
-		double assoratitivity = 0.0f;
-		int numVert=graphNodes.size();
+	/**
+	 * Based on the implementation from
+	 *  https://github.com/Rofti/DMID/blob/5c287e32dcbc8152ae03f105a2cdf69b25bc76f2/Metrics/src/ocd/metrics/Main.java
+	 * @return
+	 */
+	public double calculateSpearmanMeasure(){
 
-		for (Node node : graphNodes) {
-			assoratitivity += node.getAssortativityValue();
-		}
-		assoratitivity = assoratitivity / (double) numVert;
-		return assoratitivity;
-	}
-	
-	public double calculateLeaderAssoratitivity(List<Node> graphNodes){
+		double[] dataX = new double[subgraph.edgeSet().size()];
+		double[] dataY = new double[subgraph.edgeSet().size()];
+
+		DefaultWeightedEdge[] edges = subgraph.edgeSet()
+				.toArray(new DefaultWeightedEdge[subgraph.edgeSet().size()]);
 		
-		double assoratitivity = 0.0f;
-		int leadercount=0;
-		for (Node u : graphNodes) {
-			if(u.getIsLeader()){
-				assoratitivity += u.getAssortativityValue();
-				leadercount++;
+		for (int i = 0; i < subgraph.edgeSet().size(); ++i) {
+			if (Math.random() > (1 / 2d)) {
+				dataX[i] = subgraph.degreeOf(subgraph.getEdgeSource(edges[i])) + Math.random();
+				dataY[i] = subgraph.degreeOf(subgraph.getEdgeTarget(edges[i])) + Math.random();
+			} else {
+				dataX[i] = subgraph.degreeOf(subgraph.getEdgeTarget(edges[i])) + Math.random();
+				dataY[i] = subgraph.degreeOf(subgraph.getEdgeSource(edges[i])) + Math.random();
 			}
-		}
-		assoratitivity = assoratitivity / (double) leadercount;
-		return assoratitivity;
+		}			
+		
+
+		RankingAlgorithm natural = new NaturalRanking(NaNStrategy.MINIMAL,
+				TiesStrategy.SEQUENTIAL);
+		SpearmansCorrelation spearmansCor = new SpearmansCorrelation(natural);
+		double spearmanRank = spearmansCor.correlation(dataX, dataY);
+
+		return spearmanRank;
 	}
 
 }

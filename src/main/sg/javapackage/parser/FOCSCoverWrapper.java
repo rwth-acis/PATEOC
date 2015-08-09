@@ -14,11 +14,11 @@ import main.sg.javapackage.graph.PreProcessing;
 import main.sg.javapackage.logging.Logger;
 import main.sg.javapackage.ocd.OverlapCommunityDetection;
 
-public class OfflineCommunityParsing {
+public class FOCSCoverWrapper {
 	
 	private String basePath = null;
 	
-	public OfflineCommunityParsing(String AFOCSCoverPath) {
+	public FOCSCoverWrapper(String AFOCSCoverPath) {
 		// TODO Auto-generated constructor stub
 		//Path to AFOCS Generated covers
 		this.basePath = AFOCSCoverPath;

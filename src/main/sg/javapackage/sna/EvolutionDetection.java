@@ -37,8 +37,9 @@ public class EvolutionDetection {
 			
 			for(int commt1 = 1; commt1 <= OverlapCommunityDetection.numOfCommunities(timeT1);commt1++){
 				
-				if(OverlapCommunityDetection.sizeOfCommunity(timeT1,commt1) < 3){
+				if(OverlapCommunityDetection.sizeOfCommunity(timeT1,commt1) <= 3){
 					//Skip calculation for communities with 2 or less nodes
+					Logger.writeToLogln(commt1+" Skipped due to <= 3 nodes ");
 					continue;
 				}
 				int timeT2 = timeT1+1;
@@ -48,7 +49,7 @@ public class EvolutionDetection {
 				betaScore = 0.0;
 				for(int commt2 = 1; commt2<= OverlapCommunityDetection.numOfCommunities(timeT2) ; commt2++) {
 					
-					if(OverlapCommunityDetection.sizeOfCommunity(timeT2,commt2) < 3)
+					if(OverlapCommunityDetection.sizeOfCommunity(timeT2,commt2) <= 3)
 						continue;
 					
 					inclusionT1T2 = calculateInclusion(OverlapCommunityDetection.getCommunityNodes(timeT1, commt1) ,OverlapCommunityDetection.getCommunityNodes(timeT2, commt2));
@@ -59,7 +60,6 @@ public class EvolutionDetection {
 					}
 				}
 				if(alphaScore >= GlobalVariables.GED_INCLUSION_ALPHA && betaScore >= GlobalVariables.GED_INCLUSION_BETA ){
-						//&& withinRange(OverlapCommunityDetection.sizeOfCommunity(timeT1, commt1),OverlapCommunityDetection.sizeOfCommunity(timeT2, bestMatchCommunity),20) 
 					Logger.writeToLogln(commt1+ " survives as " + bestMatchCommunity);
 					OverlapCommunityDetection.Communities.get(timeT1)[commt1].setEvolution(Evolution.survive);
 					
@@ -121,28 +121,7 @@ public class EvolutionDetection {
 			Logger.writeToLogln("");	
 		}
 	}
-	
-	@SuppressWarnings("unused")
-	private Boolean withinRange(int size1, int size2, float range){
-		int low, high;
-		if(size1 < size2){
-			low = size1;
-			high = size2;
-		}
-		else{
-			low = size2;
-			high = size1;
-		}
 		
-		System.out.println("Value:" + (low+(low*(range/100.0f))) + " " + (low-(low*(range/100.0f))) );
-		
-		if(high <= (low+(low*(range/100.0f))) && high >= (low-(low*(range/100.0f)))){
-			return true;
-		}
-		else 
-			return false;
-	}
-	
 	//TODO:Check the correctness
 	public void recursiveCommunityEvolutionTracking(){
 		
@@ -152,10 +131,10 @@ public class EvolutionDetection {
 		
 		Logger.writeToFile(resultFile,"Recursive Group Evolution Discovery...\n",true);
 		Logger.writeToFile(resultFile,"NodeSize, EdgeSize, N_Leaders, SizeRatio, LeaderRatio, Density, Cohesion, ClusterCoefficient, "
-				+ "DegreeCentrality, ClosenessCentrality, EigenVectorCentrality, Assortativity, "
-				+ "LDegreeCentrality, LClosenessCentrality, LEigenVectorCentrality, LAssortativity \n",true);
+				+ "SpearmanRho, DegreeCentrality, ClosenessCentrality, EigenVectorCentrality, "
+				+ "LDegreeCentrality, LClosenessCentrality, LEigenVectorCentrality \n",true);
 		
-		for(startTimestep = 1; startTimestep < PreProcessing.totalGraphCount(); startTimestep++){
+		for(startTimestep = 1; startTimestep < totalTimesteps - 1; startTimestep++){ // totalTimesteps - 1, as the last but second also will not have more than 2 evolutions
 			Logger.writeToFile(resultFile,"\nTimestep "+startTimestep,true);
 			Logger.writeToFile(resultFile,"\n-------------",true);
 			for(int community = 1;community<=OverlapCommunityDetection.numOfCommunities(startTimestep);community++){
@@ -176,14 +155,13 @@ public class EvolutionDetection {
 							" "+ temp.getAttrDensity()+
 							" "+ temp.getAttrCohesion()+
 							" "+ temp.getAttrClusteringCoefficient()+
+							" "+ temp.getAttrSpearmanRho()+
 							" "+ temp.getAttrDegreeCentrality()+
 							" "+ temp.getAttrClosenessCentrality()+
 							" "+ temp.getAttrEigenVectorCentrality()+
-							" "+ temp.getAttrAssortativity()+
 							" "+ temp.getAttrLeaderDegreeCentrality()+
 							" "+ temp.getAttrLeaderClosenessCentrality()+
-							" "+ temp.getAttrLeaderEigenVectorCentrality()+
-							" "+ temp.getAttrLeaderAssortativity()+"\n",true);	
+							" "+ temp.getAttrLeaderEigenVectorCentrality()+"\n",true);	
 					
 					printRecursion(community, startTimestep+1, totalTimesteps);
 				}
@@ -261,14 +239,14 @@ public class EvolutionDetection {
 						" "+ temp.getAttrDensity()+
 						" "+ temp.getAttrCohesion()+
 						" "+ temp.getAttrClusteringCoefficient()+
+						" "+ temp.getAttrSpearmanRho()+
 						" "+ temp.getAttrDegreeCentrality()+
 						" "+ temp.getAttrClosenessCentrality()+
 						" "+ temp.getAttrEigenVectorCentrality()+
-						" "+ temp.getAttrAssortativity()+
 						" "+ temp.getAttrLeaderDegreeCentrality()+
 						" "+ temp.getAttrLeaderClosenessCentrality()+
-						" "+ temp.getAttrLeaderEigenVectorCentrality()+
-						" "+ temp.getAttrLeaderAssortativity()+"\n",true);	
+						" "+ temp.getAttrLeaderEigenVectorCentrality()+"\n",true);	
+				
 				printRecursion(bestMatchCommunity, timestep+1,totalTimesteps);
 			}
 		}

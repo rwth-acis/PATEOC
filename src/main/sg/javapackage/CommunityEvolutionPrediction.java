@@ -1,10 +1,13 @@
 package main.sg.javapackage;
 
 import java.io.File;
+
+import main.sg.javapackage.domain.GlobalVariables;
 import main.sg.javapackage.domain.GlobalVariables.Algorithm;
 import main.sg.javapackage.domain.GlobalVariables.Dataset;
 import main.sg.javapackage.logging.Logger;
 import main.sg.javapackage.utils.InputManager;
+
 import org.ini4j.Ini;
 
 
@@ -29,7 +32,7 @@ public class CommunityEvolutionPrediction {
 	public static void main(String[] args) throws Exception{
 		
 		//Declarations
-		final double version = 2.2;
+		final double version = 3.0; 
 		boolean isWeighted = false;
 		final int totalTimesteps;
 		final long programStartTime = System.currentTimeMillis();
@@ -74,26 +77,26 @@ public class CommunityEvolutionPrediction {
 		if(preferences.get(datasetUsed.toString(), "IsWeighted").equalsIgnoreCase("true") ){
 			isWeighted = true;
 		}
-		if(Integer.parseInt(preferences.get("ocd","Algorithm")) == 2)
-			selectedAlgo = Algorithm.dmid;
-		else if (Integer.parseInt(preferences.get("ocd","Algorithm")) == 3)
-			selectedAlgo = Algorithm.focs;
-		else
-			selectedAlgo = Algorithm.slpa;
 		
-		if(selectedAlgo == Algorithm.focs){
-			InputPath = preferences.get(datasetUsed.toString(), "A_InputPath");
-			if(Integer.parseInt(preferences.get("ocd","OverlapThreshold")) == 70){
-				OCDPath = preferences.get(datasetUsed.toString(), "AFOCSPath_70");
-			}
-			else if(Integer.parseInt(preferences.get("ocd","OverlapThreshold")) == 75){
-				OCDPath = preferences.get(datasetUsed.toString(), "AFOCSPath_75");
-			}
-			else
-				System.out.println("Invalid OverlapThreshold Value");
+		if(Integer.parseInt(preferences.get("ocd","Algorithm")) == 1){
+			selectedAlgo = Algorithm.slpa;
+			InputPath = preferences.get(datasetUsed.toString(), "InputPath1.2");
+			OCDPath = null;
+
+		}
+		else if(Integer.parseInt(preferences.get("ocd","Algorithm")) == 2){
+			selectedAlgo = Algorithm.dmid;
+			InputPath = preferences.get(datasetUsed.toString(), "InputPath1.2");
+			OCDPath = null;
+
+		}
+		else if (Integer.parseInt(preferences.get("ocd","Algorithm")) == 3){
+			selectedAlgo = Algorithm.focs;
+			InputPath = preferences.get(datasetUsed.toString(), "InputPath3");
+			OCDPath = preferences.get(datasetUsed.toString(), "CoverPath3");
 		}
 		else{
-			InputPath = preferences.get(datasetUsed.toString(), "S_InputPath");
+			System.out.println("Unknown algorithm selected.");
 		}
 		
 		System.out.println("Selected Parameters are:- ");
@@ -101,8 +104,11 @@ public class CommunityEvolutionPrediction {
 		System.out.println("Dataset		  :: "+datasetUsed.toString().toUpperCase());
 		System.out.println("Timesteps	  :: "+totalTimesteps);
 		System.out.println("Algorithm 	  :: "+selectedAlgo.toString().toUpperCase());
-		System.out.println("B-Threshold	  :: "+Integer.parseInt(preferences.get("ocd","OverlapThreshold")));
 		System.out.println("Weighted	  :: "+isWeighted);
+		GlobalVariables.setResultFile("Results_"+datasetUsed.toString().toUpperCase()
+				+"_"+selectedAlgo.toString().toUpperCase());
+		GlobalVariables.setModelingFile("Model_"+datasetUsed.toString().toUpperCase()
+				+"_"+selectedAlgo.toString().toUpperCase());
 		
 		/*-----------------------------------------------------------------------------------------------------------------*/
 		ModularPipeline pipeline = new ModularPipeline(InputPath, totalTimesteps, selectedAlgo, isWeighted, OCDPath);

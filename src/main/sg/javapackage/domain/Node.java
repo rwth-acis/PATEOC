@@ -7,9 +7,7 @@ public class Node {
 	private String label = DEFAULT_NODE_LABEL;
 	private double attr_DegreeCentrality = Double.NaN;
 	private double attr_ClosenessCentrality = Double.NaN;
-	private double attr_BetweenessCentrality = Double.NaN;
 	private double attr_EigenCentrality = Double.NaN;
-	private double attr_AssortativityValue = Double.NaN;
 	private boolean attr_isLeader = false;
 	
 	public Node(){
@@ -51,25 +49,11 @@ public class Node {
 		return this.attr_ClosenessCentrality;
 	}
 	
-	public void setBetweenessCentrality(double value){
-		this.attr_BetweenessCentrality= value;
-	}
-	public double getBetweenessCentrality(){
-		return this.attr_BetweenessCentrality;
-	}
-	
 	public void setEigenCentrality(double value){
 		this.attr_EigenCentrality= value;
 	}
 	public double getEigenCentrality(){
 		return this.attr_EigenCentrality;
-	}
-	
-	public void setAssortativityValue(double value){
-		this.attr_AssortativityValue = value;
-	}
-	public double getAssortativityValue(){
-		return this.attr_AssortativityValue;
 	}
 	
 	public void setAsLeader(){

@@ -11,18 +11,21 @@ import weka.core.Instances;
 
 public class StatisticalMetrics {
 	
-	public static Map<String,Integer> metricCounter = new HashMap<String, Integer>();
-	
 	private static String resultFile = GlobalVariables.resultFile;
-	private static ValueComparator tempComparator =  new ValueComparator(metricCounter);
+	public static Map<String,Integer> metricCounter = new HashMap<String, Integer>();
+	private static NewComparator tempComparator =  new NewComparator(metricCounter);
     private static TreeMap<String,Integer> sorted_metricCounter = new TreeMap<String,Integer>(tempComparator);
     
 	public StatisticalMetrics() {
 		// TODO Auto-generated constructor stub
 	}
 	
+	/**
+	 * updates the counter for each feature in the training data passed.
+	 * 
+	 * @param data - training data
+	 */
 	public static void updateSupervisedMetrics(Instances data){
-		
 		int num_attributes = data.numAttributes()-1; //skipping the predictor nominal class
 		
 		for(int i=0; i<num_attributes; i++){
@@ -38,29 +41,35 @@ public class StatisticalMetrics {
 		
 	}
 	
+	/**
+	 * prints the details from the counter hashmap
+	 * in a sorted manner
+	 */
 	public static void printSupervisedMetrics(){
 		sorted_metricCounter.putAll(metricCounter);
-		Logger.writeToFile(resultFile,"Attribute frequencies from wrapper method\n",true);
+		Logger.writeToFile(resultFile,"\nAttribute frequencies from wrapper method\n",true);
 		for(Map.Entry<String, Integer> entry : sorted_metricCounter.entrySet()){
 			Logger.writeToFile(resultFile,"Feature :" + entry.getKey() + " Frequency :" + entry.getValue()+"\n",true); //OutputDump
 		}
 		sorted_metricCounter.clear();
-		
 	}
 	
+	/**
+	 * clear the counter hashmap values
+	 */
 	public static void clearSupervisedMetrics(){
 		metricCounter.clear();
-		//sorted_metricCounter.clear();
 	}
+	
 	/**
-	 * Comparator
+	 * Comparator to sort the HashMap values using TreeMap
 	 * @author Stephen
 	 *
 	 */
-	static class ValueComparator implements Comparator<String> {
+	static class NewComparator implements Comparator<String> {
 
 	    Map<String, Integer> base;
-	    public ValueComparator(Map<String, Integer> base) {
+	    public NewComparator(Map<String, Integer> base) {
 	        this.base = base;
 	    }
 

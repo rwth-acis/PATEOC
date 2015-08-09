@@ -21,14 +21,13 @@ public class Community {
 	private double attr_Density = 0.0;
 	private double attr_Cohesion = 0.0;
 	private double attr_ClusteringCoefficient = 0.0;
+	private double attr_SpearmanRho = 0.0;
 	private double attr_DegreeCentrality = 0.0;
 	private double attr_ClosenessCentrality = 0.0;
 	private double attr_EigenVectorCentrality = 0.0;
-	private double attr_Assortativity = 0.0;
 	private double attr_LDegreeCentrality = 0.0;
 	private double attr_LClosenessCentrality = 0.0;
 	private double attr_LEigenVectorCentrality = 0.0;
-	private double attr_LAssortativity = 0.0;
 	private Evolution previousEvent =null;
 	private Evolution nextEvent =null;
 	private Community previousCommunityInTime = null;
@@ -160,13 +159,6 @@ public class Community {
 		return false;
 	}
 	
-	public double getAttrAssortativity(){
-		return this.attr_Assortativity;
-	}
-	public void setAttrAssortativity(double value){
-		attr_Assortativity = value;
-	}
-	
 	public double getAttrEigenVectorCentrality(){
 		return this.attr_EigenVectorCentrality;
 	}
@@ -195,11 +187,11 @@ public class Community {
 		attr_LClosenessCentrality = value;
 	}
 	
-	public double getAttrLeaderAssortativity(){
-		return this.attr_LAssortativity;
+	public double getAttrSpearmanRho(){
+		return this.attr_SpearmanRho;
 	}
-	public void setAttrLeaderAssoratativity(double value){
-		attr_LAssortativity = value;
+	public void setAttrSpearmanRho(double value){
+		attr_SpearmanRho = value;
 	}
 	
 	public void setEvolution(Evolution e){

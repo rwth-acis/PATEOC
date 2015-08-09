@@ -24,7 +24,7 @@ public class SupervisedLearning {
 	
 	private Instances base_TrainingData;
 	private static String resultFile = GlobalVariables.resultFile;
-	private static String modelingFile = GlobalVariables.modellingFile;
+	private static String modelingFile = GlobalVariables.modelingFile;
 	private Classifier[] models = { 
 			// Use a set of classifiers
 			new Logistic(),//logistic regression
@@ -63,8 +63,13 @@ public class SupervisedLearning {
 			 */
 			
 			eventBasedTrainingData = null;
-			eventBasedTrainingData = EventBasedInstanceFilter.evolutionFilter(base_TrainingData, event);
+			eventBasedTrainingData = EventBasedInstanceFilter.eventFilter(base_TrainingData, event);
 			
+			for(int j=0;j< models.length ; j++){
+				Logger.writeToFile(resultFile,models[j].getClass().getSimpleName()+" ", true);
+			}
+			Logger.writeToFile(resultFile,"\n",true);
+
 			for(int results=1; results<=3; results++){
 				/*
 				 * 	Results:
@@ -72,7 +77,7 @@ public class SupervisedLearning {
 				 * 		2-With community features + leadership features + temporal features
 				 * 		3-Most suitable features picked using Machine Learning Attribute Selection
 				 */
-				Logger.writeToFile(resultFile, "Result category "+results+".\n", true);
+				
 				Instances trainingData = null;
 				if(results == 1){
 					trainingData = AttributeSelectionFilter.performAttributeSelection1(eventBasedTrainingData);
@@ -100,19 +105,22 @@ public class SupervisedLearning {
 					}
 					Evaluation evaluation = new Evaluation(model_data);
 					evaluation.crossValidateModel(models[j], model_data, 10, new Random(1));
-					Logger.writeToLogln(":- using " + models[j].getClass().getSimpleName());
-					Logger.writeToFile(resultFile,":- using " + models[j].getClass().getSimpleName(),true);
-					Logger.writeToFile(resultFile," "+evaluation.pctCorrect(),true);
-					Logger.writeToFile(resultFile," with "+(model_data.numAttributes()-1)+ " features\n",true); //only features
+					//For per Algorithm results
+					//Logger.writeToLogln(":- using " + models[j].getClass().getSimpleName());
+					//Logger.writeToFile(resultFile,":- using " + models[j].getClass().getSimpleName(),true);
+					Logger.writeToFile(resultFile,evaluation.pctCorrect()+" ",true);
+					//Logger.writeToFile(resultFile," with "+(model_data.numAttributes()-1)+ " features\n",true); //only features
 					Logger.writeToLogln(evaluation.toSummaryString("Results\n========", false));
 					Logger.writeToLogln(evaluation.toClassDetailsString());
 				}
 				Logger.writeToFile(resultFile,"\n",true);
 			}
-			StatisticalMetrics.printSupervisedMetrics();
-			StatisticalMetrics.clearSupervisedMetrics();
+			//For per event split of metrics
+			//StatisticalMetrics.printSupervisedMetrics();
+			//StatisticalMetrics.clearSupervisedMetrics();
 		}
-		//StatisticalMetrics.printSupervisedMetrics();
+		//Aggregated metric for all events
+		StatisticalMetrics.printSupervisedMetrics();
 
 	}
 	

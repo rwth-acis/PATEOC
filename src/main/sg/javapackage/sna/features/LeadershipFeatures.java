@@ -18,7 +18,6 @@ public class LeadershipFeatures {
 		List<Node> graphNodes = OverlapCommunityDetection.getCommunityNodes(timestep, community);
 		
 		NodeFeatures nodefeatures = new NodeFeatures();
-		List<Double> assortativityvector = nodefeatures.disassortativityLeadershipCalculation(subgraph);
 		List<Double> eigenvector = nodefeatures.eigenvectorcentralityLeadershipCalculation(subgraph);
 		//double mean = StatisticManager.getMean(eigenvector);
 		//double sd = StatisticManager.getStdDev(eigenvector);
@@ -35,7 +34,6 @@ public class LeadershipFeatures {
             for (int i = 0; i < graphNodes.size() && !flag ; i++) {
             	if(node.getId() == graphNodes.get(i).getId()){
             		
-        			graphNodes.get(i).setAssortativityValue(assortativityvector.get(j));
         			graphNodes.get(i).setEigenCentrality(eigenvector.get(j));
         			//TODO:leader threshold
                 	if(eigenvector.get(j) > leadershipThreshold){
@@ -48,10 +46,6 @@ public class LeadershipFeatures {
             }
             flag=false;
 		}
-		
 		OverlapCommunityDetection.Communities.get(timestep)[community].setNumLeaders(leadersCount);
-		//if(leadersCount == 0)
-			//System.out.println("Nodes in community= "+graphNodes.size() + " & Leaders= "+ leadersCount);
 	}
-
 }
