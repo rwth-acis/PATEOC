@@ -14,16 +14,13 @@ public class LeadershipFeatures {
 	}
 	
 	public void assignLeaders(CustomSubgraph subgraph, int timestep, int community){
-
+		//asserted
 		List<Node> graphNodes = OverlapCommunityDetection.getCommunityNodes(timestep, community);
 		
 		NodeFeatures nodefeatures = new NodeFeatures();
 		List<Double> eigenvector = nodefeatures.eigenvectorcentralityLeadershipCalculation(subgraph);
-		//double mean = StatisticManager.getMean(eigenvector);
-		//double sd = StatisticManager.getStdDev(eigenvector);
 		int leadersCount=0;
-		//TODO: strong left skewness and a peak near the maximum for mean+sd
-		//leadershipThreshold = mean+sd;
+		//TODO: strong left skewness and a peak near the maximum for mean+sd not feasible
 		leadershipThreshold = 0.9;
 		
 		boolean flag = false;
@@ -35,7 +32,6 @@ public class LeadershipFeatures {
             	if(node.getId() == graphNodes.get(i).getId()){
             		
         			graphNodes.get(i).setEigenCentrality(eigenvector.get(j));
-        			//TODO:leader threshold
                 	if(eigenvector.get(j) > leadershipThreshold){
                 		graphNodes.get(i).setAsLeader();
                 		leadersCount++;

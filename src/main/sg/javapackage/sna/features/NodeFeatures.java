@@ -30,7 +30,7 @@ public class NodeFeatures {
 	 * @return Double - vector of centrality measure
 	 */
 	public List<Double> eigenvectorcentralityLeadershipCalculation(CustomSubgraph subgraph){
-		
+		//Asserted
 		int numVert = subgraph.vertexSet().size();
 	    
 		DoubleMatrix eigenMatrix = new DoubleMatrix(new double[numVert][numVert]);

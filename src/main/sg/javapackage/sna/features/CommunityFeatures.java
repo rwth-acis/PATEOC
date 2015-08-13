@@ -30,7 +30,7 @@ public class CommunityFeatures {
 	}
 	
 	public double calculateSizeRatio(){
-	//SizeRatio, Asserted
+	//Asserted
 		
 		double sizeRatio = Double.NaN;
 		sizeRatio = (double)subgraph.vertexSet().size()/(double)graph.vertexSet().size();
@@ -40,7 +40,7 @@ public class CommunityFeatures {
 	}
 	
 	public double calculateDensity() {
-	//Density, Asserted
+	//Asserted
 		
 		long numVert = subgraph.vertexSet().size();
 		long maxNumEdge = numVert*(numVert - 1);
@@ -77,7 +77,7 @@ public class CommunityFeatures {
     }
 	
 	public double calculateClusteringCoefficient() {
-    //ClusteringCoefficient, Non-Asserted (gephi calculating without nodes with CC value 0) 
+    //Asserted 
 
         Map<Node, Double> nodesMap_CC = new HashMap<Node, Double>();
         double avgCCoeff = 0.0;
@@ -111,7 +111,7 @@ public class CommunityFeatures {
     }
 		
     public double calculateDegreeCentrality(List<Node> graphNodes) {
-    //DegreeCentrality, asserted
+    	//Asserted
         Map<Node, Double> nodesMap_DegCen = new HashMap<Node, Double>();
         double degCentrality = 0.0;
 
@@ -143,7 +143,7 @@ public class CommunityFeatures {
     }
 	
     public double calculateLeaderDegreeCentrality(List<Node> graphNodes){
-    	
+    	//Asserted
         int leadercount=0;
         double degCentrality = 0.0;
 
@@ -232,7 +232,7 @@ public class CommunityFeatures {
 	}
 	
 	public double calculateEigenVectorCentrality(List<Node> graphNodes){
-	//Eigenvector centrality, non-asserted
+	//Asserted
 		double eigenVectorCentrality = 0.0f;
 		int numVert=graphNodes.size();
 		
@@ -245,9 +245,9 @@ public class CommunityFeatures {
 	}
 	
 	public double calculateLeaderEigenVectorCentrality(List<Node> graphNodes){
-		
-		double eigenVectorCentrality = 0.0f;
+		//Asserted
 		int leadercount=0;
+		double eigenVectorCentrality = 0.0;
 		for (Node node : graphNodes) {
 			if(node.getIsLeader()){
 				eigenVectorCentrality += node.getEigenCentrality();
@@ -263,7 +263,7 @@ public class CommunityFeatures {
 	 * @return
 	 */
 	public double calculateSpearmanMeasure(){
-
+		//Asserted
 		double[] dataX = new double[subgraph.edgeSet().size()];
 		double[] dataY = new double[subgraph.edgeSet().size()];
 
@@ -279,14 +279,13 @@ public class CommunityFeatures {
 				dataY[i] = subgraph.degreeOf(subgraph.getEdgeSource(edges[i])) + Math.random();
 			}
 		}			
-		
 
-		RankingAlgorithm natural = new NaturalRanking(NaNStrategy.MINIMAL,
-				TiesStrategy.SEQUENTIAL);
-		SpearmansCorrelation spearmansCor = new SpearmansCorrelation(natural);
-		double spearmanRank = spearmansCor.correlation(dataX, dataY);
+		RankingAlgorithm natural = new NaturalRanking(NaNStrategy.MAXIMAL,
+				TiesStrategy.AVERAGE);
+		SpearmansCorrelation spearmansCorr = new SpearmansCorrelation(natural);
+		double spearmanRho = spearmansCorr.correlation(dataX, dataY);
 
-		return spearmanRank;
+		return spearmanRho;
 	}
 
 }

@@ -22,7 +22,7 @@ public class SocialNetworkAnalysis {
 	
 	private CustomGraph graph;
 	private CustomSubgraph subgraph;
-	private boolean subgraphExtract = false;
+	private boolean subgraphExtract = GlobalVariables.subgraphExtract;
 	
 	public SocialNetworkAnalysis() {
 		// TODO Auto-generated constructor stub
@@ -59,8 +59,8 @@ public class SocialNetworkAnalysis {
 					CustomGraphMLExporter.GraphMLExportSubgraph(subgraph, 100*timestep + community);
 				}
 				
-				if(subgraph.vertexSet().size() <=3 || subgraph.edgeSet().size()==0 ){
-					Logger.writeToLogln(community+" Skipped due to <= 3 nodes ");
+				if(subgraph.vertexSet().size() <=3 || subgraph.edgeSet().size()<=1 ){
+					Logger.writeToLogln(community+" Skipped due to <= 3 nodes || <=1 edges ");
 					continue;
 				}
 				
