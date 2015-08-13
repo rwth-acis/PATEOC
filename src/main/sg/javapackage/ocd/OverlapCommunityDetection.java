@@ -333,9 +333,9 @@ public class OverlapCommunityDetection {
 		String responseString=null;
     	if(uploadGraph(graphName, graphContent)){
     		identifyCovers(selectedAlgo);
-    		//Wait for 10s to allow algorithm to complete execution
+    		//Thread wait to allow algorithm to complete execution
     		try {
-    			Thread.sleep(10000);
+    			Thread.sleep(25000);
     		} catch (InterruptedException e) {
     			e.printStackTrace();
     		}
