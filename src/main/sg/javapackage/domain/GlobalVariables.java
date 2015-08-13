@@ -10,7 +10,7 @@ public class GlobalVariables {
 	public static float GED_INCLUSION_ALPHA = 0.5f;
 	public static float GED_INCLUSION_BETA = 0.5f;
 	public static float COHESION_INFINITY = 999999.99999f;
-	
+	public static boolean subgraphExtract = true;
 	public static String modelingFile;
 	public static String resultFile;
 	
