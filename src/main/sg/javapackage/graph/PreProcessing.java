@@ -144,7 +144,8 @@ public class PreProcessing {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		//main.sg.javapackage.ext.graphml.CustomGraphMLExporter.GraphMLExport(inputGraph,timestep);
+		//main.sg.javapackage.ext.graphml.CustomGraphMLExporter.GraphMLExportWithProperties(inputGraph,timestep);
+
 		return inputGraph;
 	}
 	
