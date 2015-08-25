@@ -13,6 +13,7 @@ import main.sg.javapackage.domain.Node;
 import main.sg.javapackage.ext.graphml.CustomGraphMLExporter;
 import main.sg.javapackage.graph.PreProcessing;
 import main.sg.javapackage.logging.Logger;
+import main.sg.javapackage.metrics.PowerLawDistribution;
 import main.sg.javapackage.ocd.OverlapCommunityDetection;
 import main.sg.javapackage.sna.features.CommunityFeatures;
 import main.sg.javapackage.sna.features.LeadershipFeatures;
@@ -23,9 +24,11 @@ public class SocialNetworkAnalysis {
 	private CustomGraph graph;
 	private CustomSubgraph subgraph;
 	private boolean subgraphExtract = GlobalVariables.subgraphExtract;
+	private static String resultFile = GlobalVariables.resultFile;
 	
 	public SocialNetworkAnalysis() {
 		// TODO Auto-generated constructor stub
+		Logger.writeToFile(resultFile,"OUTPUT FILE FOR RESULTS\n\n",false);
 	}
 	
 	/**
@@ -44,12 +47,14 @@ public class SocialNetworkAnalysis {
 		
 		int timestep,community;
 		
+		PowerLawDistribution powerlaw = new PowerLawDistribution();
 		for(timestep = 1;timestep <= PreProcessing.totalGraphCount() ; timestep++) {
 			
 			Logger.writeToLogln("");
 			Logger.writeToLogln("Graph "+ timestep +" statistical values -");
 			
 			graph = PreProcessing.getParticularGraph(timestep);
+			powerlaw.updateDegreeFrequency(graph);
 			for(community = 1; community<= OverlapCommunityDetection.numOfCommunities(timestep) ; community++) {
 				
 				List<Node> graphNodes = OverlapCommunityDetection.getCommunityNodes(timestep, community);
@@ -107,7 +112,10 @@ public class SocialNetworkAnalysis {
 						","+ C_i_P.getAttrLeaderEigenVectorCentrality());				
 			}
 			System.out.println("Graph " + timestep + ": processed");
+
 		}
+		powerlaw.computeDegreeDistribution();
+
 	}
 	
 	

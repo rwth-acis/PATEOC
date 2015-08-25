@@ -17,7 +17,7 @@ public class EvolutionDetection {
 
 	public EvolutionDetection() {
 		// TODO Auto-generated constructor stub
-		Logger.writeToFile(resultFile,"OUTPUT FILE FOR RESULTS\n\n",false);
+		Logger.writeToFile(resultFile,"\n\n",false);
 	}
 	
     public void onetomanyCommunityEvolutionTracking() {
@@ -130,7 +130,7 @@ public class EvolutionDetection {
 		int totalTimesteps = PreProcessing.totalGraphCount();
 		
 		Logger.writeToFile(resultFile,"Recursive Group Evolution Discovery...\n",true);
-		Logger.writeToFile(resultFile,"NodeSize, EdgeSize, N_Leaders, SizeRatio, LeaderRatio, Density, Cohesion, ClusterCoefficient, "
+		Logger.writeToFile(resultFile,"CommunityId, NodeSize, EdgeSize, N_Leaders, SizeRatio, LeaderRatio, Density, Cohesion, ClusterCoefficient, "
 				+ "SpearmanRho, DegreeCentrality, ClosenessCentrality, EigenVectorCentrality, "
 				+ "LDegreeCentrality, LClosenessCentrality, LEigenVectorCentrality \n",true);
 		
@@ -143,25 +143,25 @@ public class EvolutionDetection {
 				//Timestep 2 as initial
 				communityRecursion(community, startTimestep+1,totalTimesteps);
 				if(this.longestEvolution>1){
-					Logger.writeToFile(resultFile,"\nCommunity "+community+" survives for "+(this.longestEvolution+1) + " timesteps\n",true);
+					Logger.writeToFile(resultFile,"\nCommunity "+community+" survives for "+(this.longestEvolution+1) + " timesteps :\n",true);
 					Community temp = OverlapCommunityDetection.Communities.get(startTimestep)[community];
 					
 					Logger.writeToFile(resultFile,community+
-							" "+temp.getNumNodes()+
-							" "+ temp.getNumEdges()+ 
-							" "+ temp.getNumLeaders()+
-							" "+ temp.getAttrSizeRatio()+
-							" "+ temp.getAttrLeaderRatio()+
-							" "+ temp.getAttrDensity()+
-							" "+ temp.getAttrCohesion()+
-							" "+ temp.getAttrClusteringCoefficient()+
-							" "+ temp.getAttrSpearmanRho()+
-							" "+ temp.getAttrDegreeCentrality()+
-							" "+ temp.getAttrClosenessCentrality()+
-							" "+ temp.getAttrEigenVectorCentrality()+
-							" "+ temp.getAttrLeaderDegreeCentrality()+
-							" "+ temp.getAttrLeaderClosenessCentrality()+
-							" "+ temp.getAttrLeaderEigenVectorCentrality()+"\n",true);	
+							","+temp.getNumNodes()+
+							","+ temp.getNumEdges()+ 
+							","+ temp.getNumLeaders()+
+							","+ temp.getAttrSizeRatio()+
+							","+ temp.getAttrLeaderRatio()+
+							","+ temp.getAttrDensity()+
+							","+ temp.getAttrCohesion()+
+							","+ temp.getAttrClusteringCoefficient()+
+							","+ temp.getAttrSpearmanRho()+
+							","+ temp.getAttrDegreeCentrality()+
+							","+ temp.getAttrClosenessCentrality()+
+							","+ temp.getAttrEigenVectorCentrality()+
+							","+ temp.getAttrLeaderDegreeCentrality()+
+							","+ temp.getAttrLeaderClosenessCentrality()+
+							","+ temp.getAttrLeaderEigenVectorCentrality()+"\n",true);	
 					
 					printRecursion(community, startTimestep+1, totalTimesteps);
 				}
@@ -231,21 +231,21 @@ public class EvolutionDetection {
 				Community temp = OverlapCommunityDetection.Communities.get(timestep)[bestMatchCommunity];
 				
 				Logger.writeToFile(resultFile,community+
-						" "+temp.getNumNodes()+
-						" "+ temp.getNumEdges()+ 
-						" "+ temp.getNumLeaders()+
-						" "+ temp.getAttrSizeRatio()+
-						" "+ temp.getAttrLeaderRatio()+
-						" "+ temp.getAttrDensity()+
-						" "+ temp.getAttrCohesion()+
-						" "+ temp.getAttrClusteringCoefficient()+
-						" "+ temp.getAttrSpearmanRho()+
-						" "+ temp.getAttrDegreeCentrality()+
-						" "+ temp.getAttrClosenessCentrality()+
-						" "+ temp.getAttrEigenVectorCentrality()+
-						" "+ temp.getAttrLeaderDegreeCentrality()+
-						" "+ temp.getAttrLeaderClosenessCentrality()+
-						" "+ temp.getAttrLeaderEigenVectorCentrality()+"\n",true);	
+						","+temp.getNumNodes()+
+						","+ temp.getNumEdges()+ 
+						","+ temp.getNumLeaders()+
+						","+ temp.getAttrSizeRatio()+
+						","+ temp.getAttrLeaderRatio()+
+						","+ temp.getAttrDensity()+
+						","+ temp.getAttrCohesion()+
+						","+ temp.getAttrClusteringCoefficient()+
+						","+ temp.getAttrSpearmanRho()+
+						","+ temp.getAttrDegreeCentrality()+
+						","+ temp.getAttrClosenessCentrality()+
+						","+ temp.getAttrEigenVectorCentrality()+
+						","+ temp.getAttrLeaderDegreeCentrality()+
+						","+ temp.getAttrLeaderClosenessCentrality()+
+						","+ temp.getAttrLeaderEigenVectorCentrality()+"\n",true);	
 				
 				printRecursion(bestMatchCommunity, timestep+1,totalTimesteps);
 			}
