@@ -8,7 +8,13 @@ import main.sg.javapackage.graph.PreProcessing;
 import main.sg.javapackage.logging.Logger;
 import main.sg.javapackage.ocd.OverlapCommunityDetection;
 
-
+/**
+ * Wrapper method for parsing covers
+ * from OCD Webservice
+ * 
+ * @author Stephen
+ *
+ */
 public class OCDWebServiceCoverWrapper {
 	
 	public OCDWebServiceCoverWrapper() {
@@ -48,29 +54,36 @@ public class OCDWebServiceCoverWrapper {
 		tempComm[0].setId((long) numOfCommunities); 
 		tempComm[0].setHeaderLabel();
 		
-		Scanner scanner = new Scanner(coverMatrix);
-
-		while (scanner.hasNextLine()) {
-		    String line = scanner.nextLine();
-		    String values[] = line.split("\\s+");
-		    
-		    if (values != null && values.length > 0) {
-				String nodeValue = values[0].toString();
-				//New node for each community to hold its own unique values
-				Node node = new Node(PreProcessing.masterlistGetNode(nodeValue));
-
-				if (values.length > 1) {
-				    for (int i = 1; i < values.length; i++) {
-					double memValue = Double.parseDouble(values[i]);
-						if (memValue != 0) {
-							//TODO: Re-check the membership values
-							tempComm[i].addNode(node);
-						}
-				    }
-				}
-		    }
+		try{
+			
+			Scanner scanner = new Scanner(coverMatrix);
+	
+			while (scanner.hasNextLine()) {
+			    String line = scanner.nextLine();
+			    String values[] = line.split("\\s+");
+			    
+			    if (values != null && values.length > 0) {
+					String nodeValue = values[0].toString();
+					//New node for each community to hold its own unique values
+					Node node = new Node(PreProcessing.masterlistGetNode(nodeValue));
+	
+					if (values.length > 1) {
+					    for (int i = 1; i < values.length; i++) {
+						double memValue = Double.parseDouble(values[i]);
+							if (memValue != 0) {
+								//TODO: Re-check the membership values
+								tempComm[i].addNode(node);
+							}
+					    }
+					}
+			    }
+			}
+			scanner.close();
+		}catch(Exception e){
+			System.out.println(e.getMessage());
+			System.out.println("Invalid cover detected. Exit Code :5");
+			System.exit(5);
 		}
-		scanner.close();
 		OverlapCommunityDetection.Communities.put(timestep, tempComm);
 		Logger.writeToLogln("Total number of communities :" + numOfCommunities);
 		

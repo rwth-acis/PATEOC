@@ -14,7 +14,8 @@ import org.jblas.Eigen;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
 /**
- * 
+ * Support class for feature extraction
+ * -Node Level
  * @author Stephen
  *
  */
@@ -56,10 +57,9 @@ public class NodeFeatures {
 		List<Double> newEigenVector = new ArrayList<Double>();
 		
 	    for(int i=0; i<eigenVector.size(); i++){
-	    	newEigenVector.add( mapping(eigenVector.get(i), 0, getMax(eigenVector), 0, 1) );
+	    	newEigenVector.add( normalize(eigenVector.get(i), 0, getMax(eigenVector), 0, 1) );
 	    }
 	    
-		//TODO: to normalise or not?
 	    return newEigenVector;
 	}
 	
@@ -104,7 +104,7 @@ public class NodeFeatures {
 	 * @param out_max range2 max
 	 * @return double
 	 */
-	private double mapping(double value, double in_min, double in_max, double out_min, double out_max)
+	private double normalize(double value, double in_min, double in_max, double out_min, double out_max)
 	{
 	  return (value - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 	}

@@ -9,6 +9,13 @@ import main.sg.javapackage.domain.GlobalVariables;
 import main.sg.javapackage.logging.Logger;
 import weka.core.Instances;
 
+/**
+ * Aggregates the most commonly used feature based 
+ * on the selection from feature selection - wrapper method
+ * Acts as a metric for evaluation
+ * @author Stephen
+ *
+ */
 public class StatisticalMetrics {
 	
 	private static String resultFile = GlobalVariables.resultFile;
@@ -49,7 +56,7 @@ public class StatisticalMetrics {
 		sorted_metricCounter.putAll(metricCounter);
 		Logger.writeToFile(resultFile,"\nAttribute frequencies from wrapper method\n",true);
 		for(Map.Entry<String, Integer> entry : sorted_metricCounter.entrySet()){
-			Logger.writeToFile(resultFile,"Feature :" + entry.getKey() + " Frequency :" + entry.getValue()+"\n",true); //OutputDump
+			Logger.writeToFile(resultFile,"Feature: " + entry.getKey() + ", Frequency :" + entry.getValue()+"\n",true); //OutputDump
 		}
 		sorted_metricCounter.clear();
 	}
@@ -72,14 +79,12 @@ public class StatisticalMetrics {
 	    public NewComparator(Map<String, Integer> base) {
 	        this.base = base;
 	    }
-
-	    // Note: this comparator imposes orderings that are inconsistent with equals.    
 	    public int compare(String a, String b) {
 	        if (base.get(a) >= base.get(b)) {
 	            return -1;
 	        } else {
 	            return 1;
-	        } // returning 0 would merge keys
+	        }
 	    }
 	}
 	

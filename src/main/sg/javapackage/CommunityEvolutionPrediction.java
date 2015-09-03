@@ -32,7 +32,7 @@ public class CommunityEvolutionPrediction {
 	public static void main(String[] args) throws Exception{
 		
 		//Declarations
-		final double version = 3.0; 
+		final double version = 4.0; 
 		boolean isWeighted = false;
 		final int totalTimesteps;
 		final long programStartTime = System.currentTimeMillis();
@@ -48,8 +48,8 @@ public class CommunityEvolutionPrediction {
 		System.out.println("------------------------------------------------------------------------------------");
 		System.out.println("Performing Initial Checksum of the input data...");
 		if(!InputManager.inputAssert(args)){
-			System.out.println("	Initial Checksum failed. Exiting.");
-			System.exit(0);
+			System.out.println("	Initial Checksum failed. Exit Code :101.");
+			System.exit(101);
 		}
 		else
 			System.out.println("	Success.");

@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import main.sg.javapackage.domain.Community;
+import main.sg.javapackage.domain.GlobalVariables;
 import main.sg.javapackage.domain.GlobalVariables.Algorithm;
 import main.sg.javapackage.domain.Node;
 import main.sg.javapackage.logging.Logger;
@@ -335,7 +336,7 @@ public class OverlapCommunityDetection {
     		identifyCovers(selectedAlgo);
     		//Thread wait to allow algorithm to complete execution
     		try {
-    			Thread.sleep(25000);
+    			Thread.sleep(GlobalVariables.ocdWebServiceSleepTime);
     		} catch (InterruptedException e) {
     			e.printStackTrace();
     		}

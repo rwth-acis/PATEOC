@@ -9,8 +9,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import main.sg.javapackage.domain.CustomGraph;
+import main.sg.javapackage.domain.GlobalVariables;
 import main.sg.javapackage.domain.GlobalVariables.Algorithm;
 import main.sg.javapackage.domain.Node;
+import main.sg.javapackage.ext.graphml.CustomGraphMLExporter;
 import main.sg.javapackage.logging.Logger;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -144,7 +146,9 @@ public class PreProcessing {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		//main.sg.javapackage.ext.graphml.CustomGraphMLExporter.GraphMLExportWithProperties(inputGraph,timestep);
+		if(GlobalVariables.graphExtract){
+			CustomGraphMLExporter.GraphMLExportWithProperties(inputGraph,timestep);
+		}
 
 		return inputGraph;
 	}

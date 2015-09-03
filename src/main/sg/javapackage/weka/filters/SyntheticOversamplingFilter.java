@@ -5,6 +5,12 @@ import weka.core.Instances;
 import weka.filters.Filter;
 import weka.filters.supervised.instance.SMOTE;
 
+/**
+ * Support class for supervised modeling
+ * SMOTE filter from WEKA API
+ * @author Stephen
+ *
+ */
 public class SyntheticOversamplingFilter {
 	
 	public SyntheticOversamplingFilter() {

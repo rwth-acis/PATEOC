@@ -10,6 +10,12 @@ import weka.core.FastVector;
 import weka.core.Instance;
 import weka.core.Instances;
 
+/**
+ * Support class for building supervised learning model.
+ * Extension of WEKA API for arff file creation
+ * @author Stephen
+ *
+ */
 public class PredictiveAnalysis {
 	
 	private String arffFile = GlobalVariables.modelingFile;
@@ -33,7 +39,6 @@ public class PredictiveAnalysis {
 		// 1. set up attributes
 		atts = new FastVector();
 		// - numeric
-		atts.addElement(new Attribute("NNodes"));
 		atts.addElement(new Attribute("SizeRatio"));
 		atts.addElement(new Attribute("Density"));
 		atts.addElement(new Attribute("Cohesion"));
@@ -42,12 +47,11 @@ public class PredictiveAnalysis {
 		atts.addElement(new Attribute("DegreeCentrality"));
 		atts.addElement(new Attribute("ClosenessCentrality"));
 		atts.addElement(new Attribute("EigenVectorCentrality"));
-
-		atts.addElement(new Attribute("NLeader"));
 		atts.addElement(new Attribute("LeaderRatio"));
 		atts.addElement(new Attribute("LDegreeCentrality"));
 		atts.addElement(new Attribute("LClosenessCentrality"));
 		atts.addElement(new Attribute("LEigenVectorCentrality"));
+		
 		atts.addElement(new Attribute("D_SizeRatio"));
 		atts.addElement(new Attribute("D_LeaderRatio"));
 		atts.addElement(new Attribute("D_Density"));
@@ -57,7 +61,6 @@ public class PredictiveAnalysis {
 		atts.addElement(new Attribute("D_DegreeCentrality"));
 		atts.addElement(new Attribute("D_ClosenessCentrality"));
 		atts.addElement(new Attribute("D_EigenVectorCentrality"));
-		
 		attVals = new FastVector();
 		attVals.addElement("true");
 		attVals.addElement("false");
@@ -89,7 +92,6 @@ public class PredictiveAnalysis {
 				Community C_i_P = OverlapCommunityDetection.Communities.get(timestep)[community];
 				base_vals = new double[data.numAttributes()];
 				i=0;
-				base_vals[i++] = C_i_P.getNumNodes();
 				base_vals[i++] = C_i_P.getAttrSizeRatio();
 				base_vals[i++] = C_i_P.getAttrDensity();
 				base_vals[i++] = C_i_P.getAttrCohesion();
@@ -99,7 +101,6 @@ public class PredictiveAnalysis {
 				base_vals[i++] = C_i_P.getAttrClosenessCentrality();
 				base_vals[i++] = C_i_P.getAttrEigenVectorCentrality();
 
-				base_vals[i++] = C_i_P.getNumLeaders();
 				base_vals[i++] = C_i_P.getAttrLeaderRatio();
 				base_vals[i++] = C_i_P.getAttrLeaderDegreeCentrality();
 				base_vals[i++] = C_i_P.getAttrLeaderClosenessCentrality();

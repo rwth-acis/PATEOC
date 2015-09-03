@@ -5,6 +5,12 @@ import weka.core.Instances;
 import weka.filters.Filter;
 import weka.filters.supervised.instance.SpreadSubsample;
 
+/**
+ * Support class for supervised modeling
+ * SpreadSubSample filter from WEKA API
+ * @author Stephen
+ *
+ */
 public class SpreadSubsampleFilter {
 	
 	public SpreadSubsampleFilter() {

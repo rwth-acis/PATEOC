@@ -7,6 +7,7 @@ import java.util.Set;
 
 import main.sg.javapackage.domain.CustomGraph;
 import main.sg.javapackage.domain.CustomSubgraph;
+import main.sg.javapackage.domain.GlobalVariables;
 import main.sg.javapackage.domain.Node;
 
 import org.apache.commons.math3.stat.correlation.SpearmansCorrelation;
@@ -18,6 +19,12 @@ import org.jgrapht.Graphs;
 import org.jgrapht.alg.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
+/**
+ * Support class for feature extraction
+ * -Community Level
+ * @author Stephen
+ *
+ */
 public class CommunityFeatures {
 	
 	private CustomGraph graph;
@@ -60,19 +67,26 @@ public class CommunityFeatures {
 	
 	public double calculateCohesion(){
     //Cohesion, Non-asserted
-    	
+    	//TODO: RECHECK HERE
 		long numVert = subgraph.vertexSet().size();
+		long graphNumVert = graph.vertexSet().size();
     	double cohesion = Double.NaN;
     	long outerEdges = 0;
-    	//long maxNumEdge = subgraph.vertexSet().size() * (graph.vertexSet().size() - subgraph.vertexSet().size());
-    	long maxNumEdge = numVert * (graph.vertexSet().size() - numVert);
+
+    	//long maxNumEdge = numVert * (graph.vertexSet().size() - numVert);
+    	long maxNumEdge = graphNumVert * (graphNumVert - numVert);
+
 		Set<Node> vertices = subgraph.vertexSet();
 		for (Node node : vertices){
 			outerEdges += (graph.edgesOf(node).size() - subgraph.edgesOf(node).size());
-			//System.out.println("Number of edges :" + temporaryGraph.edgesOf(node).size() + " " + temporarySubgraph.edgesOf(node).size());
 		}
-		cohesion = calculateDensity() / ((double)outerEdges / (double)maxNumEdge);
-
+		double density = calculateDensity();
+		cohesion = density / ((double)outerEdges / (double)maxNumEdge);
+		
+		if(Double.isInfinite(cohesion)){
+			cohesion = GlobalVariables.COHESION_INFINITY;
+		}
+		cohesion = normalize(cohesion, 0, GlobalVariables.COHESION_INFINITY, 0, 1);
     	return cohesion;
     }
 	
@@ -260,6 +274,7 @@ public class CommunityFeatures {
 	/**
 	 * Based on the implementation from
 	 *  https://github.com/Rofti/DMID/blob/5c287e32dcbc8152ae03f105a2cdf69b25bc76f2/Metrics/src/ocd/metrics/Main.java
+	 *  Special thanks to MarvenVD - https://github.com/Rofti
 	 * @return
 	 */
 	public double calculateSpearmanMeasure(){
@@ -284,8 +299,13 @@ public class CommunityFeatures {
 				TiesStrategy.AVERAGE);
 		SpearmansCorrelation spearmansCorr = new SpearmansCorrelation(natural);
 		double spearmanRho = spearmansCorr.correlation(dataX, dataY);
-
+		spearmanRho = normalize(spearmanRho, -1, 1, 0, 1);
 		return spearmanRho;
+	}
+	
+	private double normalize(double value, double in_min, double in_max, double out_min, double out_max)
+	{
+	  return (value - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 	}
 
 }

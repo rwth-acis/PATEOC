@@ -12,6 +12,11 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+/**
+ *Support class for OCDWebservice wrapper class 
+ * @author Stephen
+ *
+ */
 public class DOMParser {
 	
 	String xmlstring;

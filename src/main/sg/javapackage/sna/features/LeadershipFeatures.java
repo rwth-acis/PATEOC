@@ -3,9 +3,16 @@ package main.sg.javapackage.sna.features;
 import java.util.List;
 
 import main.sg.javapackage.domain.CustomSubgraph;
+import main.sg.javapackage.domain.GlobalVariables;
 import main.sg.javapackage.domain.Node;
 import main.sg.javapackage.ocd.OverlapCommunityDetection;
 
+/**
+ * Support class for feature extraction
+ * -Leadership Level
+ * @author Stephen
+ *
+ */
 public class LeadershipFeatures {
 	
 	private double leadershipThreshold;
@@ -21,14 +28,12 @@ public class LeadershipFeatures {
 		List<Double> eigenvector = nodefeatures.eigenvectorcentralityLeadershipCalculation(subgraph);
 		int leadersCount=0;
 		//TODO: strong left skewness and a peak near the maximum for mean+sd not feasible
-		leadershipThreshold = 0.9;
+		leadershipThreshold = GlobalVariables.leaderThreshold;
 		
 		boolean flag = false;
 		int j=0;
 		for (Node node : subgraph.vertexSet()) {
-			
-            //TODO:CHECK THIS CHECK THIS ->copy value to the right node
-            for (int i = 0; i < graphNodes.size() && !flag ; i++) {
+			for (int i = 0; i < graphNodes.size() && !flag ; i++) {
             	if(node.getId() == graphNodes.get(i).getId()){
             		
         			graphNodes.get(i).setEigenCentrality(eigenvector.get(j));

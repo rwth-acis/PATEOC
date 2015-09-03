@@ -6,11 +6,13 @@ public class GlobalVariables {
 	public enum Algorithm{slpa, dmid, focs};
 	public enum Evolution{survive,merge,split,dissolve};
 	
-	public static String FileFormat;
 	public static float GED_INCLUSION_ALPHA = 0.5f;
 	public static float GED_INCLUSION_BETA = 0.5f;
-	public static float COHESION_INFINITY = 999999.99999f;
+	public static double COHESION_INFINITY = 99999999999.99999f;
+	public static boolean graphExtract = false;
 	public static boolean subgraphExtract = false;
+	public static double leaderThreshold = 0.9f;
+	public static long ocdWebServiceSleepTime = 30000L;
 	public static String modelingFile;
 	public static String resultFile;
 	

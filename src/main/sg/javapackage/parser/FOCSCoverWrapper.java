@@ -14,6 +14,13 @@ import main.sg.javapackage.graph.PreProcessing;
 import main.sg.javapackage.logging.Logger;
 import main.sg.javapackage.ocd.OverlapCommunityDetection;
 
+/**
+ * Wrapper method for parsing covers
+ * from AFOCS Algorithm
+ * 
+ * @author Stephen
+ *
+ */
 public class FOCSCoverWrapper {
 	
 	private String basePath = null;

@@ -1,7 +1,6 @@
 package main.sg.javapackage.weka.filters;
 
 import weka.attributeSelection.BestFirst;
-import weka.attributeSelection.GreedyStepwise;
 import weka.attributeSelection.WrapperSubsetEval;
 import weka.classifiers.Classifier;
 import weka.core.Instances;
@@ -9,7 +8,17 @@ import weka.filters.Filter;
 import weka.filters.supervised.attribute.AttributeSelection;
 import weka.filters.unsupervised.attribute.Remove;
 
-@SuppressWarnings("unused")
+
+/**
+ * Evaluation segregation of input attribute set
+ * into 3 problem classes:
+ * -1)Intra Features = Community and Leader features
+ * -2)Inter Features = Community, Leader and Temporal features
+ * -3)Inter* Features = MostImporatant(Community, Leader and Temporal features) 
+ * 						using WEKA Wrapper method
+ * @author Stephen
+ *
+ */
 public class AttributeSelectionFilter {
 	
 	public AttributeSelectionFilter() {
@@ -25,9 +34,9 @@ public class AttributeSelectionFilter {
 	 */
 	public static Instances performAttributeSelection1(Instances data) throws Exception{
 		
-		//Only community attributes featuring from 1-9, and last nominal attribute
+		//Only community attributes featuring from 1-12, and last nominal attribute
 		Remove remove =  new Remove();
-		remove.setAttributeIndices("1-9,last");
+		remove.setAttributeIndices("1-12,last");
 		remove.setInvertSelection(true);
 		remove.setInputFormat(data);
 		Instances updated_traningset = Filter.useFilter(data, remove);
@@ -64,7 +73,6 @@ public class AttributeSelectionFilter {
 		WrapperSubsetEval wrapper = new WrapperSubsetEval();
 		wrapper.setClassifier(model);
 		BestFirst searcher = new BestFirst();
-		//GreedyStepwise searcher = new GreedyStepwise();
 		attributeselector.setEvaluator(wrapper);
 		attributeselector.setSearch(searcher);
 		attributeselector.setInputFormat(data);

@@ -6,6 +6,13 @@ import weka.core.Instances;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Remove;
 
+/**
+ * Evaluation segregation of each problem class
+ * for predicting each event
+ * -Survive, Merge, Split, Dissolve
+ * @author Stephen
+ *
+ */
 public class EventBasedInstanceFilter {
 	
 	private static String resultFile = GlobalVariables.resultFile;

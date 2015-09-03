@@ -13,12 +13,18 @@ import main.sg.javapackage.domain.Node;
 import main.sg.javapackage.ext.graphml.CustomGraphMLExporter;
 import main.sg.javapackage.graph.PreProcessing;
 import main.sg.javapackage.logging.Logger;
-import main.sg.javapackage.metrics.PowerLawDistribution;
+import main.sg.javapackage.metrics.DegreeDistribution;
 import main.sg.javapackage.ocd.OverlapCommunityDetection;
 import main.sg.javapackage.sna.features.CommunityFeatures;
 import main.sg.javapackage.sna.features.LeadershipFeatures;
 
 
+/**
+ * Primary class for feature aggregation of all 
+ * detected communities from all timestep of input graph
+ * @author Stephen
+ *
+ */
 public class SocialNetworkAnalysis {
 	
 	private CustomGraph graph;
@@ -47,7 +53,7 @@ public class SocialNetworkAnalysis {
 		
 		int timestep,community;
 		
-		PowerLawDistribution powerlaw = new PowerLawDistribution();
+		DegreeDistribution powerlaw = new DegreeDistribution();
 		for(timestep = 1;timestep <= PreProcessing.totalGraphCount() ; timestep++) {
 			
 			Logger.writeToLogln("");
@@ -78,13 +84,7 @@ public class SocialNetworkAnalysis {
 				C_i_P.setAttrSizeRatio(features2.calculateSizeRatio());
 				C_i_P.setAttrLeaderRatio(/*domain_calculation*/);
 				C_i_P.setAttrDensity(features2.calculateDensity());
-				double cohesionValue = features2.calculateCohesion();
-				if(Double.isFinite(cohesionValue)){
-					C_i_P.setAttrCohesion(cohesionValue);
-				}
-				else{
-					C_i_P.setAttrCohesion(GlobalVariables.COHESION_INFINITY);
-				}
+				C_i_P.setAttrCohesion(features2.calculateCohesion());
 				C_i_P.setAttrClusteringCoefficient(features2.calculateClusteringCoefficient());
 				C_i_P.setAttrSpearmanRho(features2.calculateSpearmanMeasure());
 				C_i_P.setAttrDegreeCentrality(features2.calculateDegreeCentrality(graphNodes));
