@@ -8,7 +8,7 @@ WELCOME -
 
 The goal of this master thesis is to focus on development of an analysis framework for community evolution using social network dynamics as its feature set. 
 
-The project is developed with the Eclipse IDE, so we recommend you to use this tool to work on the project. Additionally, the .classpath and .project file included in the repo.
+The project is developed with the Eclipse IDE, so we recommend you to use this tool to work on the project. Additionally, the .classpath and .project file have been included in the repository.
 
 Further build process has been described in the wiki section.
 
