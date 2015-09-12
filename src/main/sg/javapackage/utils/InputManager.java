@@ -19,7 +19,7 @@ public class InputManager {
 		
 		if (args.length < 2) {
 			System.out.println("Error: Invalid number of input arguments.");
-			System.out.println("Input format: Path_to_preferences.ini Integer[dataset]");
+			System.out.println("Input format: \"Preferences.ini\" \"[dataset]\"");
 			return false;
 		}
 		
@@ -32,11 +32,6 @@ public class InputManager {
 			return false;
 		}
 		
-		//6 Datasets all together
-		if(Integer.parseInt(args[1]) < 0){
-			System.out.println("Error: Invalid dataset; Expected integer > 0");
-			return false;
-		}
 		return true;
 	}
 
