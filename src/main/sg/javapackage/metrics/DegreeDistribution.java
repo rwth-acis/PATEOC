@@ -74,7 +74,7 @@ public class DegreeDistribution {
 	
 	private XYDataset convertResultToPlotDataset() {
 		XYSeriesCollection dataset = new XYSeriesCollection();
-		XYSeries series = new XYSeries(degreeDistribution.size());
+		XYSeries series = new XYSeries("Binned Degree");
 		for (Map.Entry<Integer, Double> entry : degreeDistribution.entrySet()){
 			
 			series.add(entry.getKey(),entry.getValue());
