@@ -4,6 +4,7 @@ import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Shape;
 import java.io.File;
 import java.io.IOException;
 import java.text.NumberFormat;
@@ -22,8 +23,10 @@ import org.jfree.chart.labels.StandardXYItemLabelGenerator;
 import org.jfree.chart.labels.XYItemLabelGenerator;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYSplineRenderer;
 import org.jfree.data.xy.XYDataset;
+import org.jfree.util.ShapeUtilities;
 
 /**
  * Primary module for rendering and saving the 
@@ -45,7 +48,7 @@ public class ChartVisualization extends JFrame{
 		
 		JPanel chartPanel = createChartPanel(plotData,event);
 		add(chartPanel, BorderLayout.CENTER);
-		setSize(1024, 768);
+		setSize(800, 640);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);	
 		
@@ -74,7 +77,7 @@ public class ChartVisualization extends JFrame{
 		
 		chart = ChartFactory.createScatterPlot(chartTitle, 
 				xAxisLabel, yAxisLabel, plotdata, PlotOrientation.VERTICAL, true, true, false );
-		
+		setScatterChartOptions(chart);
 		return chart;
 	}
 	
@@ -114,8 +117,8 @@ public class ChartVisualization extends JFrame{
 
 		// saves the chart as an image files
 		try {
-			int width = 1024;
-			int height = 768;
+			int width = 800;
+			int height = 640;
 			ChartUtilities.saveChartAsPNG(imageFile, chart, width, height);
 		} catch (IOException ex) {
 			System.err.println(ex);
@@ -157,15 +160,40 @@ public class ChartVisualization extends JFrame{
 		plot.setRenderer(renderer);
 		
 		// sets plot background
-		plot.setBackgroundPaint(Color.lightGray);
+		plot.setBackgroundPaint(Color.white);
 		
 		// sets paint color for the grid lines
 		plot.setRangeGridlinesVisible(true);
 		plot.setRangeGridlinePaint(Color.BLACK);
 		
 		plot.setDomainGridlinesVisible(true);
-		plot.setDomainGridlinePaint(Color.lightGray);
+		plot.setDomainGridlinePaint(Color.BLACK);
 		
+	}
+	
+	private void setScatterChartOptions(JFreeChart chart){
+		
+		XYPlot plot = chart.getXYPlot();
+		XYItemRenderer renderer = plot.getRenderer();
+		Shape cross = ShapeUtilities.createDiagonalCross(4, 0.8f);
+		renderer.setSeriesShape(0, cross);
+		
+		// sets paint color for plot outlines
+		plot.setOutlinePaint(Color.BLUE);
+		plot.setOutlineStroke(new BasicStroke(2.0f));
+		
+		// sets renderer for lines
+		plot.setRenderer(renderer);
+		
+		// sets plot background
+		plot.setBackgroundPaint(Color.white);
+		
+		// sets paint color for the grid lines
+		plot.setRangeGridlinesVisible(false);
+		plot.setRangeGridlinePaint(Color.BLACK);
+		
+		plot.setDomainGridlinesVisible(false);
+		plot.setDomainGridlinePaint(Color.BLACK);
 	}
 	
 	public static void generateChart(XYDataset dataset,int event){
