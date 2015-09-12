@@ -66,7 +66,7 @@ public class ModularPipeline {
 		
 		}catch(Exception e){
 			System.out.println(e.getMessage());
-			System.out.println("Unexpected exception. Exit code :102");
+			System.out.println("Exception Occured. Exit code :102");
 			System.exit(102);
 		}
 	}
