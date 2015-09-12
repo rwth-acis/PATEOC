@@ -73,10 +73,10 @@ public class SupervisedLearning {
 			 * 		3-split
 			 * 		4-dissove
 			 */
-			
+
 			eventBasedTrainingData = null;
 			eventBasedTrainingData = EventBasedInstanceFilter.eventFilter(base_TrainingData, event);
-			
+
 			for(int j=0;j< models.length ; j++){
 				Logger.writeToFile(resultFile,models[j].getClass().getSimpleName()+",", true);
 				series[j] = new XYSeries(models[j].getClass().getSimpleName().toString());
@@ -90,8 +90,10 @@ public class SupervisedLearning {
 				 * 		2-With community features + leadership features + temporal features
 				 * 		3-Most suitable features picked using Machine Learning Attribute Selection
 				 */
-				
+
 				Instances trainingData = null;
+				try{
+					
 				if(results == 1){
 					trainingData = AttributeSelectionFilter.performAttributeSelection1(eventBasedTrainingData);
 				}
@@ -105,7 +107,10 @@ public class SupervisedLearning {
 				
 				trainingData = SyntheticOversamplingFilter.applySMOTE(trainingData);
 				trainingData = SpreadSubsampleFilter.applySpreadSubsample(trainingData);
-
+				
+				}catch(Exception e){
+					continue;
+				}
 				// Run for each model
 				for (int j = 0; j < models.length; j++) {
 					try{
