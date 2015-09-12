@@ -2,7 +2,6 @@ package main.sg.javapackage.domain;
 
 public class GlobalVariables {
 	
-	public enum Dataset{facebook, enron, dblp, bioperl, other};
 	public enum Algorithm{slpa, dmid, focs};
 	public enum Evolution{survive,merge,split,dissolve};
 	

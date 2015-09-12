@@ -88,6 +88,7 @@ public class PreProcessing {
 				reader.close();
 			} catch (IOException e) {
 				e.printStackTrace();
+				System.out.println(e.getMessage()+"\nExit Code :102");
 			}
 			
 			timestep++;
@@ -145,6 +146,7 @@ public class PreProcessing {
 			reader.close();
 		} catch (IOException e) {
 			e.printStackTrace();
+			System.out.println(e.getMessage()+"\nExit Code :102");
 		}
 		if(GlobalVariables.graphExtract){
 			CustomGraphMLExporter.GraphMLExportWithProperties(inputGraph,timestep);
