@@ -86,7 +86,9 @@ public class CommunityFeatures {
 		if(Double.isInfinite(cohesion)){
 			cohesion = GlobalVariables.COHESION_INFINITY;
 		}
-		cohesion = normalize(cohesion, 0, GlobalVariables.COHESION_INFINITY, 0, 1);
+		if(GlobalVariables.normalizeFeatures){
+			cohesion = normalize(cohesion, 0, GlobalVariables.COHESION_INFINITY, 0, 1);
+		}
     	return cohesion;
     }
 	
@@ -299,7 +301,9 @@ public class CommunityFeatures {
 				TiesStrategy.AVERAGE);
 		SpearmansCorrelation spearmansCorr = new SpearmansCorrelation(natural);
 		double spearmanRho = spearmansCorr.correlation(dataX, dataY);
-		spearmanRho = normalize(spearmanRho, -1, 1, 0, 1);
+		if(GlobalVariables.normalizeFeatures){
+			spearmanRho = normalize(spearmanRho, -1, 1, 0, 1);
+		}
 		return spearmanRho;
 	}
 	
