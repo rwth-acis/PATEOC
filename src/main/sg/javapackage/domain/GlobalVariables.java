@@ -13,6 +13,7 @@ public class GlobalVariables {
 	public static boolean normalizeFeatures = false;
 	public static double leaderThreshold = 0.9f;
 	public static long ocdWebServiceSleepTime = 30000L;
+	public static int communitySizeThreshold = 3; //Discard community with nodes less than threshold
 	public static String modelingFile;
 	public static String resultFile;
 	

@@ -45,6 +45,8 @@ public class SocialNetworkAnalysis {
 	 */
 	public void extractAnalytics(){
 		
+		int commSize = GlobalVariables.communitySizeThreshold;
+		
 		System.out.println("Running statistical extraction ...");
 		Logger.writeToLogln("Details extracted include ...");
 		Logger.writeToLogln("NodeSize, EdgeSize, N_Leaders, SizeRatio, LeaderRatio, Density, Cohesion, ClusterCoefficient, "
@@ -70,8 +72,8 @@ public class SocialNetworkAnalysis {
 					CustomGraphMLExporter.GraphMLExportSubgraph(subgraph, 100*timestep + community);
 				}
 				
-				if(subgraph.vertexSet().size() <=3 || subgraph.edgeSet().size()<=1 ){
-					Logger.writeToLogln(community+" Skipped due to <= 3 nodes || <=1 edges ");
+				if(subgraph.vertexSet().size() < commSize || subgraph.edgeSet().size()< 2 ){
+					Logger.writeToLogln(community+" Skipped due to < Threshold nodes || < Disjoint graph");
 					continue;
 				}
 				

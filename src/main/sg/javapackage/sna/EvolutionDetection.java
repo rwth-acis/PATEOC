@@ -35,6 +35,7 @@ public class EvolutionDetection {
 		inclusionT1T2 = 0.0;
 		alphaScore = 0.0;
 		betaScore = 0.0;
+		int commSize = GlobalVariables.communitySizeThreshold;
 		
 		Logger.writeToLogln("");
 		Logger.writeToLogln("Group Evolution Discovery...");
@@ -44,9 +45,9 @@ public class EvolutionDetection {
 			
 			for(int commt1 = 1; commt1 <= OverlapCommunityDetection.numOfCommunities(timeT1);commt1++){
 				
-				if(OverlapCommunityDetection.sizeOfCommunity(timeT1,commt1) <= 3){
-					//Skip calculation for communities with 2 or less nodes
-					Logger.writeToLogln(commt1+" Skipped due to <= 3 nodes ");
+				if(OverlapCommunityDetection.sizeOfCommunity(timeT1,commt1) < commSize){
+					//Skip calculation for communities with less nodes
+					Logger.writeToLogln(commt1+" Skipped due to < Threshold nodes ");
 					continue;
 				}
 				int timeT2 = timeT1+1;
@@ -56,7 +57,7 @@ public class EvolutionDetection {
 				betaScore = 0.0;
 				for(int commt2 = 1; commt2<= OverlapCommunityDetection.numOfCommunities(timeT2) ; commt2++) {
 					
-					if(OverlapCommunityDetection.sizeOfCommunity(timeT2,commt2) <= 3)
+					if(OverlapCommunityDetection.sizeOfCommunity(timeT2,commt2) < commSize)
 						continue;
 					
 					inclusionT1T2 = calculateInclusion(OverlapCommunityDetection.getCommunityNodes(timeT1, commt1) ,OverlapCommunityDetection.getCommunityNodes(timeT2, commt2));
