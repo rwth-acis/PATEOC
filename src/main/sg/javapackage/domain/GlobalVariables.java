@@ -11,6 +11,7 @@ public class GlobalVariables {
 	public static boolean graphExtract = false;
 	public static boolean subgraphExtract = false;
 	public static boolean normalizeFeatures = false;
+	public static boolean applySMOTEandSubSample = false;
 	public static double leaderThreshold = 0.9f;
 	public static long ocdWebServiceSleepTime = 30000L;
 	public static int communitySizeThreshold = 3; //Discard community with nodes less than threshold
