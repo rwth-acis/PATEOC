@@ -73,6 +73,7 @@ public class AttributeSelectionFilter {
 		WrapperSubsetEval wrapper = new WrapperSubsetEval();
 		wrapper.setClassifier(model);
 		BestFirst searcher = new BestFirst();
+		searcher.setStartSet("1");
 		attributeselector.setEvaluator(wrapper);
 		attributeselector.setSearch(searcher);
 		attributeselector.setInputFormat(data);
