@@ -34,6 +34,7 @@ public class SocialNetworkAnalysis {
 	
 	public SocialNetworkAnalysis() {
 		// TODO Auto-generated constructor stub
+		System.out.println("Running SNA Extractor ..");
 		Logger.writeToFile(resultFile,"OUTPUT FILE FOR RESULTS\n\n",false);
 	}
 	
@@ -47,7 +48,6 @@ public class SocialNetworkAnalysis {
 		
 		int commSize = GlobalVariables.communitySizeThreshold;
 		
-		System.out.println("Running statistical extraction ...");
 		Logger.writeToLogln("Details extracted include ...");
 		Logger.writeToLogln("NodeSize, EdgeSize, N_Leaders, SizeRatio, LeaderRatio, Density, Cohesion, ClusterCoefficient, "
 				+ "SpearmanRho, DegreeCentrality, ClosenessCentrality, EigenVectorCentrality, "

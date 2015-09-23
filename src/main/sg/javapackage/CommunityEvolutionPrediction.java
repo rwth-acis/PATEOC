@@ -28,7 +28,7 @@ public class CommunityEvolutionPrediction {
 	public static void main(String[] args) {
 		
 		//Declarations
-		final double version = 4.1; 
+		final double version = 4.2; 
 		boolean isWeighted = false;
 		final long programStartTime = System.currentTimeMillis();
 		final float programRunTime;
@@ -37,34 +37,32 @@ public class CommunityEvolutionPrediction {
 		Algorithm selectedAlgo = Algorithm.slpa;
 		String InputPath=null;
 		String OCDPath=null;
+		File iniFile = null;
+		Ini preferences = null;
 		
 		System.out.println("||A FRAMEWORK FOR PREDICTIVE ANALYSIS OF TIME EVOLVING AND OVERLAPPING COMMUNITIES||");
 		System.out.println("Author: Stephen Gunashekar");
 		System.out.println("Version "+version);
 		System.out.println("------------------------------------------------------------------------------------");
-		System.out.println("Performing Initial Checksum of the input data...");
+		System.out.println("Performing Initial Checksum of the Input Data...");
+		
 		if(!InputManager.inputAssert(args)){
-			System.out.println("	Initial Checksum failed. Exit Code :101.");
+			System.out.println("==Initial Checksum Failed. Exit Code :101.");
 			System.exit(101);
 		}
-		else
-			System.out.println("	Input path verified.");
-
-		File iniFile = null;
-		Ini preferences = null;
+		else{
+			System.out.println("==Input Path Verified.");
+		}
 		
 		try{
+			
+			//Initializations
 			iniFile = new File(args[0]);
 			preferences = new Ini(iniFile);
 			datasetUsed = args[1];
-
 			Logger.setLogger();
-			Logger.writeToLogln("Framework Start Point...");
-			Logger.writeToLogln("--------------------------");
-			Logger.writeToLogln("");
 			
 			totalTimesteps = Integer.parseInt(preferences.get(datasetUsed.toString(), "TotalTimesteps"));
-	
 			if(preferences.get(datasetUsed.toString(), "IsWeighted").equalsIgnoreCase("true") ){
 				isWeighted = true;
 			}
@@ -87,17 +85,18 @@ public class CommunityEvolutionPrediction {
 				System.out.println("Unknown algorithm selected.");
 			}
 			
-			System.out.println("Selected Parameters are:- ");
-			System.out.println("-------------------------");
-			System.out.println("Dataset		  :: "+datasetUsed.toString().toUpperCase());
-			System.out.println("Timesteps	  :: "+totalTimesteps);
-			System.out.println("Algorithm 	  :: "+selectedAlgo.toString().toUpperCase());
-			System.out.println("Weighted	  :: "+isWeighted);
 			GlobalVariables.setResultFile("Results_"+datasetUsed.toString().toUpperCase()
 					+"_"+selectedAlgo.toString().toUpperCase());
 			GlobalVariables.setModelingFile("Model_"+datasetUsed.toString().toUpperCase()
 					+"_"+selectedAlgo.toString().toUpperCase());
-		
+			
+			System.out.println("\nSelected Input Parameters :- ");
+			System.out.println("-------------------------------");
+			System.out.println("==Dataset		  :: "+datasetUsed.toString().toUpperCase());
+			System.out.println("==Timesteps	  :: "+totalTimesteps);
+			System.out.println("==Algorithm 	  :: "+selectedAlgo.toString().toUpperCase());
+			System.out.println("==Weighted	  :: "+isWeighted);
+
 		}catch(IOException e){
 			System.out.println(e.getMessage()+"\nError Opening INI file. Exit Code :101");
 			System.exit(101);
@@ -107,14 +106,16 @@ public class CommunityEvolutionPrediction {
 		}
 		
 		/*-----------------------------------------------------------------------------------------------------------------*/
+		System.out.println("\nFramework Executing ...");
 		ModularPipeline pipeline = new ModularPipeline(InputPath, totalTimesteps, selectedAlgo, isWeighted, OCDPath);
 		pipeline.CommunityEvolutionPipeline();
+		System.out.println("Framework Completed.");
 		/*-----------------------------------------------------------------------------------------------------------------*/
 
 		//System Runtime
 		System.out.println("-------------------------------------------");
 		programRunTime = (((System.currentTimeMillis() - programStartTime) / 1000) / 60);
-		System.out.println("Total runtime of the program: " +programRunTime+" minutes.");
+		System.out.println("Total Runtime of the Program: " +programRunTime+" minutes.");
 	}
 
 }

@@ -34,39 +34,45 @@ public class ModularPipeline {
 		try{
 			
 			Logger.writeToLogln("/*------------------Pre-Processor---------------------*/");
+			System.out.print("Stage 1== Pre-Processor ");
 			PreProcessing prep = new PreProcessing(this.InputPath, this.totalTimesteps, this.selectedAlgo);
 			prep.processInputNodeList();
 			Logger.writeToLogln("");
-			System.out.println("Stage 1- Pre-Processor : Complete");
+			System.out.println(": Complete\n");
 	
 			Logger.writeToLogln("/*-----------Overlapping-Community-Detector-----------*/");
+			System.out.print("Stage 2== Community Dectector ");
 			OverlapCommunityDetection ocd = new OverlapCommunityDetection(selectedAlgo, isWeighted, totalTimesteps);
 			ocd.performOverlapCommunityDectection(InputPath,OCDPath);
 			Logger.writeToLogln("");
-			System.out.println("Stage 2- Community Dectector : Complete");
+			System.out.println(": Complete\n");
 	
 			Logger.writeToLogln("/*---------------Statistical-Extractor----------------*/");
+			System.out.println("Stage 3a== Statistical Extractor ");
 			SocialNetworkAnalysis sna = new SocialNetworkAnalysis();
 			sna.extractAnalytics();
-			System.out.println("Stage 3a- Statistical Extractor : Complete");
+			System.out.println("Stage 3a== : Complete");
 	
+			System.out.println("Stage 3b== Group Evolution Discoverer ");
 			EvolutionDetection ged = new EvolutionDetection();
 			ged.onetomanyCommunityEvolutionTracking();
 			ged.recursiveCommunityEvolutionTracking();
-			System.out.println("Stage 3b- Group Evolution Discoverer : Complete");
+			System.out.println("Stage 3b== : Complete\n");
 	
 			Logger.writeToLogln("/*----------------Predictive-Analysis-----------------*/");
+			System.out.println("Stage 4a== Prediction Formulator ");
 			PredictiveAnalysis learning = new PredictiveAnalysis();
 			learning.populateArffFile();
-			System.out.println("Stage 4a- Prediction Formulator : Complete");
+			System.out.println("Stage 4a== : Complete");
 	
+			System.out.println("Stage 4b== Supervised Learner ");
 			SupervisedLearning classify = new SupervisedLearning();
 			classify.performPredictiveAnalysis();
-			System.out.println("Stage 4b- Supervised Learner : Complete");
+			System.out.println("Stage 4b== : Complete\n");
 		
 		}catch(Exception e){
 			System.out.println(e.getMessage());
-			System.out.println("Exception Occured. Exit code :102");
+			System.out.println("Exception Occured in Pipiline Architecture. Exit code :102");
 			System.exit(102);
 		}
 	}

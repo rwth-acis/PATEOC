@@ -18,15 +18,15 @@ public class InputManager {
 		getManager();
 		
 		if (args.length < 2) {
-			System.out.println("Error: Invalid number of input arguments.");
-			System.out.println("Input format: \"Preferences.ini\" \"[dataset]\"");
+			System.out.println("Error: Invalid Number of Input Arguments.");
+			System.out.println("Input-Format: \"Preferences.ini\" \"[dataset]\"");
 			return false;
 		}
 		
 		File iniFile = new File(args[0]);
 		try{
 			if(!iniFile.exists() || !iniFile.isFile()) 
-				System.out.println("Error: Path to input ini file failed.");
+				System.out.println("Error: Invalid Path to Input INI File.");
 		}catch(Exception e) {
 			e.printStackTrace();
 			return false;

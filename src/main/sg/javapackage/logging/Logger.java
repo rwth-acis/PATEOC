@@ -42,6 +42,8 @@ public class Logger {
 		Logger.writeToLogln("------------------------------------------------------------------------------------");		
 		Logger.writeToLogln("||A FRAMEWORK FOR PREDICTIVE ANALYSIS OF TIME EVOLVING AND OVERLAPPING COMMUNITIES||");
 		Logger.writeToLogln("------------------------------------------------------------------------------------");
+		Logger.writeToLogln("Framework Start Point...");
+		Logger.writeToLogln("--------------------------\n");
 	}
 	protected static Logger getManager(){
 		if(manager == null)
