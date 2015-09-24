@@ -92,16 +92,16 @@ public class CommunityEvolutionPrediction {
 			
 			System.out.println("\nSelected Input Parameters :- ");
 			System.out.println("-------------------------------");
-			System.out.println("==Dataset		  :: "+datasetUsed.toString().toUpperCase());
+			System.out.println("==Dataset	  :: "+datasetUsed.toString().toUpperCase());
 			System.out.println("==Timesteps	  :: "+totalTimesteps);
 			System.out.println("==Algorithm 	  :: "+selectedAlgo.toString().toUpperCase());
 			System.out.println("==Weighted	  :: "+isWeighted);
 
 		}catch(IOException e){
-			System.out.println(e.getMessage()+"\nError Opening INI file. Exit Code :101");
+			System.out.println("\nError Opening INI file. Exit Code :101");
 			System.exit(101);
 		}catch(NumberFormatException n){
-			System.out.println(n.getMessage()+"\n Invalid Dataset. Exit Code :101");
+			System.out.println("\n Invalid Dataset. Exit Code :101");
 			System.exit(101);
 		}
 		
