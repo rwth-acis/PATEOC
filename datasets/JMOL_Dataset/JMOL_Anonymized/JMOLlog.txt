@@ -1,0 +1,12 @@
+Lines_in_input Total_accounted_output Edges Duplicate_edges Self_loops
+lines: 526 526=(37+489+0) ::Accounted
+lines: 1192 1192=(80+1112+0) ::Accounted
+lines: 4746 4746=(285+4444+17) ::Accounted
+lines: 3690 3690=(476+3190+24) ::Accounted
+lines: 4778 4778=(553+4186+39) ::Accounted
+lines: 3068 3068=(549+2466+53) ::Accounted
+lines: 2829 2829=(557+2219+53) ::Accounted
+lines: 2439 2439=(547+1850+42) ::Accounted
+lines: 4110 4110=(492+3569+49) ::Accounted
+lines: 2449 2449=(453+1942+54) ::Accounted
+lines: 957 957=(266+670+21) ::Accounted

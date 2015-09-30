@@ -1,0 +1,13 @@
+Lines_in_input Total_accounted_output Edges Duplicate_edges Self_loops
+lines: 689 690 690 0 0
+lines: 870 871 871 0 0
+lines: 1029 1030 1030 0 0
+lines: 1129 1130 1130 0 0
+lines: 1363 1364 1364 0 0
+lines: 1177 1178 1178 0 0
+lines: 865 866 866 0 0
+lines: 792 793 793 0 0
+lines: 985 986 986 0 0
+lines: 1280 1281 1281 0 0
+lines: 1177 1178 1178 0 0
+lines: 440 441 441 0 0
