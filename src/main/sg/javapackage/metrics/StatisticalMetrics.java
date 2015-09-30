@@ -20,29 +20,41 @@ public class StatisticalMetrics {
 	
 	private static String resultFile = GlobalVariables.resultFile;
 	public static Map<String,Integer> metricCounter = new HashMap<String, Integer>();
-	private static NewComparator tempComparator =  new NewComparator(metricCounter);
-    private static TreeMap<String,Integer> sorted_metricCounter = new TreeMap<String,Integer>(tempComparator);
+	//private static NewComparator tempComparator =  new NewComparator(metricCounter);
+    //private static TreeMap<String,Integer> sorted_metricCounter = new TreeMap<String,Integer>(tempComparator);
     
 	public StatisticalMetrics() {
 		// TODO Auto-generated constructor stub
 	}
 	
 	/**
+	 * initialize attributes
+	 */
+	public static void initializeSupervisedMetrics(Instances data){
+		int num_attributes = data.numAttributes()-4; //skipping all 4 nominal class
+		
+		for(int i=0; i<num_attributes; i++){
+			metricCounter.put(data.attribute(i).name(), 0);
+			
+		}
+		
+	}
+	/**
 	 * updates the counter for each feature in the training data passed.
 	 * 
 	 * @param data - training data
 	 */
 	public static void updateSupervisedMetrics(Instances data){
-		int num_attributes = data.numAttributes()-1; //skipping the predictor nominal class
+		int num_attributes = data.numAttributes()-1; //skipping the target class
 		
 		for(int i=0; i<num_attributes; i++){
 			
-			if(!metricCounter.containsKey(data.attribute(i).name().toLowerCase())){
-				metricCounter.put(data.attribute(i).name().toLowerCase(), 1);
+			if(!metricCounter.containsKey(data.attribute(i).name())){
+				metricCounter.put(data.attribute(i).name(), 1);
 			}
 			else{
-				int val = metricCounter.get(data.attribute(i).name().toLowerCase());
-				metricCounter.put(data.attribute(i).name().toLowerCase(), ++val);
+				int val = metricCounter.get(data.attribute(i).name());
+				metricCounter.put(data.attribute(i).name(), ++val);
 			}
 		}
 		
@@ -53,12 +65,19 @@ public class StatisticalMetrics {
 	 * in a sorted manner
 	 */
 	public static void printSupervisedMetrics(){
-		sorted_metricCounter.putAll(metricCounter);
+		/*sorted_metricCounter.putAll(metricCounter);
 		Logger.writeToFile(resultFile,"\nAttribute frequencies from wrapper method\n",true);
 		for(Map.Entry<String, Integer> entry : sorted_metricCounter.entrySet()){
 			Logger.writeToFile(resultFile,"Feature: " + entry.getKey() + ", Frequency :" + entry.getValue()+"\n",true); //OutputDump
 		}
-		sorted_metricCounter.clear();
+		sorted_metricCounter.clear();*/
+		
+		//sorted_metricCounter.putAll(metricCounter);
+		Logger.writeToFile(resultFile,"\nAttribute frequencies from wrapper method\n",true);
+		for(Map.Entry<String, Integer> entry : metricCounter.entrySet()){
+			Logger.writeToFile(resultFile,entry.getKey() + " , " + entry.getValue()+"\n",true); //OutputDump
+		}
+		metricCounter.clear();
 	}
 	
 	/**
