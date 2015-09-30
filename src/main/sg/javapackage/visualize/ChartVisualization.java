@@ -129,8 +129,8 @@ public class ChartVisualization extends JFrame{
 	
 	private void setLineChartOptions(JFreeChart chart) {
 		XYPlot plot = chart.getXYPlot();
-		//ValueAxis rangeAxis = plot.getRangeAxis();
-		//rangeAxis.setRange(40.0, 100.0);
+		ValueAxis rangeAxis = plot.getRangeAxis();
+		rangeAxis.setRange(40.0, 100.0);
 		
 		ValueAxis domainAxis = plot.getDomainAxis();
 		domainAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
@@ -150,7 +150,7 @@ public class ChartVisualization extends JFrame{
                 format, format);
         renderer.setBaseItemLabelGenerator(generator);
         renderer.setBaseItemLabelsVisible(true);
-        renderer.setBaseItemLabelFont(new Font("SansSerif", Font.PLAIN, 10));
+        renderer.setBaseItemLabelFont(new Font("SansSerif", Font.BOLD, 13));
         
 		// sets paint color for plot outlines
 		plot.setOutlinePaint(Color.BLUE);
