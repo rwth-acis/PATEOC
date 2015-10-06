@@ -148,7 +148,7 @@ public class SupervisedLearning {
 						Logger.writeToLogln(evaluation.toSummaryString("Results\n========", false));
 						Logger.writeToLogln(evaluation.toClassDetailsString());
 						
-						series[j].add(problemClass,Double.parseDouble(accuracy));
+						series[j].add(problemClass,Double.parseDouble(accuracy.replaceAll(",", ".")));
 					
 					}catch(IllegalArgumentException e){
 						System.out.println("Exception :"+e.getMessage());
