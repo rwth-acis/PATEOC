@@ -34,7 +34,7 @@ public class CustomGraphMLExporter {
 		} 
 	}
 	
-	public static void GraphMLExportWithProperties(CustomGraph Graph, int graphID) {
+	public static void GraphMLExportWithProperties(final CustomGraph Graph, int graphID) {
 
 		Logger.writeToLogln("Exported Graph "+graphID+" to GraphML file.");
 		
@@ -77,7 +77,7 @@ public class CustomGraphMLExporter {
 		} 
 	}
 	
-	public static void GraphMLExportSubgraph(CustomSubgraph Subgraph, int subgraphID) {
+	public static void GraphMLExportSubgraph(final CustomSubgraph Subgraph, int subgraphID) {
 
 		Logger.writeToLogln("Exported Graph "+subgraphID+" to GraphML file.");
 		

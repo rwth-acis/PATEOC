@@ -25,7 +25,9 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYSplineRenderer;
+import org.jfree.chart.title.LegendTitle;
 import org.jfree.data.xy.XYDataset;
+import org.jfree.ui.RectangleEdge;
 import org.jfree.util.ShapeUtilities;
 
 /**
@@ -57,7 +59,7 @@ public class ChartVisualization extends JFrame{
 	private JFreeChart createClassificationAccuracyChart(XYDataset plotdata,String title){
 		
 		JFreeChart chart = null;
-		String chartTitle = "Plot for Classification Accuracy vs Problem Class \n"+title;
+		String chartTitle = "Classification Accuracy vs Problem Class \n"+title;
 		String xAxisLabel = "Problem Class";
 		String yAxisLabel = "Algorithm Accuracy";
 		
@@ -71,7 +73,7 @@ public class ChartVisualization extends JFrame{
 	private JFreeChart createDegreeDistributionChart(XYDataset plotdata){
 		
 		JFreeChart chart = null;
-		String chartTitle = "Scatter Plot showing Degree Distribution \n following Power Law";
+		String chartTitle = "Scatter Plot showing Degree Distribution \n";
 		String xAxisLabel = "Degree";
 		String yAxisLabel = "Frequency";
 		
@@ -131,9 +133,12 @@ public class ChartVisualization extends JFrame{
 		XYPlot plot = chart.getXYPlot();
 		ValueAxis rangeAxis = plot.getRangeAxis();
 		rangeAxis.setRange(40.0, 100.0);
-		
+		rangeAxis.setLabelFont(new Font("SansSerif", Font.PLAIN, 20));
+
 		ValueAxis domainAxis = plot.getDomainAxis();
 		domainAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+		domainAxis.setLabelFont(new Font("SansSerif", Font.PLAIN, 20));
+
 		
 		XYSplineRenderer renderer = new XYSplineRenderer();
 		
@@ -169,6 +174,10 @@ public class ChartVisualization extends JFrame{
 		plot.setDomainGridlinesVisible(true);
 		plot.setDomainGridlinePaint(Color.BLACK);
 		
+		// sets legend position
+		LegendTitle legend = chart.getLegend();
+		legend.setPosition(RectangleEdge.RIGHT);
+		legend.setItemFont(new Font("SansSerif", Font.PLAIN, 16));
 	}
 	
 	private void setScatterChartOptions(JFreeChart chart){
@@ -194,9 +203,14 @@ public class ChartVisualization extends JFrame{
 		
 		plot.setDomainGridlinesVisible(false);
 		plot.setDomainGridlinePaint(Color.BLACK);
+		
+		// sets legend position
+		LegendTitle legend = chart.getLegend();
+		legend.setPosition(RectangleEdge.RIGHT);
+		legend.setItemFont(new Font("SansSerif", Font.PLAIN, 16));
 	}
 	
-	public static void generateChart(XYDataset dataset,int event){
+	public static void generateChart(final XYDataset dataset,int event){
 		
         final int e = event;
 		SwingUtilities.invokeLater(new Runnable() {

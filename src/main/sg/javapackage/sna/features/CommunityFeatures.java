@@ -197,7 +197,7 @@ public class CommunityFeatures {
 
 	                Double length = dij.getPathLength();
 	                
-	                if(Double.isFinite(length)){
+	                if(!Double.isInfinite(length)){
 	                	sum += length;
 	                }
 				}
