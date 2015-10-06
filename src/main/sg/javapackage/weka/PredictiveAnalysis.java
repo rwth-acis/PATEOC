@@ -79,15 +79,15 @@ public class PredictiveAnalysis {
 		data = new Instances("PredictionData", atts, 0);
 		
 		int i;
+		int commSize = GlobalVariables.communitySizeThreshold;
 		for(int timestep = 1;timestep < PreProcessing.totalGraphCount() ; timestep++) {
 			for(int community = 1; community<= OverlapCommunityDetection.numOfCommunities(timestep) ; community++) {
-				
-				totalInstances++;
-				
-				if(OverlapCommunityDetection.sizeOfCommunity(timestep,community) <= 3){
-					//Logger.writeToLogln("Skipped due to < 3 nodes "+community);
+								
+				if(OverlapCommunityDetection.sizeOfCommunity(timestep,community) <= commSize){
+					//Logger.writeToLogln("Skipped due to < threshold size "+community);
 					continue;
 				}
+				totalInstances++;
 				
 				Community C_i_P = OverlapCommunityDetection.Communities.get(timestep)[community];
 				base_vals = new double[data.numAttributes()];
@@ -184,7 +184,7 @@ public class PredictiveAnalysis {
 		
 		// 4. output data
 		Logger.writeToFile(arffFile, data.toString(),false);
-		Logger.writeToLogln("Modelling file successfully generated.");
+		System.out.println("Modelling File Successfully Generated.");
 		
 		Logger.writeToLogln("Total number of instances from "+PreProcessing.totalGraphCount()+" graphs are: "+totalInstances );
 		Logger.writeToLogln("SURVIVE: " +n_survive);

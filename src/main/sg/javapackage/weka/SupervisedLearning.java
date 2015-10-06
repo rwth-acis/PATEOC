@@ -6,19 +6,19 @@ import java.util.Random;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
+
 import main.sg.javapackage.domain.GlobalVariables;
 import main.sg.javapackage.logging.Logger;
 import main.sg.javapackage.metrics.StatisticalMetrics;
 import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
-import weka.classifiers.bayes.BayesNet;
 import weka.classifiers.bayes.NaiveBayes;
 import weka.classifiers.functions.Logistic;
 import weka.classifiers.functions.SMO;
 import weka.classifiers.meta.Bagging;
 import weka.classifiers.rules.DecisionTable;
 import weka.classifiers.trees.J48;
-import weka.classifiers.trees.SimpleCart;
+import weka.classifiers.trees.RandomForest;
 import weka.core.Instances;
 import main.sg.javapackage.utils.FileOperator;
 import main.sg.javapackage.visualize.ChartVisualization;
@@ -38,13 +38,12 @@ public class SupervisedLearning {
 	private Classifier[] models = { 
 			// Use a set of classifiers
 			new Logistic(),//logistic regression
-			new BayesNet(),
-			new NaiveBayes(),
+			new NaiveBayes(), //probabilistic
 			new J48(), // a decision tree
-			new DecisionTable(),//decision table majority classifier
-			new SimpleCart(), //classification and regression trees
+			new DecisionTable(),
 			new Bagging(),
-			new SMO() //svm
+			new SMO(), //svm
+			//new RandomForest() //tree classifier
 	};
 
 	public SupervisedLearning() throws IOException {
@@ -63,6 +62,8 @@ public class SupervisedLearning {
 		
 		printDetails();
 		Instances eventBasedTrainingData;
+		String accuracy = null, weightedPrecision = null, weightedFMeasure = null, weightedAreaUnderROC = null, weightedRecall = null;
+		String result = accuracy+","+weightedPrecision+","+weightedFMeasure+","+weightedAreaUnderROC;
 		
 		XYSeries[] series = new XYSeries[models.length];
 		
@@ -73,50 +74,56 @@ public class SupervisedLearning {
 			 * 		3-split
 			 * 		4-dissove
 			 */
+			
+			StatisticalMetrics.initializeSupervisedMetrics(base_TrainingData);
 
 			eventBasedTrainingData = null;
 			eventBasedTrainingData = EventBasedInstanceFilter.eventFilter(base_TrainingData, event);
 
 			for(int j=0;j< models.length ; j++){
-				Logger.writeToFile(resultFile,models[j].getClass().getSimpleName()+",", true);
+				//Logger.writeToFile(resultFile,models[j].getClass().getSimpleName()+",", true);
 				series[j] = new XYSeries(models[j].getClass().getSimpleName().toString());
 			}
 			Logger.writeToFile(resultFile,"\n",true);
 
-			for(int results=1; results<=3; results++){
+			for(int problemClass=1; problemClass<=3; problemClass++){
 				/*
 				 * 	Results:
 				 * 		1-With community features
 				 * 		2-With community features + leadership features + temporal features
 				 * 		3-Most suitable features picked using Machine Learning Attribute Selection
 				 */
-
+				Logger.writeToFile(resultFile,"Problem-Class "+problemClass+"\n",true);
 				Instances trainingData = null;
 				try{
 					
-				if(results == 1){
-					trainingData = AttributeSelectionFilter.performAttributeSelection1(eventBasedTrainingData);
-				}
-				else{
-					trainingData = AttributeSelectionFilter.performAttributeSelection2(eventBasedTrainingData);
-				}
-				
-				trainingData.setClassIndex(trainingData.numAttributes() - 1);
-				Logger.writeToLogln("Nominal Class - Prior-Processing");
-				Logger.writeToLogln(trainingData.attributeStats(trainingData.numAttributes() - 1).toString());
-				
-				trainingData = SyntheticOversamplingFilter.applySMOTE(trainingData);
-				trainingData = SpreadSubsampleFilter.applySpreadSubsample(trainingData);
-				
+					if(problemClass == 1){
+						trainingData = AttributeSelectionFilter.performAttributeSelection1(eventBasedTrainingData);
+					}
+					else{
+						trainingData = AttributeSelectionFilter.performAttributeSelection2(eventBasedTrainingData);
+					}
+					
+					trainingData.setClassIndex(trainingData.numAttributes() - 1);
+					Logger.writeToLogln("Nominal Class - Prior-Processing");
+					Logger.writeToLogln(trainingData.attributeStats(trainingData.numAttributes() - 1).toString());
+					
+					trainingData = SyntheticOversamplingFilter.applySMOTE(trainingData);
+					trainingData = SpreadSubsampleFilter.applySpreadSubsample(trainingData);
+					
+
 				}catch(Exception e){
 					continue;
 				}
+				
+				Logger.writeToFile(resultFile,"Classifier,Accuracy,Precision,Recall,FMeasure,AreaROC\n",true);
+				
 				// Run for each model
 				for (int j = 0; j < models.length; j++) {
 					try{
 					
 						Instances model_data = null;
-						if(results == 3){
+						if(problemClass == 3){
 							model_data = AttributeSelectionFilter.performAttributeSelection3(trainingData, models[j]);
 							StatisticalMetrics.updateSupervisedMetrics(model_data);
 						}else{
@@ -127,13 +134,21 @@ public class SupervisedLearning {
 						//For per Algorithm results ,add/remove below comments markers
 						//Logger.writeToLogln(":- using " + models[j].getClass().getSimpleName());
 						//Logger.writeToFile(resultFile,":- using " + models[j].getClass().getSimpleName(),true);
-						String result = String.format("%.3f",evaluation.pctCorrect());
-						Logger.writeToFile(resultFile,result+",",true);
+						accuracy = String.format("%.3f",evaluation.pctCorrect());
+						weightedPrecision = String.format("%.3f",evaluation.weightedPrecision()*100);
+						weightedFMeasure = String.format("%.3f",evaluation.weightedFMeasure()*100);
+						weightedRecall = String.format("%.3f",evaluation.weightedRecall()*100);
+						weightedAreaUnderROC = String.format("%.3f",evaluation.weightedAreaUnderROC()*100);
+
+						result = accuracy+","+weightedPrecision+","+weightedRecall+","+weightedFMeasure+","+weightedAreaUnderROC;
+
+
+						Logger.writeToFile(resultFile,models[j].getClass().getSimpleName()+","+result+"\n",true);
 						//Logger.writeToFile(resultFile," with "+(model_data.numAttributes()-1)+ " features\n",true);
 						Logger.writeToLogln(evaluation.toSummaryString("Results\n========", false));
 						Logger.writeToLogln(evaluation.toClassDetailsString());
 						
-						series[j].add(results,Double.parseDouble(result));
+						series[j].add(problemClass,Double.parseDouble(accuracy));
 					
 					}catch(IllegalArgumentException e){
 						System.out.println("Exception :"+e.getMessage());
@@ -145,15 +160,15 @@ public class SupervisedLearning {
 				Logger.writeToFile(resultFile,"\n",true);
 			}
 			//For per event split of metrics,add/remove below comment markers
-			//StatisticalMetrics.printSupervisedMetrics();
-			//StatisticalMetrics.clearSupervisedMetrics();
+			StatisticalMetrics.printSupervisedMetrics();
+			StatisticalMetrics.clearSupervisedMetrics();
 			
 			//Save plot as png
 			ChartVisualization.generateChart(convertResultToPlotDataset(series), event);
 			
 		}
 		//For aggregation of event metrics,add/remove below comment markers
-		StatisticalMetrics.printSupervisedMetrics();
+		//StatisticalMetrics.printSupervisedMetrics();
 
 	}
 	
@@ -162,7 +177,7 @@ public class SupervisedLearning {
 	 */
 	private void printDetails(){
 		
-		System.out.println("Running supervised learning ...");
+		System.out.println("Running Supervised Learning Task ...");
 		Logger.writeToLogln("Classification Task Results");
 		
 		Logger.writeToLogln("Selected set of classifiers :");
