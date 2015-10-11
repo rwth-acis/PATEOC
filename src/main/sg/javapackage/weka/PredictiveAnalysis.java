@@ -19,6 +19,7 @@ import weka.core.Instances;
 public class PredictiveAnalysis {
 	
 	private String arffFile = GlobalVariables.modelingFile;
+	private static String resultFile = GlobalVariables.resultFile;
 	
 	public PredictiveAnalysis(){
 		
@@ -33,7 +34,7 @@ public class PredictiveAnalysis {
 		long totalInstances = 0;
 		int n_survive = 0, n_merge = 0, n_split = 0, n_dissolve = 0;
 		
-		FastVector      atts, attVals;
+		FastVector      atts, attVals, attVals1;
 		Instances       data;
 		double[]        base_vals;
 		// 1. set up attributes
@@ -72,6 +73,13 @@ public class PredictiveAnalysis {
 		atts.addElement(new Attribute("Merge", attVals));
 		atts.addElement(new Attribute("Split", attVals));
 		atts.addElement(new Attribute("Dissolve", attVals));
+		
+		attVals1 = new FastVector();
+		attVals1.addElement("survive");
+		attVals1.addElement("merge");
+		attVals1.addElement("split");
+		attVals1.addElement("dissolve");
+		atts.addElement(new Attribute("Evolution",attVals1));
 
 
 		
@@ -178,19 +186,41 @@ public class PredictiveAnalysis {
 					break;
 				}
 				
+				
+				switch (C_i_P.getEvolution().toString().toLowerCase()) {
+				case "survive":
+					base_vals[i++] = attVals1.indexOf("survive");
+					break;
+				
+				case "merge":
+					base_vals[i++] = attVals1.indexOf("merge");
+					break;
+					
+				case "split":
+					base_vals[i++] = attVals1.indexOf("split");
+					break;
+					
+				case "dissolve":
+					base_vals[i++] = attVals1.indexOf("dissolve");
+					break;
+
+				default:
+					break;
+				}
+				
 				data.add(new Instance(1.0, base_vals));
 			}
 		}
 		
 		// 4. output data
 		Logger.writeToFile(arffFile, data.toString(),false);
-		System.out.println("Modelling File Successfully Generated.");
+		System.out.println("Base Modelling File Successfully Generated.");
 		
-		Logger.writeToLogln("Total number of instances from "+PreProcessing.totalGraphCount()+" graphs are: "+totalInstances );
-		Logger.writeToLogln("SURVIVE: " +n_survive);
-		Logger.writeToLogln("MERGE: " +n_merge);
-		Logger.writeToLogln("SPLIT: " +n_split);
-		Logger.writeToLogln("DISSOLVE: " +n_dissolve);
+		Logger.writeToFile(resultFile,"\nTotal number of instances from "+PreProcessing.totalGraphCount()+" graphs are: "+totalInstances +"\n",true);
+		Logger.writeToFile(resultFile,"SURVIVE: " +n_survive+"\n",true);
+		Logger.writeToFile(resultFile,"MERGE: " +n_merge+"\n",true);
+		Logger.writeToFile(resultFile,"SPLIT: " +n_split+"\n",true);
+		Logger.writeToFile(resultFile,"DISSOLVE: " +n_dissolve+"\n",true);
 	}
 		
 }
