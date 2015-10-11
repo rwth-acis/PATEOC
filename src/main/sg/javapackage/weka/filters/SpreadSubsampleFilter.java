@@ -1,5 +1,6 @@
 package main.sg.javapackage.weka.filters;
 
+import main.sg.javapackage.domain.GlobalVariables;
 import main.sg.javapackage.logging.Logger;
 import weka.core.Instances;
 import weka.filters.Filter;
@@ -13,6 +14,7 @@ import weka.filters.supervised.instance.SpreadSubsample;
  */
 public class SpreadSubsampleFilter {
 	
+	private static String resultFile = GlobalVariables.resultFile;
 	public SpreadSubsampleFilter() {
 		// TODO Auto-generated constructor stub
 	}
@@ -30,8 +32,8 @@ public class SpreadSubsampleFilter {
 		spreadsubsampler.setDistributionSpread(1.0);
 		spreadsubsampler.setInputFormat(data);
 		Instances updated_traningset = Filter.useFilter(data, spreadsubsampler);
-		Logger.writeToLogln("Nominal Class - After SpreadSubSample");
-		Logger.writeToLogln(updated_traningset.attributeStats(updated_traningset.numAttributes() - 1).toString());
+		Logger.writeToFile(resultFile,"Nominal Class - After SpreadSubSample\n",true);
+		Logger.writeToFile(resultFile,updated_traningset.attributeStats(updated_traningset.numAttributes() - 1).toString()+"\n",true);
 		return updated_traningset;
 	}
 

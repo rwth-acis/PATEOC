@@ -28,7 +28,8 @@ public class EventBasedInstanceFilter {
 	 * 			1-survive
 	 * 			2-merge
 	 * 			3-split
-	 * 			4-dissove
+	 * 			4-dissolve
+	 * 			5-multiclass
 	 * 
 	 * @return updated instances
 	 * @throws Exception
@@ -41,22 +42,27 @@ public class EventBasedInstanceFilter {
 		
 		if(i == 1){
 			Logger.writeToFile(resultFile,"\nFor SURVIVE :-\n",true);
-			options = ""+(n_attributes-2)+","+(n_attributes-1)+","+(n_attributes);
+			options = ""+(n_attributes-3)+","+(n_attributes-2)+","+(n_attributes-1)+","+(n_attributes);
 			remove.setAttributeIndices(options);
 		}
 		else if(i == 2){	
 			Logger.writeToFile(resultFile,"\nFor MERGE :-\n",true);
-			options = ""+(n_attributes-3)+","+(n_attributes-1)+","+(n_attributes);
+			options = ""+(n_attributes-4)+","+(n_attributes-2)+","+(n_attributes-1)+","+(n_attributes);
 			remove.setAttributeIndices(options);
 		}
 		else if(i == 3){
 			Logger.writeToFile(resultFile,"\nFor SPLIT :-\n",true);
-			options = ""+(n_attributes-3)+","+(n_attributes-2)+","+(n_attributes);
+			options = ""+(n_attributes-4)+","+(n_attributes-3)+","+(n_attributes-1)+","+(n_attributes);
 			remove.setAttributeIndices(options);
 		}
 		else if(i == 4){
 			Logger.writeToFile(resultFile,"\nFor DISSOLVE :-\n",true);
-			options = ""+(n_attributes-3)+","+(n_attributes-2)+","+(n_attributes-1);
+			options = ""+(n_attributes-4)+","+(n_attributes-3)+","+(n_attributes-2)+","+(n_attributes);
+			remove.setAttributeIndices(options);
+		}
+		else if(i == 5){
+			Logger.writeToFile(resultFile,"\nFor MULTICLASS :-\n",true);
+			options = ""+(n_attributes-4)+","+(n_attributes-3)+","+(n_attributes-2)+","+(n_attributes-1);
 			remove.setAttributeIndices(options);
 		}
 

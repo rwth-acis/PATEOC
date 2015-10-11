@@ -1,10 +1,7 @@
 package main.sg.javapackage.metrics;
 
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeMap;
-
 import main.sg.javapackage.domain.GlobalVariables;
 import main.sg.javapackage.logging.Logger;
 import weka.core.Instances;
@@ -20,8 +17,6 @@ public class StatisticalMetrics {
 	
 	private static String resultFile = GlobalVariables.resultFile;
 	public static Map<String,Integer> metricCounter = new HashMap<String, Integer>();
-	//private static NewComparator tempComparator =  new NewComparator(metricCounter);
-    //private static TreeMap<String,Integer> sorted_metricCounter = new TreeMap<String,Integer>(tempComparator);
     
 	public StatisticalMetrics() {
 		// TODO Auto-generated constructor stub
@@ -31,7 +26,7 @@ public class StatisticalMetrics {
 	 * initialize attributes
 	 */
 	public static void initializeSupervisedMetrics(Instances data){
-		int num_attributes = data.numAttributes()-4; //skipping all 4 nominal class
+		int num_attributes = data.numAttributes()-5; //skipping all 5 nominal class
 		
 		for(int i=0; i<num_attributes; i++){
 			metricCounter.put(data.attribute(i).name(), 0);
@@ -64,19 +59,12 @@ public class StatisticalMetrics {
 	 * prints the details from the counter hashmap
 	 * in a sorted manner
 	 */
-	public static void printSupervisedMetrics(){
-		/*sorted_metricCounter.putAll(metricCounter);
-		Logger.writeToFile(resultFile,"\nAttribute frequencies from wrapper method\n",true);
-		for(Map.Entry<String, Integer> entry : sorted_metricCounter.entrySet()){
-			Logger.writeToFile(resultFile,"Feature: " + entry.getKey() + ", Frequency :" + entry.getValue()+"\n",true); //OutputDump
-		}
-		sorted_metricCounter.clear();*/
-		
-		//sorted_metricCounter.putAll(metricCounter);
+	public static void printSupervisedMetrics(int event){
 		Logger.writeToFile(resultFile,"\nAttribute frequencies from wrapper method\n",true);
 		for(Map.Entry<String, Integer> entry : metricCounter.entrySet()){
 			Logger.writeToFile(resultFile,entry.getKey() + " , " + entry.getValue()+"\n",true); //OutputDump
 		}
+		HeatMap.aggregateHeatMap(metricCounter, event);
 		metricCounter.clear();
 	}
 	
@@ -87,25 +75,6 @@ public class StatisticalMetrics {
 		metricCounter.clear();
 	}
 	
-	/**
-	 * Comparator to sort the HashMap values using TreeMap
-	 * @author Stephen
-	 *
-	 */
-	static class NewComparator implements Comparator<String> {
-
-	    Map<String, Integer> base;
-	    public NewComparator(Map<String, Integer> base) {
-	        this.base = base;
-	    }
-	    public int compare(String a, String b) {
-	        if (base.get(a) >= base.get(b)) {
-	            return -1;
-	        } else {
-	            return 1;
-	        }
-	    }
-	}
 	
 
 }

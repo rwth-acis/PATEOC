@@ -62,7 +62,7 @@ public class DegreeDistribution {
         }
 		
 		//save plot as .png
-		ChartVisualization.generateChart(convertResultToPlotDataset(), 5);
+		ChartVisualization.generateChart(convertResultToPlotDataset(), 0);
 		clearContents();
 		
 	}

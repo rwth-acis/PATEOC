@@ -28,7 +28,7 @@ public class CommunityEvolutionPrediction {
 	public static void main(String[] args) {
 		
 		//Declarations
-		final double version = 4.2; 
+		final double version = 5.0; 
 		boolean isWeighted = false;
 		final long programStartTime = System.currentTimeMillis();
 		final float programRunTime;

@@ -1,5 +1,6 @@
 package main.sg.javapackage.weka.filters;
 
+import main.sg.javapackage.domain.GlobalVariables;
 import main.sg.javapackage.logging.Logger;
 import weka.core.Instances;
 import weka.filters.Filter;
@@ -13,6 +14,7 @@ import weka.filters.supervised.instance.SMOTE;
  */
 public class SyntheticOversamplingFilter {
 	
+	private static String resultFile = GlobalVariables.resultFile;
 	public SyntheticOversamplingFilter() {
 		// TODO Auto-generated constructor stub
 	}
@@ -30,8 +32,8 @@ public class SyntheticOversamplingFilter {
 		smote.setClassValue("0");
 		smote.setInputFormat(data);
 		Instances updated_traningset = Filter.useFilter(data, smote);
-		Logger.writeToLogln("Nominal Class - After SMOTE");
-		Logger.writeToLogln(updated_traningset.attributeStats(updated_traningset.numAttributes() - 1).toString());
+		Logger.writeToFile(resultFile,"Nominal Class - After SMOTE\n",true);
+		Logger.writeToFile(resultFile,updated_traningset.attributeStats(updated_traningset.numAttributes() - 1).toString()+"\n",true);
 		return updated_traningset;
 	}
 

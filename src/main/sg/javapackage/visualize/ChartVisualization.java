@@ -17,7 +17,7 @@ import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.axis.SymbolAxis;
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.labels.StandardXYItemLabelGenerator;
 import org.jfree.chart.labels.XYItemLabelGenerator;
@@ -26,6 +26,7 @@ import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYSplineRenderer;
 import org.jfree.chart.title.LegendTitle;
+import org.jfree.data.general.DatasetUtilities;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.ui.RectangleEdge;
 import org.jfree.util.ShapeUtilities;
@@ -65,7 +66,7 @@ public class ChartVisualization extends JFrame{
 		
 		chart = ChartFactory.createXYLineChart(chartTitle, 
 				xAxisLabel, yAxisLabel, plotdata, PlotOrientation.VERTICAL, true, true, false );
-		setLineChartOptions(chart);
+		setLineChartOptions(chart,plotdata);
 		
 		return chart;
 	}
@@ -109,6 +110,12 @@ public class ChartVisualization extends JFrame{
 			imageFile = new File("bin\\Result_Dissolve.png");
 		}
 		else if(event == 5){
+			charttitle = "MultiClass Event";
+			chart=createClassificationAccuracyChart(plotdata,charttitle);
+			imageFile = new File("bin\\Result_Multiclass.png");
+		}
+		
+		else if(event == 0){
 			chart=createDegreeDistributionChart(plotdata);
 			imageFile = new File("bin\\Result_DegreeDistribution.png");
 		}
@@ -129,17 +136,23 @@ public class ChartVisualization extends JFrame{
 		return new ChartPanel(chart);
 	}
 	
-	private void setLineChartOptions(JFreeChart chart) {
+	private void setLineChartOptions(JFreeChart chart, XYDataset plotdata) {
 		XYPlot plot = chart.getXYPlot();
+		SymbolAxis xAxisTicks = new SymbolAxis("Problem Class",new String[]{"","Intra-Features","Inter-Features","Selective-Features"});
+		xAxisTicks.setLabelFont(new Font("SansSerif", Font.PLAIN, 20));
+		xAxisTicks.setTickLabelFont(new Font("SansSerif", Font.PLAIN, 12));
+		xAxisTicks.setRange(0.9,3.1);
+		plot.setDomainAxis(xAxisTicks);
+		
+
 		ValueAxis rangeAxis = plot.getRangeAxis();
-		rangeAxis.setRange(40.0, 100.0);
+		
+		Number least = DatasetUtilities.findMinimumRangeValue(plotdata);
+		Number largest = DatasetUtilities.findMaximumRangeValue(plotdata);
+
+		rangeAxis.setRange(Math.max(0, (least.doubleValue()-5)), Math.min(100, (largest.doubleValue()+5)));
 		rangeAxis.setLabelFont(new Font("SansSerif", Font.PLAIN, 20));
 
-		ValueAxis domainAxis = plot.getDomainAxis();
-		domainAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
-		domainAxis.setLabelFont(new Font("SansSerif", Font.PLAIN, 20));
-
-		
 		XYSplineRenderer renderer = new XYSplineRenderer();
 		
 		// sets thickness for series (using strokes)
