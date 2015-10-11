@@ -44,8 +44,8 @@ public class OverlapCommunityDetection {
     private static Algorithm algo;
 	private static int totalGraphs;
     private boolean isWeighted = true;
-    private static final String BASE_PATH = "http://localhost:8080/ocd/";
-
+    //private static final String BASE_PATH = "http://localhost:8080/ocd/"; //137.226.232.16:7070
+    private static final String BASE_PATH = "http://137.226.232.16:7070/ocd/";
     /*
      * inputFormat=WEIGHTED_EDGE_LIST || inputFormat=UNWEIGHTED_EDGE_LIST
      */
@@ -68,7 +68,7 @@ public class OverlapCommunityDetection {
     
     private static final String ALGORITHM_LABEL_1 = "SPEAKER_LISTENER_LABEL_PROPAGATION_ALGORITHM";
     private static final String ALGORITHM_LABEL_2 = "RANDOM_WALK_LABEL_PROPAGATION_ALGORITHM";
-    private static final String ALGORITHM_LABEL_3 = "LINK_COMMUNITIES_ALGORITHM";
+    //private static final String ALGORITHM_LABEL_3 = "LINK_COMMUNITIES_ALGORITHM";
 
 	//Constructor
     public OverlapCommunityDetection(Algorithm selectedAlgo, boolean isWeighted, int totalGraphs) {
@@ -105,7 +105,7 @@ public class OverlapCommunityDetection {
     		    String graphContentAsString = LocalFileManager.getGraphAsString(formulateInputPath(inputGraphPath, timestep)).toString();
         		String covers = getCovers("InGraph_"+timestep,algo,graphContentAsString);
 
-        		//Parse the generated communities from SLAP/DMID
+        		//Parse the generated communities from SLPA/DMID
         		OCDWebServiceCoverWrapper parser = new OCDWebServiceCoverWrapper();
         		parser.parseCommunityMatrix(covers, timestep);
         		timestep++;
@@ -158,8 +158,8 @@ public class OverlapCommunityDetection {
      * @return String 
      */
     private String getBasicAuthEncodedString() {
-		//byte[] encoding = Base64.encodeBase64("Steven:xBmD9-58".getBytes());
-		byte[] encoding = Base64.encodeBase64("anonymous:anonymous".getBytes());
+		//byte[] encoding = Base64.encodeBase64("anonymous:anonymous".getBytes());
+    	byte[] encoding = Base64.encodeBase64("User:user".getBytes());
 		return new String(encoding);
     }
 
@@ -242,9 +242,9 @@ public class OverlapCommunityDetection {
 
 	try {
 		String url;
-		if(selectedAlgo == Algorithm.focs)
-			url = String.format(IDENTIFY_COVERS_URL, graphId, ALGORITHM_LABEL_3);
-		else if(selectedAlgo == Algorithm.dmid)
+//		if(selectedAlgo == Algorithm.focs)
+//			url = String.format(IDENTIFY_COVERS_URL, graphId, ALGORITHM_LABEL_3);
+		if(selectedAlgo == Algorithm.dmid)
 			url = String.format(IDENTIFY_COVERS_URL, graphId, ALGORITHM_LABEL_2);
 		else 
 			url = String.format(IDENTIFY_COVERS_URL, graphId, ALGORITHM_LABEL_1);
