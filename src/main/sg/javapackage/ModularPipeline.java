@@ -36,16 +36,16 @@ public class ModularPipeline {
 			Logger.writeToLogln("/*------------------Pre-Processor---------------------*/");
 			System.out.print("Stage 1== Pre-Processor ");
 			PreProcessing prep = new PreProcessing(this.InputPath, this.totalTimesteps, this.selectedAlgo);
-			prep.processInputNodeList();
+			prep.preprocessInputGraph();
 			Logger.writeToLogln("");
 			System.out.println(": Complete\n");
 	
 			Logger.writeToLogln("/*-----------Overlapping-Community-Detector-----------*/");
-			System.out.print("Stage 2== Community Dectector ");
+			System.out.println("Stage 2== Community Dectector ");
 			OverlapCommunityDetection ocd = new OverlapCommunityDetection(selectedAlgo, isWeighted, totalTimesteps);
 			ocd.performOverlapCommunityDectection(InputPath,OCDPath);
 			Logger.writeToLogln("");
-			System.out.println(": Complete\n");
+			System.out.println("Stage 2== : Complete\n");
 	
 			Logger.writeToLogln("/*---------------Statistical-Extractor----------------*/");
 			System.out.println("Stage 3a== Statistical Extractor ");

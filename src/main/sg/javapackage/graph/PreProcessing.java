@@ -48,7 +48,7 @@ public class PreProcessing {
 	 * 
 	 * @throws IOException
 	 */
-	public void processInputNodeList() {
+	public void preprocessInputGraph() {
 		
 		int timestep=1;
 		long counter = 0;
@@ -73,15 +73,15 @@ public class PreProcessing {
 					}
 					Node n1, n2;
 					if(!CompleteNodeList.containsKey((vertices[0].toString()))) {
-						n1 = new Node();
-						n1.setId(++counter);
-						n1.setLabel(vertices[0]);
+						n1 = new Node(++counter,vertices[0]);
+						//n1.setId(++counter);
+						//n1.setLabel(vertices[0]);
 						CompleteNodeList.put(vertices[0], n1);
 					}
 					if(!CompleteNodeList.containsKey((vertices[1].toString()))) {
-						n2 = new Node();
-						n2.setId(++counter);
-						n2.setLabel(vertices[1]);
+						n2 = new Node(++counter,vertices[1]);
+						//n2.setId(++counter);
+						//n2.setLabel(vertices[1]);
 						CompleteNodeList.put(vertices[1], n2);
 					}
 				}
@@ -106,7 +106,7 @@ public class PreProcessing {
 	 * 
 	 * @return graph
 	 */
-	public static CustomGraph graphFromEdgeList(int timestep){
+	public static CustomGraph loadInputGraphEdgeList(int timestep){
 		CustomGraph inputGraph = new CustomGraph(DefaultWeightedEdge.class);
 		String delimiter = evalauteFileDelimiter();
 
@@ -229,7 +229,7 @@ public class PreProcessing {
 	 * @return CustomGraph
 	 */
 	public static CustomGraph getParticularGraph(int timestep){
-		return graphFromEdgeList(timestep);
+		return loadInputGraphEdgeList(timestep);
 	}
 
 }
