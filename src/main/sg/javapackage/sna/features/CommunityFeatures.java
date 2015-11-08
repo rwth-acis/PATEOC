@@ -16,7 +16,7 @@ import org.apache.commons.math3.stat.ranking.NaturalRanking;
 import org.apache.commons.math3.stat.ranking.RankingAlgorithm;
 import org.apache.commons.math3.stat.ranking.TiesStrategy;
 import org.jgrapht.Graphs;
-import org.jgrapht.alg.DijkstraShortestPath;
+import org.jgrapht.alg.FloydWarshallShortestPaths;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
 /**
@@ -175,37 +175,85 @@ public class CommunityFeatures {
     	
     }
 
+//	public double calculateClosenessCentrality(List<Node> graphNodes) {
+//	//ClosenessCentrality, non-asserted
+//		
+//		Map<Node, Double> nodesMap_CC = new HashMap<Node, Double>();
+//		double closenessCentrality = 0.0;
+//		int numVert_1 = subgraph.vertexSet().size() - 1;
+//        boolean flag = false;
+//
+//		for (Node u : subgraph.vertexSet()) {
+//
+//			double sum = 0.0;
+//			for (Node v : subgraph.vertexSet()) {
+//
+//				DijkstraShortestPath<Node, DefaultWeightedEdge> dij;
+//
+//				if(u!=v){
+//					//TODO: CHECK THIS
+//					//dij = new DijkstraShortestPath<Node, DefaultWeightedEdge>(subgraph, u, v);
+//					dij = new DijkstraShortestPath<Node, DefaultWeightedEdge>(graph, u, v);
+//
+//	                Double length = dij.getPathLength();
+//	                
+//	                if(!Double.isInfinite(length)){
+//	                	sum += length;
+//	                }
+//				}
+//                //TODO:Is this necessary? HOW TO HANDLE INFINITE VALUE WHERE THERE IS NO EDGE BETWEEN U AND V
+//                if (Double.isInfinite(sum)) {
+//                	System.out.println("Closeness centrality infinity");
+//                	break;
+//                }
+//                
+//			}
+//            nodesMap_CC.put(u, (double) (numVert_1) / sum);
+//            
+//            for (int i = 0; i < graphNodes.size() && !flag ; i++) {
+//            	if(graphNodes.get(i).getId() == u.getId()){
+//                    graphNodes.get(i).setClosenessCentrality(nodesMap_CC.get(u));
+//                    flag=true;
+//                }
+//            }
+//            flag=false;
+//            
+//		}
+//		
+//		closenessCentrality = 0.0;
+//
+//		for (Map.Entry<Node, Double> entry : nodesMap_CC.entrySet())
+//        {
+//        	closenessCentrality += entry.getValue();    
+//        }
+//        closenessCentrality = (double) closenessCentrality / (double) nodesMap_CC.size();
+//        //System.out.println("Closeness: "+ closenessCentrality);
+//        return closenessCentrality;
+//	}
+	
 	public double calculateClosenessCentrality(List<Node> graphNodes) {
-	//ClosenessCentrality, non-asserted
+	//ClosenessCentrality, Asserted
 		
 		Map<Node, Double> nodesMap_CC = new HashMap<Node, Double>();
 		double closenessCentrality = 0.0;
 		int numVert_1 = subgraph.vertexSet().size() - 1;
         boolean flag = false;
 
+		FloydWarshallShortestPaths<Node, DefaultWeightedEdge> fws = new FloydWarshallShortestPaths<Node, DefaultWeightedEdge>(subgraph);
 		for (Node u : subgraph.vertexSet()) {
-
+			
+			fws.getShortestPaths(u);
 			double sum = 0.0;
 			for (Node v : subgraph.vertexSet()) {
-
-				DijkstraShortestPath<Node, DefaultWeightedEdge> dij;
-
 				if(u!=v){
-					//TODO: CHECK THIS
-					//dij = new DijkstraShortestPath<Node, DefaultWeightedEdge>(subgraph, u, v);
-					dij = new DijkstraShortestPath<Node, DefaultWeightedEdge>(graph, u, v);
-
-	                Double length = dij.getPathLength();
-	                
-	                if(!Double.isInfinite(length)){
-	                	sum += length;
-	                }
+					Double length = fws.shortestDistance(u, v);
+					if(length == null){
+						length = Double.POSITIVE_INFINITY;
+					}
+					sum+=length;
+					if (Double.isInfinite(sum)) 
+						break;
 				}
-                //TODO:Is this necessary? HOW TO HANDLE INFINITE VALUE WHERE THERE IS NO EDGE BETWEEN U AND V
-                if (Double.isInfinite(sum)) {
-                	System.out.println("Closeness centrality infinity");
-                	break;
-                }
                 
 			}
             nodesMap_CC.put(u, (double) (numVert_1) / sum);
@@ -230,7 +278,9 @@ public class CommunityFeatures {
         //System.out.println("Closeness: "+ closenessCentrality);
         return closenessCentrality;
 	}
-	
+
+    
+    
 	public double calculateLeaderClosenessCentrality(List<Node> graphNodes){
 		
 		double closenessCentrality = 0.0;

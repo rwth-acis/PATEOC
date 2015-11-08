@@ -96,20 +96,49 @@ public class OverlapCommunityDetection {
     		doca.parseDOCACommunities();
     	}
     	
-    	else if (algo == Algorithm.slpa || algo == Algorithm.dmid ){
+    	else if (algo == Algorithm.slpa){
     		
-    		//Perform OCD from web service
-        	while(timestep <= totalGraphs){
-    		    System.out.println("Processing Graph: "+timestep);
-        		Logger.writeToLogln("Processing Graph: "+timestep);        		
-    		    String graphContentAsString = LocalFileManager.getGraphAsString(formulateInputPath(inputGraphPath, timestep)).toString();
-        		String covers = getCovers("InGraph_"+timestep,algo,graphContentAsString);
-
-        		//Parse the generated communities from SLPA/DMID
-        		OCDWebServiceCoverWrapper parser = new OCDWebServiceCoverWrapper();
-        		parser.parseCommunityMatrix(covers, timestep);
+//    		//Perform OCD from web service
+//        	while(timestep <= totalGraphs){
+//    		    System.out.println("Processing Graph: "+timestep);
+//        		Logger.writeToLogln("Processing Graph: "+timestep);        		
+//    		    String graphContentAsString = LocalFileManager.getGraphAsString(formulateInputPath(inputGraphPath, timestep)).toString();
+//        		String covers = getCovers("InGraph_"+timestep,algo,graphContentAsString);
+//
+//        		//Parse the generated communities from SLPA/DMID
+//        		OCDWebServiceCoverWrapper parser = new OCDWebServiceCoverWrapper();
+//        		parser.parseCommunityMatrix(covers, timestep);
+//        		timestep++;
+//        	}
+    		while(timestep <= totalGraphs){
+        		NewSLPA slpa = new NewSLPA();
+    			slpa.runSLPA(timestep);
+    			timestep++;
+    		}
+    	}
+    	else if (algo == Algorithm.dmid){
+//    		//Perform OCD from web service
+//        	while(timestep <= totalGraphs){
+//    		    System.out.println("Processing Graph: "+timestep);
+//        		Logger.writeToLogln("Processing Graph: "+timestep);        		
+//    		    String graphContentAsString = LocalFileManager.getGraphAsString(formulateInputPath(inputGraphPath, timestep)).toString();
+//        		String covers = getCovers("InGraph_"+timestep,algo,graphContentAsString);
+//        		System.out.println(""+covers);
+//
+//        		//Parse the generated communities from SLPA/DMID
+//        		OCDWebServiceCoverWrapper parser = new OCDWebServiceCoverWrapper();
+//        		parser.parseCommunityMatrix(covers, timestep);
+//        		timestep++;
+//        	}
+    		while(timestep <= totalGraphs){
+        		NewDMID dmid = new NewDMID();
+        		dmid.runDMID(timestep);
         		timestep++;
-        	}
+    		}
+    	}
+    	else{
+    		System.out.println("Invalid Algorithm");
+    		System.exit(110);
     	}
     }
     
@@ -333,10 +362,11 @@ public class OverlapCommunityDetection {
     public String getCovers(String graphName, Algorithm selectedAlgo, String graphContent) {
 		String responseString=null;
     	if(uploadGraph(graphName, graphContent)){
+
     		identifyCovers(selectedAlgo);
     		//Thread wait to allow algorithm to complete execution
     		try {
-    			Thread.sleep(GlobalVariables.ocdWebServiceSleepTime);
+    			Thread.sleep(30000);
     		} catch (InterruptedException e) {
     			e.printStackTrace();
     		}

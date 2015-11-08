@@ -56,7 +56,7 @@ public class SocialNetworkAnalysis {
 		int timestep,community;
 		
 		DegreeDistribution powerlaw = new DegreeDistribution();
-		for(timestep = 1;timestep <= PreProcessing.totalGraphCount() ; timestep++) {
+		for(timestep = 1;timestep < PreProcessing.totalGraphCount() ; timestep++) {
 			
 			Logger.writeToLogln("");
 			Logger.writeToLogln("Graph "+ timestep +" statistical values -");
