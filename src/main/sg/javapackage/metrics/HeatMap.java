@@ -58,7 +58,7 @@ public class HeatMap {
         chart.setXAxisLabel("Events");
         chart.setYAxisLabel("Features");
         
-        //Labels for x axis events
+        //Labels for x axis events, preserving the order of call from SupervisedLearning.Java
         String[] xValues= {"Survive", "Merge" , "Split" , "Dissolve", "Multiclass"};
         chart.setXValues(xValues);      
         

@@ -83,7 +83,7 @@ public class SupervisedLearning {
 		 * 		1-survive
 		 * 		2-merge
 		 * 		3-split
-		 * 		4-dissove
+		 * 		4-dissolve
 		 * 		5-multiclass
 		 */
 		for(int event = 1; event <= 5; event++){

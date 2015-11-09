@@ -29,7 +29,7 @@ public class StatisticalMetrics {
 	 * initialize attributes
 	 */
 	public static void initializeSupervisedMetrics(Instances data){
-		int num_attributes = data.numAttributes()-5; //skipping all 5 nominal class
+		int num_attributes = data.numAttributes()-5; //skipping last 5 nominal class
 		
 		for(int i=0; i<num_attributes; i++){
 			metricCounter.put(data.attribute(i).name(), 0);
