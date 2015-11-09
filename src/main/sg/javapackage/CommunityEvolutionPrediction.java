@@ -28,7 +28,7 @@ public class CommunityEvolutionPrediction {
 	public static void main(String[] args) {
 		
 		/*local variables*/
-		final double version = 5.0; 
+		final double version = 6.0; 
 		final long programStartTime = System.currentTimeMillis();
 		final float programRunTime;
 		
