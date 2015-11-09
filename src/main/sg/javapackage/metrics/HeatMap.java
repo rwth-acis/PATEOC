@@ -64,13 +64,13 @@ public class HeatMap {
         
         //Labels for y axis features
         //Preserving the input sequence of attributes
-        String[] yValues= {"Cohesion","ClusteringCoeffecient","LEigenVectorCentrality","D_ClusteringCoeffecient",
-        		"Density","EigenVectorCentrality","LClosenessCentrality","D_Density","PreviousSurvive",
-        		"PreviousSplit","SpearmanRho","PreviousMerge","D_SpearmanRho","D_ClosenessCentrality",
-        		"D_DegreeCentrality","D_EigenVectorCentrality","ClosenessCentrality","D_SizeRatio",
-        		"PreviousDissolve","SizeRatio","D_LeaderRatio","DegreeCentrality","LeaderRatio",
-        		"LDegreeCentrality","D_Cohesion"};
-        
+        String[] yValues = {"SizeRatio", "Density", "Cohesion", "ClusteringCoeffecient", "SpearmanRho", 
+        		"DegreeCentrality", "ClosenessCentrality", "EigenVectorCentrality", "LeaderRatio", "LDegreeCentrality", 
+        		"LClosenessCentrality", "LEigenVectorCentrality", "D_SizeRatio", "D_LeaderRatio", "D_Density", 
+        		"D_Cohesion", "D_ClusteringCoeffecient", "D_SpearmanRho", "D_DegreeCentrality", "D_ClosenessCentrality", 
+        		"D_EigenVectorCentrality", "PreviouSurvive", "PreviousMerge", "PreviousSplit", "PreviousDissolve"
+        		
+        };
         //chart options
         chart.setYValues(yValues);
         chart.setHighValueColour(Color.BLUE);

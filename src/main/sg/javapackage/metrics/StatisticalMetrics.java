@@ -1,7 +1,8 @@
 package main.sg.javapackage.metrics;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
+
 import main.sg.javapackage.domain.GlobalVariables;
 import main.sg.javapackage.logging.Logger;
 import weka.core.Instances;
@@ -19,7 +20,7 @@ public class StatisticalMetrics {
 	private static String resultFile = GlobalVariables.resultFile;
 	
 	//map structure to store feature vs number of times used values
-	public static Map<String,Integer> metricCounter = new HashMap<String, Integer>();
+	public static Map<String,Integer> metricCounter = new LinkedHashMap<String, Integer>();
     
 	public StatisticalMetrics() {
 
