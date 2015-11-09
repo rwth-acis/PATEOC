@@ -17,7 +17,7 @@ public class EventBasedInstanceFilter {
 	
 	private static String resultFile = GlobalVariables.resultFile;
 	public EventBasedInstanceFilter() {
-		// TODO Auto-generated constructor stub
+		
 	}
 	
 	/**

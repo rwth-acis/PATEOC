@@ -27,13 +27,20 @@ import main.sg.javapackage.sna.features.LeadershipFeatures;
  */
 public class SocialNetworkAnalysis {
 	
+	//graph
 	private CustomGraph graph;
+	
+	//subgraph
 	private CustomSubgraph subgraph;
+	
+	//flag to extract subgraph
 	private boolean subgraphExtract = GlobalVariables.subgraphExtract;
+	
+	//pointer to results file
 	private static String resultFile = GlobalVariables.resultFile;
 	
+	//constructor
 	public SocialNetworkAnalysis() {
-		// TODO Auto-generated constructor stub
 		System.out.println("Running SNA Extractor ..");
 		Logger.writeToFile(resultFile,"OUTPUT FILE FOR RESULTS\n\n",false);
 	}
@@ -46,39 +53,60 @@ public class SocialNetworkAnalysis {
 	 */
 	public void extractAnalytics(){
 		
+		//minimum community size
 		int commSize = GlobalVariables.communitySizeThreshold;
+		
+		//local variables
+		int timestep,community;
 		
 		Logger.writeToLogln("Details extracted include ...");
 		Logger.writeToLogln("NodeSize, EdgeSize, N_Leaders, SizeRatio, LeaderRatio, Density, Cohesion, ClusterCoefficient, "
 				+ "SpearmanRho, DegreeCentrality, ClosenessCentrality, EigenVectorCentrality, "
 				+ "LDegreeCentrality, LClosenessCentrality, LEigenVectorCentrality ");
 		
-		int timestep,community;
 		
+		//initializing the distribution class for each input graph
 		DegreeDistribution powerlaw = new DegreeDistribution();
+		
+		//for each graph 1 to N-1
 		for(timestep = 1;timestep < PreProcessing.totalGraphCount() ; timestep++) {
 			
 			Logger.writeToLogln("");
 			Logger.writeToLogln("Graph "+ timestep +" statistical values -");
 			
+			//retrieve each graph
 			graph = PreProcessing.getParticularGraph(timestep);
+			
+			//aggregate the available degrees from the graph
 			powerlaw.updateDegreeFrequency(graph);
+			
+			//for each community in the graph
 			for(community = 1; community<= OverlapCommunityDetection.numOfCommunities(timestep) ; community++) {
 				
+				//retrieve the set of nodes from the master list
 				List<Node> graphNodes = OverlapCommunityDetection.getCommunityNodes(timestep, community);
 				Set<Node> tempNodeSet = new LinkedHashSet<Node>(reassertNodes(graphNodes));
+				
+				//convert community into subgraph
 				subgraph = new CustomSubgraph(graph, tempNodeSet, null);
+				
+				//flag to extract subgraph
 				if(subgraphExtract){
 					CustomGraphMLExporter.GraphMLExportSubgraph(subgraph, 100*timestep + community);
 				}
 				
+				//subgraph check
 				if(subgraph.vertexSet().size() < commSize || subgraph.edgeSet().size()< 2 ){
 					Logger.writeToLogln(community+" Skipped due to < Threshold nodes || < Disjoint graph");
 					continue;
 				}
 				
+				//calculate all features of the community
+				//Node-Level
 				LeadershipFeatures features1 = new LeadershipFeatures();
 				features1.assignLeaders(subgraph,timestep, community);
+				
+				//Community-Level
 				CommunityFeatures features2 = new CommunityFeatures(graph, subgraph);
 				Community C_i_P = OverlapCommunityDetection.Communities.get(timestep)[community];
 				C_i_P.setNumNodes(subgraph.vertexSet().size());
@@ -96,6 +124,7 @@ public class SocialNetworkAnalysis {
 				C_i_P.setAttrLeaderClosenessCentrality(features2.calculateLeaderClosenessCentrality(graphNodes));
 				C_i_P.setAttrLeaderEigenVectorCentrality(features2.calculateLeaderEigenVectorCentrality(graphNodes));
 				
+				//Printer
 				Logger.writeToLogln(community+
 						"- "+C_i_P.getNumNodes()+
 						","+ C_i_P.getNumEdges()+ 
@@ -116,6 +145,7 @@ public class SocialNetworkAnalysis {
 			System.out.println("Graph " + timestep + ": processed");
 
 		}
+		//compute power law for all the graphs together
 		powerlaw.computeDegreeDistribution();
 
 	}

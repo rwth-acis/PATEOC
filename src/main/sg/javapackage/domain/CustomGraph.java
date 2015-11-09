@@ -4,12 +4,13 @@ import org.jgrapht.EdgeFactory;
 import org.jgrapht.graph.ClassBasedEdgeFactory;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleWeightedGraph;
-
+/**
+ * Custom data structure to hold undirected graphs on which all operations are performed
+ * @author Stephen
+ *
+ */
 public class CustomGraph extends SimpleWeightedGraph<Node, DefaultWeightedEdge>{
 
-	//CustomGraph g = new CustomGraph(DefaultWeightedEdge.class);
-
-	
 	/**
 	 * 
 	 */

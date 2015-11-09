@@ -27,25 +27,30 @@ public class CommunityEvolutionPrediction {
 
 	public static void main(String[] args) {
 		
-		//Declarations
+		/*local variables*/
 		final double version = 5.0; 
-		boolean isWeighted = false;
 		final long programStartTime = System.currentTimeMillis();
 		final float programRunTime;
+		
+		/*input parameter holders*/
 		int totalTimesteps = 0;
+		boolean isWeighted = false;
 		String datasetUsed = null;
-		Algorithm selectedAlgo = Algorithm.slpa;
+		Algorithm selectedAlgo = null; // Default algorithm set to SLPA
 		String InputPath=null;
 		String OCDPath=null;
 		File iniFile = null;
 		Ini preferences = null;
 		
+		/*output formatter*/
 		System.out.println("||A FRAMEWORK FOR PREDICTIVE ANALYSIS OF TIME EVOLVING AND OVERLAPPING COMMUNITIES||");
 		System.out.println("Author: Stephen Gunashekar");
 		System.out.println("Version "+version);
 		System.out.println("------------------------------------------------------------------------------------");
 		System.out.println("Performing Initial Checksum of the Input Data...");
-		
+		/**
+		 * Assert input arguments
+		 */
 		if(!InputManager.inputAssert(args)){
 			System.out.println("==Initial Checksum Failed. Exit Code :101.");
 			System.exit(101);
@@ -53,15 +58,17 @@ public class CommunityEvolutionPrediction {
 		else{
 			System.out.println("==Input Path Verified.");
 		}
-		
 		try{
-			
-			//Initializations
+			/**
+			 * Initialize logging function
+			 */
 			iniFile = new File(args[0]);
 			preferences = new Ini(iniFile);
 			datasetUsed = args[1];
 			Logger.setLogger();
-			
+			/**
+			 * Read dataset details: Path and Algorithm from ini file
+			 */
 			totalTimesteps = Integer.parseInt(preferences.get(datasetUsed.toString(), "TotalTimesteps"));
 			if(preferences.get(datasetUsed.toString(), "IsWeighted").equalsIgnoreCase("true") ){
 				isWeighted = true;
@@ -82,9 +89,15 @@ public class CommunityEvolutionPrediction {
 				OCDPath = preferences.get(datasetUsed.toString(), "CoverPath3");
 			}
 			else{
-				System.out.println("Unknown algorithm selected.");
+				System.out.println("Invalid Algorithm Selected. SLPA selected by Default");
+				selectedAlgo = Algorithm.slpa;
+				InputPath = preferences.get(datasetUsed.toString(), "InputPath1.2");
+				OCDPath = null;
 			}
 			
+			/**
+			 * Create custom output files
+			 */
 			GlobalVariables.setResultFile("Results_"+datasetUsed.toString().toUpperCase()
 					+"_"+selectedAlgo.toString().toUpperCase());
 			GlobalVariables.setModelingFile("Model_"+datasetUsed.toString().toUpperCase()
@@ -101,18 +114,23 @@ public class CommunityEvolutionPrediction {
 			System.out.println("\nError Opening INI file. Exit Code :101");
 			System.exit(101);
 		}catch(NumberFormatException n){
-			System.out.println("\n Invalid Dataset. Exit Code :101");
+			System.out.println("\nInvalid Dataset. Exit Code :101");
 			System.exit(101);
 		}
 		
 		/*-----------------------------------------------------------------------------------------------------------------*/
+		/**
+		 * Framework pipeline starting point
+		 */
 		System.out.println("\nFramework Executing ...");
 		ModularPipeline pipeline = new ModularPipeline(InputPath, totalTimesteps, selectedAlgo, isWeighted, OCDPath);
 		pipeline.CommunityEvolutionPipeline();
 		System.out.println("Framework Completed.");
 		/*-----------------------------------------------------------------------------------------------------------------*/
 
-		//System Runtime
+		/**
+		 * Total Runtime
+		 */
 		System.out.println("-------------------------------------------");
 		programRunTime = (((System.currentTimeMillis() - programStartTime) / 1000) / 60);
 		System.out.println("Total Runtime of the Program: " +programRunTime+" minutes.");

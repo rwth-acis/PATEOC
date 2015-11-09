@@ -27,5 +27,6 @@
 	<classpathentry kind="lib" path="lib/jfreechart-1.0.19.jar"/>
 	<classpathentry kind="lib" path="lib/swtgraphics2d.jar"/>
 	<classpathentry kind="lib" path="lib/jheatchart-0.6.jar"/>
+	<classpathentry kind="lib" path="lib/la4j-0.4.9.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

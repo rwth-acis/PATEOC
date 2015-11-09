@@ -22,7 +22,7 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 public class NodeFeatures {
 
 	public NodeFeatures() {
-		// TODO Auto-generated constructor stub
+
 	}
 	/**
 	 * Calculation of EigenVector Centrality of nodes in a graph
@@ -34,12 +34,13 @@ public class NodeFeatures {
 		//Asserted
 		int numVert = subgraph.vertexSet().size();
 	    
+		//matrix of nxn vertices for undirected subgraph
 		DoubleMatrix eigenMatrix = new DoubleMatrix(new double[numVert][numVert]);
 		Set<DefaultWeightedEdge> edges = subgraph.edgeSet();
 		Set<Node> nodes = subgraph.vertexSet();
 		if(!edges.isEmpty()){
 			for(DefaultWeightedEdge edge : edges){
-				//Diagonal value = 1
+				//Diagonal value = 1 
 				eigenMatrix.put(getIndex(nodes, subgraph.getEdgeTarget(edge)),
 						getIndex(nodes, subgraph.getEdgeTarget(edge)), 1.0);
 				
@@ -53,6 +54,7 @@ public class NodeFeatures {
 						getIndex(nodes, subgraph.getEdgeTarget(edge)), 1.0);
 			}
 		}
+		//compute eigenvector
 		List<Double> eigenVector = getEigenvector(eigenMatrix);
 		List<Double> newEigenVector = new ArrayList<Double>();
 		
@@ -65,14 +67,13 @@ public class NodeFeatures {
 	
 	/**
 	 * Based on
-	 * http://www.markhneedham.com/blog/2013/08/05/javajblas-calculating-eigenvector-centrality-of-an-adjacency-matrix/
+	 * jblas-calculating-eigenvector-centrality-of-an-adjacency-matrix/
 	 */
 	private static List<Double> getEigenvector(DoubleMatrix matrix) {
 	    int maxIndex = getMaxIndex(matrix);		    
 	    ComplexDoubleMatrix eigenVectors = Eigen.eigenvectors(matrix)[0];
 	    return getEigenVector(eigenVectors, maxIndex);
 	}
-	 
 	private static int getMaxIndex(DoubleMatrix matrix) {
 	    ComplexDouble[] doubleMatrix = Eigen.eigenvalues(matrix).toArray();
 	    int maxIndex = 0;
@@ -84,7 +85,6 @@ public class NodeFeatures {
 	    }
 	    return maxIndex;
 	}
-	 
 	private static List<Double> getEigenVector(ComplexDoubleMatrix eigenvector, int columnId) {
 	    ComplexDoubleMatrix column = eigenvector.getColumn(columnId);
 	 
@@ -94,6 +94,7 @@ public class NodeFeatures {
 	    }
 	    return values;
 	}
+	
 	/**
 	 * Map value from one range to another range
 	 * 
@@ -109,6 +110,9 @@ public class NodeFeatures {
 	  return (value - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 	}
 	
+	/**
+	 * custom max value function
+	 */
 	private double getMax(List<Double> list){
 	    Double max = Double.MIN_VALUE;
 	    for(int i=0; i<list.size(); i++){

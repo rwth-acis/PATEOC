@@ -8,6 +8,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * support function for read and write local files
+ * @author Stephen
+ *
+ */
 public class LocalFileManager {
 	
 	private static String baseDir = "";
@@ -18,14 +23,14 @@ public class LocalFileManager {
     }
 
     public static void setBasedir(String dir) {
-	baseDir = "D:\\Eclipse\\workspace\\Draft";
+    	baseDir = "D:\\Eclipse\\workspace";
     }
 
     protected static LocalFileManager getManager() {
-	if (manager == null)
-	    manager = new LocalFileManager();
-
-	return manager;
+		if (manager == null)
+		    manager = new LocalFileManager();
+	
+		return manager;
     }
 
     public static byte[] getFile(String file) {
@@ -38,26 +43,26 @@ public class LocalFileManager {
     }
 
     public static List<String> getDir(String dir) {
-	try {
-	    File directory = new File(baseDir + dir);
-
-	    List<String> dirs = new ArrayList<String>();
-	    List<String> files = new ArrayList<String>();
-	    File[] dirContents = directory.listFiles();
-	    for (final File fileEntry : dirContents) {
-		if (fileEntry.isDirectory()) {
-		    dirs.add(fileEntry.getName());
-		} else {
-		    files.add(fileEntry.getName());
+		try {
+		    File directory = new File(baseDir + dir);
+	
+		    List<String> dirs = new ArrayList<String>();
+		    List<String> files = new ArrayList<String>();
+		    File[] dirContents = directory.listFiles();
+		    for (final File fileEntry : dirContents) {
+			if (fileEntry.isDirectory()) {
+			    dirs.add(fileEntry.getName());
+			} else {
+			    files.add(fileEntry.getName());
+			}
+		    }
+		    Collections.sort(dirs);
+		    Collections.sort(files);
+		    dirs.addAll(files);
+		    return dirs;
+		} catch (Exception e) {
+		    return null;
 		}
-	    }
-	    Collections.sort(dirs);
-	    Collections.sort(files);
-	    dirs.addAll(files);
-	    return dirs;
-	} catch (Exception e) {
-	    return null;
-	}
 
     }
 
@@ -70,11 +75,11 @@ public class LocalFileManager {
      */
     public static byte[] getFile(File file) {
 
-	byte[] result = new byte[] {};
-
-	try {
-	    result = Files.readAllBytes(file.toPath());
-	} catch (IOException e) {
+		byte[] result = new byte[] {};
+	
+		try {
+		    result = Files.readAllBytes(file.toPath());
+		} catch (IOException e) {
 
 	}
 
@@ -91,35 +96,21 @@ public class LocalFileManager {
      * @throws IOException
      */
     public static void writeFile(String file, String content) throws IOException {
-	PrintWriter writer = null;
-	try {
-	    writer = new PrintWriter(file, "UTF-8");
-	    writer.write(content);
-
-	} finally {
-	    if (writer != null)
-		writer.close();
-
-	}
+		PrintWriter writer = null;
+		try {
+		    writer = new PrintWriter(file, "UTF-8");
+		    writer.write(content);
+	
+		}
+		finally {
+		    if (writer != null)
+			writer.close();
+		}
     }
     
     public static String getGraphAsString(String filename) {
     	return new String(LocalFileManager.getFile(filename));
     }
-    /**
-     * Counts the number of input graphs from directory
-     * 
-     * @param file
-     *            file path
-     */
-/*    public static int getNumOfInputGraphs(String pathToGraphs){
-    	
-    	getManager();
-		
-		// Graph0 to GraphN
-		File inputFile= new File(pathToGraphs);
-		File inputDirectory = new File(inputFile.getParent());
-		return inputDirectory.listFiles().length;
-	}*/
+
 
 }

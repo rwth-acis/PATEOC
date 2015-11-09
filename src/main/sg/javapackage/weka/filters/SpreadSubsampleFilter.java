@@ -16,7 +16,7 @@ public class SpreadSubsampleFilter {
 	
 	private static String resultFile = GlobalVariables.resultFile;
 	public SpreadSubsampleFilter() {
-		// TODO Auto-generated constructor stub
+		
 	}
 	
 	/**

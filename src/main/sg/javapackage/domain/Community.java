@@ -5,9 +5,17 @@ import java.util.List;
 
 import main.sg.javapackage.domain.GlobalVariables.Evolution;
 
-
+/**
+ * Custom data structure of Community (Cover of a Graph) that represents a cluster
+ * and its properties in a time series graph
+ * @author Stephen
+ *
+ */
 public class Community {
 	
+	/**
+	 * Community attributes
+	 */
 	public static final String DEFAULT_COMMUNITY_LABEL = "Community_Default";
 	public static final String DEFAULT_COMMUNITY_HEADER = "Community_Header";
 	private String comLabel;
@@ -32,14 +40,17 @@ public class Community {
 	private Evolution nextEvent =null;
 	private Community previousCommunityInTime = null;
 	
+	/**
+	 * Constructor
+	 */
 	public Community(){
 		this.comLabel = DEFAULT_COMMUNITY_LABEL;
 		listOfNodes = new ArrayList<Node>();
 	}
 	
-	///////////////// GETTER/SETTERS /////////////////////
-	//////////////////////////////////////////////////////
-	
+	/**
+	 * GETTERS/SETTERS
+	 */
 	public void setHeaderLabel(){
 		//If label = header, id represents number of communities in that timestep
 		this.comLabel=DEFAULT_COMMUNITY_HEADER;
@@ -116,7 +127,10 @@ public class Community {
 	public void setAttrLeaderRatio(){
 		this.attr_LeadersRatio = calculateAttrLeaderRatio();
 	}
-	
+	/**
+	 * internal computation of ratio based on node's leader flag set to true
+	 * @return
+	 */
 	private double calculateAttrLeaderRatio(){
 		if(listOfNodes.size() != 0 && num_Leaders > 0){
 			return ((double) num_Leaders / listOfNodes.size());

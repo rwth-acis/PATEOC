@@ -1,7 +1,11 @@
 package main.sg.javapackage.utils;
 
 import java.io.File;
-
+/**
+ * support function for input managing and assertion
+ * @author Stephen
+ *
+ */
 public class InputManager {
 	private static InputManager manager;
 	public InputManager(){
@@ -34,5 +38,4 @@ public class InputManager {
 		
 		return true;
 	}
-
 }

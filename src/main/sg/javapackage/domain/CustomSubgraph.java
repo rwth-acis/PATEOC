@@ -5,7 +5,11 @@ import java.util.Set;
 import org.jgrapht.WeightedGraph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.UndirectedWeightedSubgraph;
-
+/**
+ * Custom data structure to hold graph representation of each community
+ * @author Stephen
+ *
+ */
 public class CustomSubgraph extends UndirectedWeightedSubgraph<Node, DefaultWeightedEdge>{
 	
 

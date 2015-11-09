@@ -30,35 +30,49 @@ import org.apache.http.util.EntityUtils;
 import org.w3c.dom.NodeList;
 
 /**
+ * Overlapping community detection module of the PATEOC pipeline
  * @author Stephen
- * based on the similar application from sathvik
- * 
- * https://github.com/rwth-acis/Expert-Recommender-Service
- * 
+ *  
  */
 public class OverlapCommunityDetection {
-	//Declarations
-	public static Map<Integer, Community[]> Communities = new HashMap<Integer, Community[]>(); 	//Cover list stored as a MAP
+	
+	/**
+	 * Map of time series community stored as pair <timestep, array_of_communities> 
+	 */
+	public static Map<Integer, Community[]> Communities = new HashMap<Integer, Community[]>();
+	
+	/**
+	 * Web-OCD service variables
+	 */
     private String graphId;
     private String coverId;
     private static Algorithm algo;
 	private static int totalGraphs;
     private boolean isWeighted = true;
+    private boolean runLocalVersion = GlobalVariables.runLocalVersion;
+    
+    /**
+     * http link to the Web-OCD service
+     */
     //private static final String BASE_PATH = "http://localhost:8080/ocd/"; //137.226.232.16:7070
     private static final String BASE_PATH = "http://137.226.232.16:7070/ocd/";
-    /*
+    
+    /**
+     * upload graph url
      * inputFormat=WEIGHTED_EDGE_LIST || inputFormat=UNWEIGHTED_EDGE_LIST
      */
     private static final String UPLOAD_URL_FORWEIGHTED = BASE_PATH + "graphs?name=%s&inputFormat=WEIGHTED_EDGE_LIST&doMakeUndirected=true";
     private static final String UPLOAD_URL_FORUNWEIGHTED = BASE_PATH + "graphs?name=%s&inputFormat=UNWEIGHTED_EDGE_LIST&doMakeUndirected=true";
 
         
-    /*
+    /**
+     * download cover url
      * outputFormat=META_XML || outputFormat=DEFAULT_XML || outputFormat=LABELED_MEMBERSHIP_MATRIX
      */
     private static final String GET_COVERS_URL = BASE_PATH + "covers/%s/graphs/%s?outputFormat=LABELED_MEMBERSHIP_MATRIX";
 
-    /*
+    /**
+     * running algorithm url
      * algorithm=RANDOM_WALK_LABEL_PROPAGATION_ALGORITHM || algorithm=SPEAKER_LISTENER_LABEL_PROPAGATION_ALGORITHM ||
      * algorithm=EXTENDED_SPEAKER_LISTENER_LABEL_PROPAGATION_ALGORITHM || algorithm=SSK_ALGORITHM ||
      * algorithm=LINK_COMMUNITIES_ALGORITHM || algorithm=WEIGHTED_LINK_COMMUNITIES_ALGORITHM || algorithm=CLIZZ_ALGORITHM ||
@@ -68,7 +82,6 @@ public class OverlapCommunityDetection {
     
     private static final String ALGORITHM_LABEL_1 = "SPEAKER_LISTENER_LABEL_PROPAGATION_ALGORITHM";
     private static final String ALGORITHM_LABEL_2 = "RANDOM_WALK_LABEL_PROPAGATION_ALGORITHM";
-    //private static final String ALGORITHM_LABEL_3 = "LINK_COMMUNITIES_ALGORITHM";
 
 	//Constructor
     public OverlapCommunityDetection(Algorithm selectedAlgo, boolean isWeighted, int totalGraphs) {
@@ -90,55 +103,59 @@ public class OverlapCommunityDetection {
     public void performOverlapCommunityDectection(String inputGraphPath, String DOCACoverPath){
     	
     	int timestep=1;
+    	/**
+    	 * selected algorithm = AFOCS
+    	 */
     	if(algo == Algorithm.focs){
     		//Parse directly the offline generated communities from FOCS
     		FOCSCoverWrapper doca = new FOCSCoverWrapper(DOCACoverPath);
-    		doca.parseDOCACommunities();
+    		doca.parseAFOCSCommunities();
     	}
     	
-    	else if (algo == Algorithm.slpa){
+    	/**
+    	 * flag to run OCD locally
+    	 */
+    	if(runLocalVersion){
     		
-//    		//Perform OCD from web service
-//        	while(timestep <= totalGraphs){
-//    		    System.out.println("Processing Graph: "+timestep);
-//        		Logger.writeToLogln("Processing Graph: "+timestep);        		
-//    		    String graphContentAsString = LocalFileManager.getGraphAsString(formulateInputPath(inputGraphPath, timestep)).toString();
-//        		String covers = getCovers("InGraph_"+timestep,algo,graphContentAsString);
-//
-//        		//Parse the generated communities from SLPA/DMID
-//        		OCDWebServiceCoverWrapper parser = new OCDWebServiceCoverWrapper();
-//        		parser.parseCommunityMatrix(covers, timestep);
-//        		timestep++;
-//        	}
-    		while(timestep <= totalGraphs){
-        		NewSLPA slpa = new NewSLPA();
-    			slpa.runSLPA(timestep);
-    			timestep++;
-    		}
+        	/**
+        	 * selected algorithm = SLPA
+        	 */
+        	if (algo == Algorithm.slpa){
+        		while(timestep <= totalGraphs){
+            		SLPA slpaalgorithm = new SLPA();
+        			slpaalgorithm.runSLPA(timestep);
+        			timestep++;
+        		}
+        	}
+        	
+        	/**
+        	 * selected algorithm = DMID
+        	 */
+        	else if (algo == Algorithm.dmid){
+        		while(timestep <= totalGraphs){
+            		DMID dmidalgorithm = new DMID();
+            		dmidalgorithm.runDMID(timestep);
+            		timestep++;
+        		}
+        	}
     	}
-    	else if (algo == Algorithm.dmid){
-//    		//Perform OCD from web service
-//        	while(timestep <= totalGraphs){
-//    		    System.out.println("Processing Graph: "+timestep);
-//        		Logger.writeToLogln("Processing Graph: "+timestep);        		
-//    		    String graphContentAsString = LocalFileManager.getGraphAsString(formulateInputPath(inputGraphPath, timestep)).toString();
-//        		String covers = getCovers("InGraph_"+timestep,algo,graphContentAsString);
-//        		System.out.println(""+covers);
-//
-//        		//Parse the generated communities from SLPA/DMID
-//        		OCDWebServiceCoverWrapper parser = new OCDWebServiceCoverWrapper();
-//        		parser.parseCommunityMatrix(covers, timestep);
-//        		timestep++;
-//        	}
-    		while(timestep <= totalGraphs){
-        		NewDMID dmid = new NewDMID();
-        		dmid.runDMID(timestep);
-        		timestep++;
-    		}
-    	}
+    	
+    	/**
+    	 * run OCD algorithm on the Web-OCD Service
+    	 */
     	else{
-    		System.out.println("Invalid Algorithm");
-    		System.exit(110);
+    		//Perform OCD from web service
+        	while(timestep <= totalGraphs){
+    		    System.out.println("Processing Graph: "+timestep);
+        		Logger.writeToLogln("Processing Graph: "+timestep);        		
+    		    String graphContentAsString = LocalFileManager.getGraphAsString(formulateInputPath(inputGraphPath, timestep)).toString();
+        		String covers = getCovers("InGraph_"+timestep,algo,graphContentAsString);
+
+        		//Parse the generated communities from SLPA/DMID
+        		OCDWebServiceCoverWrapper parser = new OCDWebServiceCoverWrapper();
+        		parser.parseCommunityMatrix(covers, timestep);
+        		timestep++;
+        	}
     	}
     }
     
@@ -182,12 +199,11 @@ public class OverlapCommunityDetection {
 	}
 
     /**
-     * returns username password for REST-OCD-Service
+     * returns login details for REST-OCD-Service
      * 
      * @return String 
      */
     private String getBasicAuthEncodedString() {
-		//byte[] encoding = Base64.encodeBase64("anonymous:anonymous".getBytes());
     	byte[] encoding = Base64.encodeBase64("User:user".getBytes());
 		return new String(encoding);
     }
@@ -271,8 +287,7 @@ public class OverlapCommunityDetection {
 
 	try {
 		String url;
-//		if(selectedAlgo == Algorithm.focs)
-//			url = String.format(IDENTIFY_COVERS_URL, graphId, ALGORITHM_LABEL_3);
+
 		if(selectedAlgo == Algorithm.dmid)
 			url = String.format(IDENTIFY_COVERS_URL, graphId, ALGORITHM_LABEL_2);
 		else 
@@ -366,7 +381,7 @@ public class OverlapCommunityDetection {
     		identifyCovers(selectedAlgo);
     		//Thread wait to allow algorithm to complete execution
     		try {
-    			Thread.sleep(30000);
+    			Thread.sleep(GlobalVariables.ocdWebServiceSleepTime);
     		} catch (InterruptedException e) {
     			e.printStackTrace();
     		}
@@ -375,8 +390,8 @@ public class OverlapCommunityDetection {
     		Logger.writeToLogln("Processed "+ graphName +" with graphID :"+ graphId + " and coverID " + coverId);
     	}
     	else{
-    		System.out.println("Covers not generated. Exiting.");
-    		System.exit(2);
+    		System.out.println("Covers not generated. Return Code 112.");
+    		System.exit(112);
     	}
 		
 		return responseString;

@@ -12,10 +12,15 @@ import main.sg.javapackage.domain.Node;
 import org.jgraph.graph.DefaultEdge;
 import org.jgrapht.UndirectedGraph;
 
+/**
+ * Class to serialize/ de-serialize the graph object 
+ * @author Stephen
+ *
+ */
 public class Serialize {
-	
+	//deprecated
 	public Serialize() {
-		// TODO Auto-generated constructor stub
+		
 	}
 	
 	public static void serializeGraphOutput(UndirectedGraph<Node, DefaultEdge> Graph, int timestep) throws IOException{

@@ -4,10 +4,15 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 
+/**
+ * support function for file operations
+ * @author Stephen
+ *
+ */
 public class FileOperator {
 	
 	public FileOperator() {
-		// TODO Auto-generated constructor stub
+		
 	}
 	
 	/**

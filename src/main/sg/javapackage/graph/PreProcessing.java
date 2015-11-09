@@ -17,19 +17,36 @@ import main.sg.javapackage.logging.Logger;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
 
-
+/**
+ * Pre-Processing Module responsible for reading input graph and formulating
+ * customgraph data structure for each snapshot of the time series graph
+ * @author Stephen
+ *
+ */
 public class PreProcessing {
 
-	//Declarations
+	//path to directory holding the input graph files
 	private static String basePath;	
+	
+	//total input graphs 
 	private static int totalGraphs;
+	
+	//selected OCD algorithm
 	private static Algorithm algo;
+	
+	//Primary data structure to hold every new node (to later build a recurring network)
 	public static Map<String,Node> CompleteNodeList = new HashMap<String,Node>();
+	
+	//default edge weight
 	static final double DEFAULT_EDGE_WEIGHT=1.0;
 	
-	//Constructor
+	/**
+	 * Constructor
+	 * @param BasePath
+	 * @param totalTimesteps
+	 * @param selectedAlgo
+	 */
 	public PreProcessing(String BasePath, int totalTimesteps, Algorithm selectedAlgo){
-		
 		PreProcessing.basePath = BasePath;
 		PreProcessing.totalGraphs = totalTimesteps;
 		PreProcessing.algo = selectedAlgo;	
@@ -52,43 +69,46 @@ public class PreProcessing {
 		
 		int timestep=1;
 		long counter = 0;
+		
+		//determine the delimiter to use
 		String delimiter = evalauteFileDelimiter();
 		
 		Logger.writeToLogln("Total number of input graphs: "+totalGraphs);
 		Logger.writeToLogln("Selected algorithm on the graphs: "+algo.toString().toUpperCase());
 
-		
-		while(timestep <= totalGraphs) { //Process each file corresponding to each timestep
+		//Process each file corresponding to each timestep
+		while(timestep <= totalGraphs) { 
 
+			//read input file
 			File inputFile= new File(formulateInputPath(timestep));
 			try (BufferedReader reader 
 					= new BufferedReader(new InputStreamReader(new FileInputStream(inputFile)))) {
 				String fileline = null; 
 				
+				//read each line
 				while( (fileline = reader.readLine())!= null ){
 					String [] vertices = fileline.split(delimiter); 
 					
+					//skip any header/comment
 					if(vertices[0].startsWith(";") || vertices[0].startsWith("#")){
 						continue;
 					}
+					
+					//create a custom Node structure for each vertex
 					Node n1, n2;
 					if(!CompleteNodeList.containsKey((vertices[0].toString()))) {
 						n1 = new Node(++counter,vertices[0]);
-						//n1.setId(++counter);
-						//n1.setLabel(vertices[0]);
 						CompleteNodeList.put(vertices[0], n1);
 					}
 					if(!CompleteNodeList.containsKey((vertices[1].toString()))) {
 						n2 = new Node(++counter,vertices[1]);
-						//n2.setId(++counter);
-						//n2.setLabel(vertices[1]);
 						CompleteNodeList.put(vertices[1], n2);
 					}
 				}
 				reader.close();
 			} catch (IOException e) {
 				e.printStackTrace();
-				System.out.println(e.getMessage()+"\nExit Code :102");
+				System.out.println(e.getMessage()+"\nReturn Code :111");
 			}
 			
 			timestep++;
@@ -107,31 +127,42 @@ public class PreProcessing {
 	 * @return graph
 	 */
 	public static CustomGraph loadInputGraphEdgeList(int timestep){
+		
+		//Undirected graph
 		CustomGraph inputGraph = new CustomGraph(DefaultWeightedEdge.class);
+		
+		//determine delimiter
 		String delimiter = evalauteFileDelimiter();
 
-		
+		//read input file
 		File inputFile= new File(formulateInputPath(timestep));
 		try (BufferedReader reader 
 				= new BufferedReader(new InputStreamReader(new FileInputStream(inputFile)))) {
 			String fileline = null; 
+			
+			//read each line
 			while( (fileline = reader.readLine())!= null ){
 
 				String [] vertices = fileline.split(delimiter); //\\s+ 
 				
+				//skip header/comment
 				if(vertices[0].startsWith(";") || vertices[0].startsWith("#")){
 					continue;
 				}
-				//Aggregate the graph from input file
+				
+				//build an undirected graph from input file
 				//If vertex already exists in graph, no action performed
 				inputGraph.addVertex(CompleteNodeList.get((vertices[0].toString())));
 				inputGraph.addVertex(CompleteNodeList.get((vertices[1].toString())));
 				DefaultWeightedEdge edge = null;
+				
+				//No Self loops
 				if(!vertices[0].equalsIgnoreCase(vertices[1])){
-					//No Self loops
 					edge = inputGraph.addEdge(CompleteNodeList.get((vertices[0].toString())), 
 							CompleteNodeList.get((vertices[1].toString())));
 				}
+				
+				//check 3rd column for edge weight
 				if(edge!=null){
 					if(vertices.length >2 )
 						inputGraph.setEdgeWeight(edge, Double.parseDouble(vertices[2]));
@@ -140,13 +171,14 @@ public class PreProcessing {
 				}
 				else{
 					//edge already exists
+					//do nothing
 				}
 
 			}
 			reader.close();
 		} catch (IOException e) {
 			e.printStackTrace();
-			System.out.println(e.getMessage()+"\nExit Code :102");
+			System.out.println(e.getMessage()+"\nReturn Code :111");
 		}
 		if(GlobalVariables.graphExtract){
 			CustomGraphMLExporter.GraphMLExportWithProperties(inputGraph,timestep);
@@ -181,7 +213,6 @@ public class PreProcessing {
 	 * 
 	 * @return String
 	 */
-	//TODO:Change file format to be independent next version
 	private static String formulateInputPath(int timestep){
 		String inputPath;
 		inputPath = basePath.substring(0,basePath.length()-5);

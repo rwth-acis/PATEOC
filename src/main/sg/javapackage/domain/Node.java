@@ -27,7 +27,7 @@ public class Node {
 	
 	/**
 	 * Constructors
-	 * @param n
+	 * 
 	 */
 	public Node(Node n){
 		this.id = n.id;
@@ -86,43 +86,30 @@ public class Node {
 		return this.attr_isLeader;
 	}
 
-	///////////////// SLPA SUPPORT METHODS /////////////////////
-	//////////////////////////////////////////////////////
+	
 	/**
 	 * SLPA ALGORITHM SUPPORT FUNCTIONS
 	 */
-	
-//	//Adjacenecy list holding all the neighbours of the given node
-//	private Set<Node> neighbhours;
-//		
-//	// Memory map used to hold the labelId and the count used for SLPA
-//	// algorithm.
-	private Map<Integer, Integer> memoryMap;
-//	
-//	// This represents the total number of counts(or communities) present in the
-//	// memory map of this node.
-	private int noOfCommunities;
-//
-//	/**
-//	 * Constructor to create the node structure.
-//	 */
-//	public Node(Integer source) {
-//		nodeId = source;
-//		initializeDataStructure();
-//	}
 
-//	/**
-//	 * Helper method to initialize the required data strucutres. This also makes
-//	 * sure that the memory of each node is initialized with a unique label as
-//	 * part of SLPA algorithm.
-//	 */
+	// Memory map used to hold the labelId and the count used for SLPA
+	// algorithm.
+	private Map<Integer, Integer> memoryMap;
+	
+	// This represents the total number of counts(or communities) present in the
+	// memory map of this node.
+	private int noOfCommunities;
+
+	/**
+	 * Helper method to initialize the required data structures. This also makes
+	 * sure that the memory of each node is initialized with a unique label as
+	 * part of SLPA algorithm.
+	 */
 	public void initializeSLPAVaribles() {
 		memoryMap = new LinkedHashMap <Integer, Integer>();
 		noOfCommunities = 1;
 		memoryMap.put((int) (long) this.id, 1);
 	}
-//	
-//	
+
 	/**
 	 * This function implements the listen step of the SLPA algorithm. Each
 	 * neighbor sends the selected label to the listener and the listener adds
@@ -177,12 +164,12 @@ public class Node {
 		return popularLabel;
 	}
 
-//	/**
-//	 * Each neighbor of the selected node randomly selects a label with probability
-//	 * proportional to the occurrence frequency of this label in its memory and sends
-//	 * the selected label to the listener.
-//	 * @return label
-//	 */
+	/**
+	 * Each neighbor of the selected node randomly selects a label with probability
+	 * proportional to the occurrence frequency of this label in its memory and sends
+	 * the selected label to the listener.
+	 * @return label
+	 */
 	private int speak() {
 		//generate a random double value
 		Random random = new Random();
@@ -200,44 +187,19 @@ public class Node {
 		}
 		return (int) (long) this.id;
 	}
-//	
-//	//Getters and Setters
-//	/**
-//	 * Adds a neighbor to the node's adjacency list
-//	 * @param destNode
-//	 */
-//	public void addNeighbour(Node destNode) {
-//		neighbhours.add(destNode);
-//	}
-//
-//	/**
-//	 * Returns the neighbors of the node
-//	 * @return set of neighbors
-//	 */
-//	public Set<Node> getNeighbhours() {
-//		return neighbhours;
-//	}
-//
-//	/**
-//	 * Returns the NodeId
-//	 * @return node ID
-//	 */
-//	public int getNodeId() {
-//		return nodeId;
-//	}
-//
-//	/**
-//	 * Returns the memory map of the node at given time t
-//	 * @return map
-//	 */
+
+	/**
+	 * Returns the memory map of the node at given time t
+	 * @return map
+	 */
 	public Map<Integer, Integer> getMemoryMap() {
 		return memoryMap;
 	}
-//
-//	/**
-//	 * Returns the total number of entries in the memory map's count
-//	 * @return int
-//	 */
+
+	/**
+	 * Returns the total number of entries in the memory map's count
+	 * @return int
+	 */
 	public int getNoOfCommunities() {
 		return noOfCommunities;
 	}

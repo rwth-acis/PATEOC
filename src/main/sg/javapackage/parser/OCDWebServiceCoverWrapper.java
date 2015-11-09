@@ -17,9 +17,16 @@ import main.sg.javapackage.ocd.OverlapCommunityDetection;
  */
 public class OCDWebServiceCoverWrapper {
 	
+	//constructor
 	public OCDWebServiceCoverWrapper() {
-		// TODO Auto-generated constructor stub
+
 	}
+	
+	/**
+	 * count number of communities from the cover file
+	 * @param cover
+	 * @return
+	 */
 	private int countNoOfCommunities(String cover){
 		
 		String values[] = null;
@@ -37,7 +44,12 @@ public class OCDWebServiceCoverWrapper {
 		return (values.length-1);
 		
 	}
-		    
+	
+	/**
+	 * parse the cover file to extract communities
+	 * @param coverMatrix
+	 * @param timestep
+	 */
 	public void parseCommunityMatrix(String coverMatrix, int timestep){
 		
 		Logger.writeToFile("bin\\Cover_"+timestep+".txt", coverMatrix,false);
@@ -55,9 +67,10 @@ public class OCDWebServiceCoverWrapper {
 		tempComm[0].setHeaderLabel();
 		
 		try{
-			
+			//read the file
 			Scanner scanner = new Scanner(coverMatrix);
 	
+			//read line
 			while (scanner.hasNextLine()) {
 			    String line = scanner.nextLine();
 			    String values[] = line.split("\\s+");
@@ -66,12 +79,11 @@ public class OCDWebServiceCoverWrapper {
 					String nodeValue = values[0].toString();
 					//New node for each community to hold its own unique values
 					Node node = new Node(PreProcessing.masterlistGetNode(nodeValue));
-	
+
 					if (values.length > 1) {
 					    for (int i = 1; i < values.length; i++) {
 						double memValue = Double.parseDouble(values[i]);
 							if (memValue != 0) {
-								//TODO: Re-check the membership values
 								tempComm[i].addNode(node);
 							}
 					    }
@@ -81,8 +93,8 @@ public class OCDWebServiceCoverWrapper {
 			scanner.close();
 		}catch(Exception e){
 			System.out.println(e.getMessage());
-			System.out.println("Invalid cover detected. Exit Code :5");
-			System.exit(5);
+			System.out.println("Invalid cover detected. Exit Code :112");
+			System.exit(112);
 		}
 		OverlapCommunityDetection.Communities.put(timestep, tempComm);
 		Logger.writeToLogln("Total number of communities :" + numOfCommunities);

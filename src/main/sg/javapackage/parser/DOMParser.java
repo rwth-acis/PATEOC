@@ -21,6 +21,7 @@ public class DOMParser {
 	
 	String xmlstring;
 
+	//constructor
     public DOMParser(String xmlstring) {
     	this.xmlstring = xmlstring;
     }

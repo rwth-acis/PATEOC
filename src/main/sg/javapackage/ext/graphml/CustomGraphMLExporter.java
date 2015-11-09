@@ -16,9 +16,17 @@ import org.jgrapht.ext.VertexNameProvider;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.xml.sax.SAXException;
 
-
+/**
+ * Interface implementation to export time series graph into GRAPHML file
+ * @author Stephen
+ *
+ */
 public class CustomGraphMLExporter {
-	
+	/**
+	 * export graph without any additional details
+	 * @param Graph input graph
+	 * @param graphID time-frame of the graph
+	 */
 	public static void GraphMLExport(CustomGraph Graph, int graphID) {
 
 		Logger.writeToLogln("Exported Graph "+graphID+" to GraphML file.");
@@ -29,11 +37,15 @@ public class CustomGraphMLExporter {
 			VE.export(PS, Graph); 
 			PS.close();
 		} catch (IOException | TransformerConfigurationException | SAXException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
 	}
 	
+	/**
+	 * export graph with additional vertex and edge details 
+	 * @param Graph
+	 * @param graphID
+	 */
 	public static void GraphMLExportWithProperties(final CustomGraph Graph, int graphID) {
 
 		Logger.writeToLogln("Exported Graph "+graphID+" to GraphML file.");
@@ -72,7 +84,6 @@ public class CustomGraphMLExporter {
 			VE.export(PS, Graph); 
 			PS.close();
 		} catch (IOException | TransformerConfigurationException | SAXException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
 	}
@@ -117,7 +128,6 @@ public class CustomGraphMLExporter {
 			VE.export(PS, Subgraph); 
 			PS.close();
 		} catch (IOException | TransformerConfigurationException | SAXException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
 	}

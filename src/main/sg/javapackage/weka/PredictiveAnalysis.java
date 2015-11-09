@@ -18,7 +18,10 @@ import weka.core.Instances;
  */
 public class PredictiveAnalysis {
 	
+	//pointer to weka modelling file
 	private String arffFile = GlobalVariables.modelingFile;
+	
+	//pointer to results file
 	private static String resultFile = GlobalVariables.resultFile;
 	
 	public PredictiveAnalysis(){
@@ -37,9 +40,9 @@ public class PredictiveAnalysis {
 		FastVector      atts, attVals, attVals1;
 		Instances       data;
 		double[]        base_vals;
-		// 1. set up attributes
 		atts = new FastVector();
-		// - numeric
+		
+		// set of all extracted node, community attributes
 		atts.addElement(new Attribute("SizeRatio"));
 		atts.addElement(new Attribute("Density"));
 		atts.addElement(new Attribute("Cohesion"));
@@ -53,6 +56,7 @@ public class PredictiveAnalysis {
 		atts.addElement(new Attribute("LClosenessCentrality"));
 		atts.addElement(new Attribute("LEigenVectorCentrality"));
 		
+		// set of all computed temporal attributes
 		atts.addElement(new Attribute("D_SizeRatio"));
 		atts.addElement(new Attribute("D_LeaderRatio"));
 		atts.addElement(new Attribute("D_Density"));
@@ -74,6 +78,7 @@ public class PredictiveAnalysis {
 		atts.addElement(new Attribute("Split", attVals));
 		atts.addElement(new Attribute("Dissolve", attVals));
 		
+		// set of all nominal features (labels)
 		attVals1 = new FastVector();
 		attVals1.addElement("survive");
 		attVals1.addElement("merge");
@@ -90,13 +95,15 @@ public class PredictiveAnalysis {
 		int commSize = GlobalVariables.communitySizeThreshold;
 		for(int timestep = 1;timestep < PreProcessing.totalGraphCount() ; timestep++) {
 			for(int community = 1; community<= OverlapCommunityDetection.numOfCommunities(timestep) ; community++) {
-								
+				
+				//skip small communities
 				if(OverlapCommunityDetection.sizeOfCommunity(timestep,community) <= commSize){
 					//Logger.writeToLogln("Skipped due to < threshold size "+community);
 					continue;
 				}
 				totalInstances++;
 				
+				//retrieve all extracted attribute values
 				Community C_i_P = OverlapCommunityDetection.Communities.get(timestep)[community];
 				base_vals = new double[data.numAttributes()];
 				i=0;
@@ -114,6 +121,8 @@ public class PredictiveAnalysis {
 				base_vals[i++] = C_i_P.getAttrLeaderClosenessCentrality();
 				base_vals[i++] = C_i_P.getAttrLeaderEigenVectorCentrality();
 
+				//check for evolution
+				//compute temporal changes with respect to the evolved community
 				Community temp;
 				if(C_i_P.existsPreviousCommunity()){
 					temp = C_i_P.getPreviousCommunity();
@@ -212,10 +221,11 @@ public class PredictiveAnalysis {
 			}
 		}
 		
-		// 4. output data
+		// write instances to weka arff file 
 		Logger.writeToFile(arffFile, data.toString(),false);
 		System.out.println("Base Modelling File Successfully Generated.");
 		
+		//total number of instances per event
 		Logger.writeToFile(resultFile,"\nTotal number of instances from "+PreProcessing.totalGraphCount()+" graphs are: "+totalInstances +"\n",true);
 		Logger.writeToFile(resultFile,"SURVIVE: " +n_survive+"\n",true);
 		Logger.writeToFile(resultFile,"MERGE: " +n_merge+"\n",true);

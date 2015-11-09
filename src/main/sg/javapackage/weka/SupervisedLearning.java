@@ -31,13 +31,20 @@ import main.sg.javapackage.weka.filters.*;
  * @author Stephen
  *
  */
+@SuppressWarnings("unused")
 public class SupervisedLearning {
 	
+	//core set of training data before any processing
 	private Instances base_TrainingData;
+	
+	//pointer to weka model file
 	private static String resultFile = GlobalVariables.resultFile;
+	
+	//pointer to results file
 	private static String modelingFile = GlobalVariables.modelingFile;
+	
+	// set of classifiers used for classification
 	private Classifier[] models = { 
-			// Use a set of classifiers
 			new Logistic(),//logistic regression
 			new NaiveBayes(), //probabilistic
 			new J48(), // a decision tree
@@ -47,6 +54,7 @@ public class SupervisedLearning {
 			//new RandomForest() //tree classifier
 	};
 
+	//constructor
 	public SupervisedLearning() throws IOException {
 		base_TrainingData = new Instances(FileOperator.readDataFile(modelingFile));
 		Logger.writeToFile(resultFile,"\nClassification Results...",true);
@@ -61,21 +69,25 @@ public class SupervisedLearning {
 	 */
 	public void performPredictiveAnalysis() throws Exception {
 		
+		//initial printer
 		printDetails();
+		
 		Instances eventBasedTrainingData;
 		String accuracy = null, weightedPrecision = null, weightedFMeasure = null, weightedRecall = null;
 		String result = accuracy+","+weightedPrecision+","+weightedFMeasure;
 		
+		//initializing chart values
 		XYSeries[] series = new XYSeries[models.length];
 		
+		/**	For each event:
+		 * 		1-survive
+		 * 		2-merge
+		 * 		3-split
+		 * 		4-dissove
+		 * 		5-multiclass
+		 */
 		for(int event = 1; event <= 5; event++){
-			/*	Events:
-			 * 		1-survive
-			 * 		2-merge
-			 * 		3-split
-			 * 		4-dissove
-			 * 		5-multiclass
-			 */
+
 			
 			//initialize all attributes for statistical measuring
 			StatisticalMetrics.initializeSupervisedMetrics(base_TrainingData);
@@ -86,18 +98,19 @@ public class SupervisedLearning {
 
 			//initialize the chart series
 			for(int j=0;j< models.length ; j++){
-				//Logger.writeToFile(resultFile,models[j].getClass().getSimpleName()+",", true);
 				series[j] = new XYSeries(models[j].getClass().getSimpleName().toString());
 			}
-			//Logger.writeToFile(resultFile,"\n",true);
 
+			
+			/**
+			 * 	spliting the feature set into categories
+			 * 	class:
+			 * 		1-With community features
+			 * 		2-With community features + leadership features + temporal features
+			 * 		3-Most suitable features picked using Machine Learning Attribute Selection
+			 */
 			for(int problemClass=1; problemClass<=3; problemClass++){
-				/*
-				 * 	Results:
-				 * 		1-With community features
-				 * 		2-With community features + leadership features + temporal features
-				 * 		3-Most suitable features picked using Machine Learning Attribute Selection
-				 */
+
 				Logger.writeToFile(resultFile,"Problem-Class "+problemClass+"\n",true);
 				Instances trainingData = null;
 				try{
@@ -106,10 +119,12 @@ public class SupervisedLearning {
 					if(problemClass == 1){
 						trainingData = AttributeSelectionFilter.performAttributeSelection1(eventBasedTrainingData);
 					}
+					
 					//otherwise (inter,selective features)
 					else{
 						trainingData = AttributeSelectionFilter.performAttributeSelection2(eventBasedTrainingData);
 					}
+					
 					//set the last attribute as the label
 					trainingData.setClassIndex(trainingData.numAttributes() - 1);
 					
@@ -133,28 +148,35 @@ public class SupervisedLearning {
 					try{
 					
 						Instances model_data = null;
+						
 						//for selective features
 						if(problemClass == 3){
+							
 							//run wrapper method to perform attribute selection
 							model_data = AttributeSelectionFilter.performAttributeSelection3(trainingData, models[j]);
+							
 							//update the statistical measures based on the selected attributes
 							StatisticalMetrics.updateSupervisedMetrics(model_data);
 						}
+						
 						//for inter features
 						else{
 							model_data = trainingData;
 						}
+						
 						//classification with 10-fold cross validation
 						Evaluation evaluation = new Evaluation(model_data);
 						evaluation.crossValidateModel(models[j], model_data, 10, new Random(1));
+						
 						//metrics
 						accuracy = String.format("%.3f",evaluation.pctCorrect());
 						weightedPrecision = String.format("%.3f",evaluation.weightedPrecision()*100);
 						weightedFMeasure = String.format("%.3f",evaluation.weightedFMeasure()*100);
 						weightedRecall = String.format("%.3f",evaluation.weightedRecall()*100);
-						//weightedAreaUnderROC = String.format("%.3f",evaluation.weightedAreaUnderROC()*100);
+
 						//aggregate the metrics
 						result = accuracy+","+weightedPrecision+","+weightedRecall+","+weightedFMeasure;
+						
 						//print metrics
 						Logger.writeToFile(resultFile,models[j].getClass().getSimpleName()+","+result+"\n",true);
 						Logger.writeToLogln(evaluation.toSummaryString("Results\n========", false));
@@ -164,9 +186,9 @@ public class SupervisedLearning {
 						series[j].add(problemClass,Double.parseDouble(accuracy.replaceAll(",", ".")));
 					
 					}catch(IllegalArgumentException e){
-						System.out.println("Exception :"+e.getMessage());
-						System.out.println("Insufficient training data. Exit Code :6" );
-						System.exit(6);
+						System.out.println("Insufficient training data. Exit Code :114" );
+						System.out.println("Exception : "+e.getMessage());
+						System.exit(114);
 					}
 					
 				}
@@ -201,6 +223,11 @@ public class SupervisedLearning {
 		Logger.writeToLogln("");
 	}
 	
+	/**
+	 * convert numerical metrics in JFreeChart format
+	 * @param series
+	 * @return
+	 */
 	private XYDataset convertResultToPlotDataset(XYSeries[] series) {
 		XYSeriesCollection dataset = new XYSeriesCollection();
 		

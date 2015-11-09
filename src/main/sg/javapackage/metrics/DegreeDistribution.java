@@ -22,17 +22,27 @@ import main.sg.javapackage.visualize.ChartVisualization;
  */
 public class DegreeDistribution {
 	
+	//map to hold pairs of degree vs frequency
 	private Map<Integer, Double> degreeDistribution = new HashMap<Integer, Double>();
+	
+	//number of nodes
 	private Long nodeCount;
+	
+	//number of degree instances
 	private Long degreeCount;
+	
+	//pointer to results file
 	private static String resultFile = GlobalVariables.resultFile;
 	
 	public DegreeDistribution() {
-		// TODO Auto-generated constructor stub
 		nodeCount = 0L;
 		degreeCount = 0L;
 	}
 	
+	/**
+	 * aggregate degree vs frequency for the input graph
+	 * @param graph
+	 */
 	public void updateDegreeFrequency(CustomGraph graph){
 		
 		nodeCount = (long) graph.vertexSet().size();
@@ -51,6 +61,9 @@ public class DegreeDistribution {
 		}
 	}
 	
+	/**
+	 * compute the degree distribution from the aggregated values from each graph
+	 */
 	public void computeDegreeDistribution(){
 		
 		Logger.writeToFile(resultFile,"Total Node Count : "+nodeCount+"\n",true);
@@ -61,17 +74,24 @@ public class DegreeDistribution {
 			Logger.writeToFile(resultFile,entry.getKey() + " : "+entry.getValue()+"\n",true);    
         }
 		
-		//save plot as .png
+		//save degree distribution plot as .png
 		ChartVisualization.generateChart(convertResultToPlotDataset(), 0);
 		clearContents();
 		
 	}
 	
+	/**
+	 * clear the map contents
+	 */
 	private void clearContents(){
 		nodeCount = 0L;
 		degreeDistribution.clear();
 	}
 	
+	/**
+	 * convert the degree distribution into JFreeChart format for plotting
+	 * @return
+	 */
 	private XYDataset convertResultToPlotDataset() {
 		XYSeriesCollection dataset = new XYSeriesCollection();
 		XYSeries series = new XYSeries("Binned Degree");

@@ -45,18 +45,31 @@ public class ChartVisualization extends JFrame{
 	 */
 	private static final long serialVersionUID = 1L;
 	
+	/**
+	 * constructor and initializer of render panel
+	 * @param plotData
+	 * @param event
+	 */
 	public ChartVisualization(XYDataset plotData,int event) {
-		// TODO Auto-generated constructor stub
+
 		super("PATEOC LineChart Renderer");
 		
 		JPanel chartPanel = createChartPanel(plotData,event);
 		add(chartPanel, BorderLayout.CENTER);
+		
+		//dimensions
 		setSize(800, 640);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);	
 		
 	}
 	
+	/**
+	 * creates the JFreeChart panel to render the accuracy chart
+	 * @param plotdata
+	 * @param title
+	 * @return
+	 */
 	private JFreeChart createClassificationAccuracyChart(XYDataset plotdata,String title){
 		
 		JFreeChart chart = null;
@@ -71,6 +84,12 @@ public class ChartVisualization extends JFrame{
 		return chart;
 	}
 	
+	/**
+	 * creates the JFreeChart panel to render the degree distribution chart
+	 * @param plotdata
+	 * @param title
+	 * @return
+	 */
 	private JFreeChart createDegreeDistributionChart(XYDataset plotdata){
 		
 		JFreeChart chart = null;
@@ -84,37 +103,54 @@ public class ChartVisualization extends JFrame{
 		return chart;
 	}
 	
+	/**
+	 * support function to create the associated chart
+	 * @param plotdata
+	 * @param event
+	 * @return
+	 */
 	private JPanel createChartPanel(XYDataset plotdata, int event){
 				
 		JFreeChart chart = null;
 		File imageFile=null;
 		String charttitle=null;
+		
+		//Survive
 		if(event == 1){
 			charttitle = "Survive Event";
 			chart=createClassificationAccuracyChart(plotdata,charttitle);
 			imageFile = new File("bin\\Result_Survive.png");
 		}
+		
+		//Merge
 		else if(event == 2){
 			charttitle = "Merge Event";
 			chart=createClassificationAccuracyChart(plotdata,charttitle);
 			imageFile = new File("bin\\Result_Merge.png");
 		}
+		
+		//Split
 		else if(event == 3){
 			charttitle = "Split Event";
 			chart=createClassificationAccuracyChart(plotdata,charttitle);
 			imageFile = new File("bin\\Result_Split.png");
-		}	
+		}
+		
+		//Dissolve
 		else if(event == 4){
 			charttitle = "Dissolve Event";
 			chart=createClassificationAccuracyChart(plotdata,charttitle);
 			imageFile = new File("bin\\Result_Dissolve.png");
 		}
+		
+		//Multiclass
 		else if(event == 5){
 			charttitle = "MultiClass Event";
 			chart=createClassificationAccuracyChart(plotdata,charttitle);
 			imageFile = new File("bin\\Result_Multiclass.png");
 		}
 		
+		//Degree Distribution
 		else if(event == 0){
 			chart=createDegreeDistributionChart(plotdata);
 			imageFile = new File("bin\\Result_DegreeDistribution.png");
@@ -136,6 +172,11 @@ public class ChartVisualization extends JFrame{
 		return new ChartPanel(chart);
 	}
 	
+	/**
+	 * set the line chart rendering options
+	 * @param chart
+	 * @param plotdata
+	 */
 	private void setLineChartOptions(JFreeChart chart, XYDataset plotdata) {
 		XYPlot plot = chart.getXYPlot();
 		SymbolAxis xAxisTicks = new SymbolAxis("Problem Class",new String[]{"","Intra-Features","Inter-Features","Selective-Features"});
@@ -193,6 +234,10 @@ public class ChartVisualization extends JFrame{
 		legend.setItemFont(new Font("SansSerif", Font.PLAIN, 16));
 	}
 	
+	/**
+	 * set the scatter chart rendering options
+	 * @param chart
+	 */
 	private void setScatterChartOptions(JFreeChart chart){
 		
 		XYPlot plot = chart.getXYPlot();
@@ -223,6 +268,11 @@ public class ChartVisualization extends JFrame{
 		legend.setItemFont(new Font("SansSerif", Font.PLAIN, 16));
 	}
 	
+	/**
+	 * chart invoker
+	 * @param dataset
+	 * @param event
+	 */
 	public static void generateChart(final XYDataset dataset,int event){
 		
         final int e = event;

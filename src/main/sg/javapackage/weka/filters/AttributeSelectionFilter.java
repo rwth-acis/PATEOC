@@ -22,7 +22,7 @@ import weka.filters.unsupervised.attribute.Remove;
 public class AttributeSelectionFilter {
 	
 	public AttributeSelectionFilter() {
-		// TODO Auto-generated constructor stub
+		
 	}
 	
 	/**

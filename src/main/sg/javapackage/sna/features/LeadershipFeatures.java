@@ -15,23 +15,35 @@ import main.sg.javapackage.ocd.OverlapCommunityDetection;
  */
 public class LeadershipFeatures {
 	
+	//threshold for detecting leaders
 	private double leadershipThreshold;
+	
+	//constructor
 	public LeadershipFeatures() {
-		// TODO Auto-generated constructor stub
+
 	}
 	
+	/**
+	 * assigning leader based on the computed eigenvector centrality values for each node
+	 * @param subgraph
+	 * @param timestep
+	 * @param community
+	 */
 	public void assignLeaders(CustomSubgraph subgraph, int timestep, int community){
-		//asserted
+		
+		//list of nodes from the community structure
 		List<Node> graphNodes = OverlapCommunityDetection.getCommunityNodes(timestep, community);
 		
+		//compute eigenvector centrality
 		NodeFeatures nodefeatures = new NodeFeatures();
 		List<Double> eigenvector = nodefeatures.eigenvectorcentralityLeadershipCalculation(subgraph);
+
 		int leadersCount=0;
-		//TODO: strong left skewness and a peak near the maximum for mean+sd not feasible
-		leadershipThreshold = GlobalVariables.leaderThreshold;
-		
 		boolean flag = false;
 		int j=0;
+		leadershipThreshold = GlobalVariables.leaderThreshold;
+
+		//assign node as leader if the centrality is greater than the threshold
 		for (Node node : subgraph.vertexSet()) {
 			for (int i = 0; i < graphNodes.size() && !flag ; i++) {
             	if(node.getId() == graphNodes.get(i).getId()){

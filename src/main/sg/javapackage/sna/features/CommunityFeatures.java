@@ -27,15 +27,22 @@ import org.jgrapht.graph.DefaultWeightedEdge;
  */
 public class CommunityFeatures {
 	
+	//graph
 	private CustomGraph graph;
+	
+	//subgraph
 	private CustomSubgraph subgraph;
 	
+	//constructor
 	public CommunityFeatures(CustomGraph graph, CustomSubgraph subgraph) {
-		// TODO Auto-generated constructor stub
 		this.graph = graph;
 		this.subgraph = subgraph;
 	}
 	
+	/**
+	 * compute community's ratio of size with respect to the entire graph
+	 * 
+	 */
 	public double calculateSizeRatio(){
 	//Asserted
 		
@@ -46,6 +53,10 @@ public class CommunityFeatures {
 		return sizeRatio;
 	}
 	
+	/**
+	 * compute community's edge density value 
+	 * 
+	 */
 	public double calculateDensity() {
 	//Asserted
 		
@@ -65,9 +76,12 @@ public class CommunityFeatures {
 		return density;
 	}
 	
+	/**
+	 * compute community's cohesion value 
+	 * 
+	 */
 	public double calculateCohesion(){
     //Cohesion, Non-asserted
-    	//TODO: RECHECK HERE
 		long numVert = subgraph.vertexSet().size();
 		long graphNumVert = graph.vertexSet().size();
     	double cohesion = Double.NaN;
@@ -92,6 +106,10 @@ public class CommunityFeatures {
     	return cohesion;
     }
 	
+	/**
+	 * compute community's clustering coefficient value 
+	 * 
+	 */
 	public double calculateClusteringCoefficient() {
     //Asserted 
 
@@ -125,7 +143,11 @@ public class CommunityFeatures {
         //System.out.println("Value :" + (double) avgCCoeff);
         return avgCCoeff;
     }
-		
+	
+	/**
+	 * compute community's degree centrality value 
+	 * 
+	 */
     public double calculateDegreeCentrality(List<Node> graphNodes) {
     	//Asserted
         Map<Node, Double> nodesMap_DegCen = new HashMap<Node, Double>();
@@ -137,7 +159,6 @@ public class CommunityFeatures {
         	degCentrality = (double) subgraph.degreeOf(node) / (double) numVert_1;
             nodesMap_DegCen.put(node, degCentrality);
             
-            //TODO: CHECK AGAIN. 
             for (int i = 0; i < graphNodes.size() && !flag ; i++) {
             	if(graphNodes.get(i).getId() == node.getId()){
                     graphNodes.get(i).setDegreeCentrality(degCentrality);
@@ -158,6 +179,10 @@ public class CommunityFeatures {
         return degCentrality;
     }
 	
+	/**
+	 * compute community's degree centrality value of its leader nodes
+	 * 
+	 */
     public double calculateLeaderDegreeCentrality(List<Node> graphNodes){
     	//Asserted
         int leadercount=0;
@@ -175,62 +200,10 @@ public class CommunityFeatures {
     	
     }
 
-//	public double calculateClosenessCentrality(List<Node> graphNodes) {
-//	//ClosenessCentrality, non-asserted
-//		
-//		Map<Node, Double> nodesMap_CC = new HashMap<Node, Double>();
-//		double closenessCentrality = 0.0;
-//		int numVert_1 = subgraph.vertexSet().size() - 1;
-//        boolean flag = false;
-//
-//		for (Node u : subgraph.vertexSet()) {
-//
-//			double sum = 0.0;
-//			for (Node v : subgraph.vertexSet()) {
-//
-//				DijkstraShortestPath<Node, DefaultWeightedEdge> dij;
-//
-//				if(u!=v){
-//					//TODO: CHECK THIS
-//					//dij = new DijkstraShortestPath<Node, DefaultWeightedEdge>(subgraph, u, v);
-//					dij = new DijkstraShortestPath<Node, DefaultWeightedEdge>(graph, u, v);
-//
-//	                Double length = dij.getPathLength();
-//	                
-//	                if(!Double.isInfinite(length)){
-//	                	sum += length;
-//	                }
-//				}
-//                //TODO:Is this necessary? HOW TO HANDLE INFINITE VALUE WHERE THERE IS NO EDGE BETWEEN U AND V
-//                if (Double.isInfinite(sum)) {
-//                	System.out.println("Closeness centrality infinity");
-//                	break;
-//                }
-//                
-//			}
-//            nodesMap_CC.put(u, (double) (numVert_1) / sum);
-//            
-//            for (int i = 0; i < graphNodes.size() && !flag ; i++) {
-//            	if(graphNodes.get(i).getId() == u.getId()){
-//                    graphNodes.get(i).setClosenessCentrality(nodesMap_CC.get(u));
-//                    flag=true;
-//                }
-//            }
-//            flag=false;
-//            
-//		}
-//		
-//		closenessCentrality = 0.0;
-//
-//		for (Map.Entry<Node, Double> entry : nodesMap_CC.entrySet())
-//        {
-//        	closenessCentrality += entry.getValue();    
-//        }
-//        closenessCentrality = (double) closenessCentrality / (double) nodesMap_CC.size();
-//        //System.out.println("Closeness: "+ closenessCentrality);
-//        return closenessCentrality;
-//	}
-	
+	/**
+	 * compute community's closeness centrality value 
+	 * 
+	 */
 	public double calculateClosenessCentrality(List<Node> graphNodes) {
 	//ClosenessCentrality, Asserted
 		
@@ -279,8 +252,10 @@ public class CommunityFeatures {
         return closenessCentrality;
 	}
 
-    
-    
+	/**
+	 * compute community's clustering coefficient value of its leader nodes
+	 * 
+	 */
 	public double calculateLeaderClosenessCentrality(List<Node> graphNodes){
 		
 		double closenessCentrality = 0.0;
@@ -297,6 +272,10 @@ public class CommunityFeatures {
         return closenessCentrality;
 	}
 	
+	/**
+	 * compute community's eigen vector centrality value 
+	 * 
+	 */
 	public double calculateEigenVectorCentrality(List<Node> graphNodes){
 	//Asserted
 		double eigenVectorCentrality = 0.0f;
@@ -310,6 +289,10 @@ public class CommunityFeatures {
 		return eigenVectorCentrality;
 	}
 	
+	/**
+	 * compute community's eigen vector centrality value of its leader nodes
+	 * 
+	 */
 	public double calculateLeaderEigenVectorCentrality(List<Node> graphNodes){
 		//Asserted
 		int leadercount=0;
@@ -357,6 +340,15 @@ public class CommunityFeatures {
 		return spearmanRho;
 	}
 	
+	/**
+	 * map values from one range to another
+	 * @param value
+	 * @param in_min range1 min
+	 * @param in_max range1 max
+	 * @param out_min range2 min
+	 * @param out_max range2 max
+	 * @return
+	 */
 	private double normalize(double value, double in_min, double in_max, double out_min, double out_max)
 	{
 	  return (value - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;

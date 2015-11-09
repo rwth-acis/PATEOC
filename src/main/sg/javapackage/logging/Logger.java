@@ -9,6 +9,7 @@ import java.io.PrintWriter;
 import org.apache.commons.io.FileUtils;
 
 /**
+ * Logger class in order to write all error/warnings/messages/results to Log (or Results) file
  * @author Stephen
  * @category Logging
  * 
@@ -16,18 +17,31 @@ import org.apache.commons.io.FileUtils;
 
 public class Logger {
 
+	//Logger instance
 	private static Logger manager;
+	
+	//Log file
 	private static File logFile;
+	
+	//Directory of the Log file
 	private static String baseDir;
+	
+	//Name of the Log file
 	private static String fileName;
 	
 	public Logger(){
 		
 	}
 	
+	/**
+	 * Initialize the logger
+	 */
 	public static void setLogger(){
 		
+		//Save Log file in bin folder of the project
 		Logger.baseDir = System.getProperty("user.dir").concat("\\bin\\");
+		
+		//Log file name
 		Logger.fileName = "Logfile.txt";
 		
 		logFile = new File(Logger.baseDir+Logger.fileName); 
@@ -45,6 +59,10 @@ public class Logger {
 		Logger.writeToLogln("Framework Start Point...");
 		Logger.writeToLogln("--------------------------\n");
 	}
+	
+	/**
+	 * get logger singleton
+	 */
 	protected static Logger getManager(){
 		if(manager == null)
 			manager = new Logger();
@@ -63,7 +81,7 @@ public class Logger {
 	
 	public static void writeToLogln(String message) {
 		try(PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(Logger.baseDir+Logger.fileName, true)))) {
-		    //Log message with end of line
+		    //Log message with end of line character
 			out.println(message);
 		    out.close();
 		}catch (IOException e) {
@@ -82,7 +100,7 @@ public class Logger {
      */
 	public static void writeToLog(String message) {
 		try(PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(Logger.baseDir+Logger.fileName, true)))) {
-		    //Log message without end of line
+		    //Log message without end of line character
 			out.print(message);
 		    out.close();
 		}catch (IOException e) {
@@ -101,7 +119,6 @@ public class Logger {
 		try {
 			FileUtils.writeStringToFile(new File(filename), message, append);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

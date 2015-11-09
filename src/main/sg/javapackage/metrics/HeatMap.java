@@ -9,19 +9,32 @@ import java.util.Map;
 
 import org.tc33.jheatchart.HeatChart;
 
+/**
+ * Creates visual representation of the selected feature set in the form of HeatMap
+ * @author Stephen
+ *
+ */
 public class HeatMap {
 	
+	//map of total 25 features for 5 events (25X5)
 	private static double[][] matrix = new double[25][5];
 	
 	public HeatMap() {
-		// TODO Auto-generated constructor stub
+
 	}
-	
+	/**
+	 * initialize each feature
+	 */
 	public static void initializeHeatMap(){
 		//Matrix of 25 attributes and 5 events
 		matrix = new double[25][5];
 	}
 	
+	/**
+	 * aggregate the selected features for each event
+	 * @param metricCounter
+	 * @param event
+	 */
 	public static void aggregateHeatMap(Map<String,Integer> metricCounter ,int event){
 		
 		int i = 0;
@@ -29,34 +42,37 @@ public class HeatMap {
 			matrix[i][event-1] = entry.getValue();
 			i++;
 		}
-		
 	}
 	
+	/**
+	 * convert aggregated map values into heatmap chart
+	 */
 	public static void createHeatMap(){
-		
 
         // Create our heat chart using our data.
         HeatChart chart = new HeatChart(matrix);
+        
         // Customise the chart.
-
-        // results for no and single changes to specs
         chart.setTitle("Selective Attributes HeatMap");
         chart.setTitleFont(new Font("SansSerif", Font.PLAIN, 30));
         chart.setXAxisLabel("Events");
         chart.setYAxisLabel("Features");
         
+        //Labels for x axis events
         String[] xValues= {"Survive", "Merge" , "Split" , "Dissolve", "Multiclass"};
         chart.setXValues(xValues);      
         
+        //Labels for y axis features
         //Preserving the input sequence of attributes
         String[] yValues= {"Cohesion","ClusteringCoeffecient","LEigenVectorCentrality","D_ClusteringCoeffecient",
-        		"Density","EigenVectorCentrality","LClosenessCentrality","D_Density","PreviouSurvive",
+        		"Density","EigenVectorCentrality","LClosenessCentrality","D_Density","PreviousSurvive",
         		"PreviousSplit","SpearmanRho","PreviousMerge","D_SpearmanRho","D_ClosenessCentrality",
         		"D_DegreeCentrality","D_EigenVectorCentrality","ClosenessCentrality","D_SizeRatio",
         		"PreviousDissolve","SizeRatio","D_LeaderRatio","DegreeCentrality","LeaderRatio",
         		"LDegreeCentrality","D_Cohesion"};
-        chart.setYValues(yValues);
         
+        //chart options
+        chart.setYValues(yValues);
         chart.setHighValueColour(Color.BLUE);
         chart.setLowValueColour(Color.LIGHT_GRAY);
         chart.setAxisLabelsFont(new Font("SansSerif", Font.PLAIN, 25));
@@ -67,9 +83,7 @@ public class HeatMap {
         try {
 			chart.saveToFile(new File("bin\\Result_Heatmap.png"));
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-
 }

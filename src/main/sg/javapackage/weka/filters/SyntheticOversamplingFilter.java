@@ -16,7 +16,7 @@ public class SyntheticOversamplingFilter {
 	
 	private static String resultFile = GlobalVariables.resultFile;
 	public SyntheticOversamplingFilter() {
-		// TODO Auto-generated constructor stub
+		
 	}
 	
 	/**

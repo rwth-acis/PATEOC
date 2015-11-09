@@ -5,14 +5,14 @@ import java.util.List;
 /**
  * 
  * @author Stephen
- * Statistical computation such as 
+ * support function for statistical computation such as 
  * Mean, Variance and Standard-Deviation
  *
  */
 public class StatisticManager {
 	
 	public StatisticManager() {
-		// TODO Auto-generated constructor stub
+
 	}
 
 	/**

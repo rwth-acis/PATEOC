@@ -15,11 +15,14 @@ import weka.core.Instances;
  */
 public class StatisticalMetrics {
 	
+	//pointer to results file
 	private static String resultFile = GlobalVariables.resultFile;
+	
+	//map structure to store feature vs number of times used values
 	public static Map<String,Integer> metricCounter = new HashMap<String, Integer>();
     
 	public StatisticalMetrics() {
-		// TODO Auto-generated constructor stub
+
 	}
 	
 	/**
