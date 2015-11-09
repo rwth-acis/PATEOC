@@ -69,7 +69,7 @@ public class SocialNetworkAnalysis {
 		DegreeDistribution powerlaw = new DegreeDistribution();
 		
 		//for each graph 1 to N-1
-		for(timestep = 1;timestep < PreProcessing.totalGraphCount() ; timestep++) {
+		for(timestep = 1;timestep <= PreProcessing.totalGraphCount() ; timestep++) {
 			
 			Logger.writeToLogln("");
 			Logger.writeToLogln("Graph "+ timestep +" statistical values -");
