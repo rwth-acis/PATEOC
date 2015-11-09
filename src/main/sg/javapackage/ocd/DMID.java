@@ -53,7 +53,7 @@ public class DMID {
 	/**
 	 * DMID filter membership matrix threshold
 	 */
-	private double dmidMembershipMatrixThreshold = 0.15f;
+	private double dmidMembershipMatrixThreshold = 0.25f;
 
 	/**
 	 * input graph

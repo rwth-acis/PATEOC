@@ -38,7 +38,7 @@ public class SLPA {
 	CustomGraph workingGraph;
 	
 	//r: post-processing threshold
-	double threshHold = 0.25f;
+	double threshHold = 0.15f;
 	
 	//T : the user defined maximum iteration
 	int iterations = 100;
