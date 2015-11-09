@@ -75,11 +75,13 @@ public class EvolutionDetection {
 						continue;
 					
 					//compute inclusion value based on the formula
-					inclusionT1T2 = calculateInclusion(OverlapCommunityDetection.getCommunityNodes(timeT1, commt1) ,OverlapCommunityDetection.getCommunityNodes(timeT2, commt2));
+					inclusionT1T2 = calculateInclusion(OverlapCommunityDetection.getCommunityNodes(timeT1, commt1)
+							,OverlapCommunityDetection.getCommunityNodes(timeT2, commt2));
 					if(inclusionT1T2 >= alphaScore ){
 						alphaScore = inclusionT1T2;
 						bestMatchCommunity = commt2;
-						betaScore = calculateInclusion(OverlapCommunityDetection.getCommunityNodes(timeT2, commt2),OverlapCommunityDetection.getCommunityNodes(timeT1, commt1));
+						betaScore = calculateInclusion(OverlapCommunityDetection.getCommunityNodes(timeT2, commt2)
+								,OverlapCommunityDetection.getCommunityNodes(timeT1, commt1));
 					}
 				}
 				
@@ -89,40 +91,47 @@ public class EvolutionDetection {
 					Logger.writeToLogln(commt1+ " survives as " + bestMatchCommunity);
 					OverlapCommunityDetection.Communities.get(timeT1)[commt1].setEvolution(Evolution.survive);
 					
-					OverlapCommunityDetection.Communities.get(timeT2)[bestMatchCommunity].setPreviousCommunity(OverlapCommunityDetection.Communities.get(timeT1)[commt1]);
+					OverlapCommunityDetection.Communities.get(timeT2)[bestMatchCommunity].setPreviousCommunity(
+							OverlapCommunityDetection.Communities.get(timeT1)[commt1]);
 				}
 				
 				else if(alphaScore >= GlobalVariables.GED_INCLUSION_ALPHA && betaScore < GlobalVariables.GED_INCLUSION_BETA	){
-					if(OverlapCommunityDetection.sizeOfCommunity(timeT1, commt1) < OverlapCommunityDetection.sizeOfCommunity(timeT2, bestMatchCommunity)){
+					if(OverlapCommunityDetection.sizeOfCommunity(timeT1, commt1) < 
+							OverlapCommunityDetection.sizeOfCommunity(timeT2, bestMatchCommunity)){
 						Logger.writeToLogln(commt1+ " merges into " + bestMatchCommunity);
 						OverlapCommunityDetection.Communities.get(timeT1)[commt1].setEvolution(Evolution.merge);
 						
-						OverlapCommunityDetection.Communities.get(timeT2)[bestMatchCommunity].setPreviousCommunity(OverlapCommunityDetection.Communities.get(timeT1)[commt1]);
+						OverlapCommunityDetection.Communities.get(timeT2)[bestMatchCommunity].setPreviousCommunity(
+								OverlapCommunityDetection.Communities.get(timeT1)[commt1]);
 
 					}
 					else{
 						Logger.writeToLogln(commt1+ " splits into " + bestMatchCommunity);
 						OverlapCommunityDetection.Communities.get(timeT1)[commt1].setEvolution(Evolution.split);
 						
-						OverlapCommunityDetection.Communities.get(timeT2)[bestMatchCommunity].setPreviousCommunity(OverlapCommunityDetection.Communities.get(timeT1)[commt1]);
+						OverlapCommunityDetection.Communities.get(timeT2)[bestMatchCommunity].setPreviousCommunity(
+								OverlapCommunityDetection.Communities.get(timeT1)[commt1]);
 
 					}
 					
 				}
 				
 				else if(alphaScore < GlobalVariables.GED_INCLUSION_ALPHA && betaScore >= GlobalVariables.GED_INCLUSION_BETA ){
-					if(OverlapCommunityDetection.sizeOfCommunity(timeT1, commt1) >= OverlapCommunityDetection.sizeOfCommunity(timeT2, bestMatchCommunity)){
+					if(OverlapCommunityDetection.sizeOfCommunity(timeT1, commt1) >= 
+							OverlapCommunityDetection.sizeOfCommunity(timeT2, bestMatchCommunity)){
 						Logger.writeToLogln(commt1+ " splits into " + bestMatchCommunity);
 						OverlapCommunityDetection.Communities.get(timeT1)[commt1].setEvolution(Evolution.split);
 						
-						OverlapCommunityDetection.Communities.get(timeT2)[bestMatchCommunity].setPreviousCommunity(OverlapCommunityDetection.Communities.get(timeT1)[commt1]);
+						OverlapCommunityDetection.Communities.get(timeT2)[bestMatchCommunity].setPreviousCommunity(
+								OverlapCommunityDetection.Communities.get(timeT1)[commt1]);
 
 					}
 					else{
 						Logger.writeToLogln(commt1+ " merges into " + bestMatchCommunity);
 						OverlapCommunityDetection.Communities.get(timeT1)[commt1].setEvolution(Evolution.merge);
 						
-						OverlapCommunityDetection.Communities.get(timeT2)[bestMatchCommunity].setPreviousCommunity(OverlapCommunityDetection.Communities.get(timeT1)[commt1]);
+						OverlapCommunityDetection.Communities.get(timeT2)[bestMatchCommunity].setPreviousCommunity(
+								OverlapCommunityDetection.Communities.get(timeT1)[commt1]);
 
 					}
 
@@ -131,18 +140,21 @@ public class EvolutionDetection {
 					Logger.writeToLogln(commt1+ " dissolves " );
 					OverlapCommunityDetection.Communities.get(timeT1)[commt1].setEvolution(Evolution.dissolve);
 					
-					OverlapCommunityDetection.Communities.get(timeT2)[bestMatchCommunity].setPreviousCommunity(OverlapCommunityDetection.Communities.get(timeT1)[commt1]);
+					OverlapCommunityDetection.Communities.get(timeT2)[bestMatchCommunity].setPreviousCommunity(
+							OverlapCommunityDetection.Communities.get(timeT1)[commt1]);
 
 				}
 				else{
 					Logger.writeToLogln(commt1+ " *UNKNOWN* " + bestMatchCommunity);
 					OverlapCommunityDetection.Communities.get(timeT1)[commt1].setEvolution(Evolution.dissolve);
 					
-					OverlapCommunityDetection.Communities.get(timeT2)[bestMatchCommunity].setPreviousCommunity(OverlapCommunityDetection.Communities.get(timeT1)[commt1]);
+					OverlapCommunityDetection.Communities.get(timeT2)[bestMatchCommunity].setPreviousCommunity(
+							OverlapCommunityDetection.Communities.get(timeT1)[commt1]);
 
 				}
 				//Alpha,Beta score printer
-				//Logger.writeToLogln("Alpha: " + alphaScore + " Beta: " + betaScore + " C1size: " + OverlapCommunityDetection.sizeOfCommunity(timeT1, commt1)
+				//Logger.writeToLogln("Alpha: " + alphaScore + " Beta: " + betaScore + " C1size: " + 
+					//OverlapCommunityDetection.sizeOfCommunity(timeT1, commt1)
 						//+ " C2size: " + OverlapCommunityDetection.sizeOfCommunity(timeT2, bestMatchCommunity) );
 			}
 			Logger.writeToLogln("");	
@@ -192,11 +204,13 @@ public class EvolutionDetection {
 		int totalTimesteps = PreProcessing.totalGraphCount();
 		
 		Logger.writeToFile(resultFile,"Recursive Group Evolution Discovery...\n",true);
-		Logger.writeToFile(resultFile,"CommunityId, NodeSize, EdgeSize, N_Leaders, SizeRatio, LeaderRatio, Density, Cohesion, ClusterCoefficient, "
+		Logger.writeToFile(resultFile,"CommunityId, NodeSize, EdgeSize, N_Leaders, SizeRatio, LeaderRatio, "
+				+ "Density, Cohesion, ClusterCoefficient, "
 				+ "SpearmanRho, DegreeCentrality, ClosenessCentrality, EigenVectorCentrality, "
 				+ "LDegreeCentrality, LClosenessCentrality, LEigenVectorCentrality \n",true);
 		
-		for(startTimestep = 1; startTimestep < totalTimesteps ; startTimestep++){ // totalTimesteps - 1, as the last but second also will not have more than 2 evolutions
+		// totalTimesteps - 1, as the last but second also will not have more than 2 evolutions
+		for(startTimestep = 1; startTimestep < totalTimesteps ; startTimestep++){ 
 			Logger.writeToFile(resultFile,"\nTimestep "+startTimestep,true);
 			Logger.writeToFile(resultFile,"\n-------------",true);
 			for(int community = 1;community<=OverlapCommunityDetection.numOfCommunities(startTimestep);community++){
